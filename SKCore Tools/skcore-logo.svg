@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <!-- Background Frosted Plate Gradient (Light Glass) -->
+    <radialGradient id="lightBgGrad" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f0f6ff"/>
+      <stop offset="100%" stop-color="#e2eeff"/>
+    </radialGradient>
+
+    <!-- Primary Azure / Sky to Indigo Gradient -->
+    <linearGradient id="skLuminaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="60%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#4648d4"/>
+    </linearGradient>
+
+    <!-- Soft Diffuse Shadow for Core -->
+    <filter id="lightGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0284c7" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Clean Frosted White Plate -->
+  <rect width="400" height="400" rx="48" fill="url(#lightBgGrad)" stroke="rgba(15, 23, 42, 0.08)" stroke-width="2"/>
+
+  <!-- Subtle Optical Coordinate Marks -->
+  <g opacity="0.2" stroke="#0284c7" stroke-width="1">
+    <line x1="200" y1="40" x2="200" y2="360" stroke-dasharray="4 6"/>
+    <line x1="40" y1="200" x2="360" y2="200" stroke-dasharray="4 6"/>
+    <circle cx="200" cy="200" r="140" fill="none" stroke-dasharray="3 5"/>
+  </g>
+
+  <!-- Outer Quantum Hexagonal Perimeter -->
+  <polygon points="200,60 324,132 324,268 200,340 76,268 76,132" 
+           fill="rgba(255, 255, 255, 0.75)" 
+           stroke="url(#skLuminaGrad)" 
+           stroke-width="6" 
+           stroke-linejoin="round"
+           filter="url(#lightGlow)"/>
+
+  <!-- Node Dots along perimeter vertices -->
+  <circle cx="200" cy="60" r="5" fill="#0284c7"/>
+  <circle cx="324" cy="132" r="5" fill="#2563eb"/>
+  <circle cx="324" cy="268" r="5" fill="#4648d4"/>
+  <circle cx="200" cy="340" r="5" fill="#2563eb"/>
+  <circle cx="76" cy="268" r="5" fill="#4648d4"/>
+  <circle cx="76" cy="132" r="5" fill="#0284c7"/>
+
+  <!-- Geometric Interlocking Monogram: S & K Nexus Core -->
+  <g id="monogram">
+    <!-- Left S-Lattice Facet -->
+    <path d="M182 120 L130 150 L130 196 L164 214 L182 204 L148 186 L148 162 L182 142 Z" 
+          fill="url(#skLuminaGrad)" 
+          opacity="0.95"/>
+    
+    <!-- S-Lattice Bottom Return -->
+    <path d="M182 280 L130 250 L130 228 L152 240 L182 258 Z" 
+          fill="url(#skLuminaGrad)" 
+          opacity="0.9"/>
+
+    <!-- Right K-Lattice Pillar & Diagonals -->
+    <path d="M214 120 L214 280 L238 280 L238 218 L268 280 L298 280 L262 206 L296 120 L266 120 L238 178 L238 120 Z" 
+          fill="url(#skLuminaGrad)" 
+          opacity="0.95"/>
+  </g>
+
+  <!-- Central Luminous Singularity Core -->
+  <circle cx="200" cy="200" r="16" fill="#e0f2fe" opacity="0.6"/>
+  <circle cx="200" cy="200" r="10" fill="#0284c7" filter="url(#lightGlow)"/>
+  <circle cx="200" cy="200" r="4" fill="#ffffff"/>
+</svg>

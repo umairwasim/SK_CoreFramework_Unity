@@ -1,0 +1,425 @@
+/* ========================================================================= */
+/* SKC COMMAND DECK - UI TOOLKIT STYLESHEET (Unity 6 Editor)                */
+/* ========================================================================= */
+
+.command-deck-root {
+    flex-grow: 1;
+    background-color: #10121A;
+    color: #FFFFFF;
+    font-size: 12px;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+/* --- Left Icon Rail (52px) --- */
+.icon-rail {
+    width: 52px;
+    min-width: 52px;
+    max-width: 52px;
+    background-color: #0A0C12;
+    border-right-width: 1px;
+    border-right-color: #242A3C;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.rail-top-group {
+    align-items: center;
+    width: 100%;
+}
+
+.rail-logo-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background-color: #00D2FF;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.rail-logo-text {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: #000000;
+}
+
+.rail-divider {
+    width: 24px;
+    height: 1px;
+    background-color: #242A3C;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.rail-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background-color: transparent;
+    border-width: 1px;
+    border-color: transparent;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 0;
+}
+
+.rail-button:hover {
+    background-color: #1A1E2B;
+    border-color: #2F374D;
+}
+
+.rail-button-active {
+    background-color: #1C2233;
+    border-color: #00D2FF;
+}
+
+.rail-icon-text {
+    font-size: 16px;
+}
+
+.rail-bottom-group {
+    align-items: center;
+}
+
+.rail-branch-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background-color: #1E2332;
+    border-width: 1px;
+    border-color: #242A3C;
+    align-items: center;
+    justify-content: center;
+}
+
+.rail-branch-text {
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: #94A3B8;
+}
+
+/* --- Main Workspace (Header + Content + Dock) --- */
+.main-workspace {
+    flex-grow: 1;
+    background-color: #12141C;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- Command Deck Top HUD Header --- */
+.top-hud-header {
+    background-color: #141722;
+    border-bottom-width: 1px;
+    border-bottom-color: #242A3C;
+    padding: 10px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.hud-title-container {
+    flex-direction: row;
+    align-items: center;
+}
+
+.hud-title {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #FFFFFF;
+    margin-right: 8px;
+}
+
+.hud-pill-badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    background-color: rgba(0, 210, 255, 0.12);
+    border-width: 1px;
+    border-color: rgba(0, 210, 255, 0.35);
+    color: #00D2FF;
+    font-size: 10px;
+    -unity-font-style: bold;
+}
+
+.hud-status-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+.hud-env-badge {
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background-color: rgba(245, 158, 11, 0.12);
+    border-width: 1px;
+    border-color: rgba(245, 158, 11, 0.35);
+}
+
+.hud-env-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #F59E0B;
+    margin-right: 6px;
+}
+
+.hud-env-text {
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: #F59E0B;
+}
+
+/* --- Content Viewport --- */
+.content-viewport {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.overview-scroll-container {
+    flex-grow: 1;
+    padding: 16px;
+}
+
+
+/* --- Card Containers --- */
+.deck-card {
+    background-color: #181C28;
+    border-width: 1px;
+    border-color: #283044;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.deck-card:hover {
+    border-color: #38425C;
+}
+
+.deck-card-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.deck-card-title {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #FFFFFF;
+}
+
+.deck-card-subtitle {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+/* --- Status Pills --- */
+.pill-active {
+    padding: 2px 8px;
+    border-radius: 10px;
+    background-color: rgba(16, 185, 129, 0.15);
+    border-width: 1px;
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #10B981;
+    font-size: 10px;
+    -unity-font-style: bold;
+}
+
+.pill-info {
+    padding: 2px 8px;
+    border-radius: 10px;
+    background-color: rgba(0, 210, 255, 0.15);
+    border-width: 1px;
+    border-color: rgba(0, 210, 255, 0.4);
+    color: #00D2FF;
+    font-size: 10px;
+    -unity-font-style: bold;
+}
+
+/* --- Service Card Stack --- */
+.service-cards-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 6px;
+}
+
+.service-card-item {
+    flex-grow: 1;
+    flex-basis: 30%;
+    background-color: #141722;
+    border-width: 1px;
+    border-color: #242A3B;
+    border-radius: 8px;
+    padding: 12px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.service-card-item:hover {
+    border-color: #3B4561;
+}
+
+.service-item-title {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #FFFFFF;
+}
+
+.service-item-desc {
+    font-size: 10px;
+    color: #64748B;
+    margin-top: 2px;
+    margin-bottom: 8px;
+}
+
+/* --- Modern Buttons --- */
+.deck-btn-primary {
+    background-color: #00D2FF;
+    color: #000000;
+    -unity-font-style: bold;
+    border-radius: 7px;
+    border-width: 0;
+    padding: 6px 14px;
+    font-size: 11px;
+}
+
+.deck-btn-primary:hover {
+    background-color: #33DBFF;
+}
+
+.deck-btn-secondary {
+    background-color: #202636;
+    color: #E2E8F0;
+    border-width: 1px;
+    border-color: #30394F;
+    border-radius: 7px;
+    padding: 5px 12px;
+    font-size: 11px;
+}
+
+.deck-btn-secondary:hover {
+    background-color: #2A3247;
+    color: #FFFFFF;
+}
+
+/* --- Bottom Sticky Action Dock --- */
+.floating-action-dock {
+    background-color: #0A0C12;
+    border-top-width: 1px;
+    border-top-color: #242A3C;
+    padding: 8px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.dock-actions-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+.dock-label {
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: #64748B;
+    margin-right: 8px;
+}
+
+.dock-btn {
+    background-color: #181C28;
+    color: #CBD5E1;
+    border-width: 1px;
+    border-color: #262D3E;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    margin-right: 6px;
+}
+
+.dock-btn:hover {
+    background-color: #222738;
+    color: #FFFFFF;
+    border-color: #353E54;
+}
+
+.dock-engine-info {
+    font-size: 10px;
+    color: #64748B;
+}
+
+/* --- Log & Diagnostics Expanded Styles --- */
+.log-controls-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+.channel-filters-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top-width: 1px;
+    border-top-color: #242A3C;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.channel-filters-title {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #94A3B8;
+}
+
+.channels-grid-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: #12141C;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #242A3C;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.channel-item-box {
+    flex-direction: row;
+    align-items: center;
+    width: 25%;
+    padding: 3px 6px;
+}
+
+.channel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
+.channel-toggle {
+    font-size: 11px;
+    color: #CBD5E1;
+    margin: 0;
+}
+
+.log-actions-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top-width: 1px;
+    border-top-color: #242A3C;
+    margin-top: 4px;
+}

@@ -1,0 +1,115 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:ScrollView name="overview-scroll" class="overview-scroll-container">
+        
+        <!-- 1. Architecture State Banner Card -->
+        <ui:VisualElement class="deck-card">
+            <ui:VisualElement class="deck-card-header">
+                <ui:VisualElement style="flex-direction: row; align-items: center;">
+                    <ui:Label text="🎯" style="font-size: 16px; margin-right: 8px;" />
+                    <ui:VisualElement>
+                        <ui:Label name="label-arch-title" text="Architecture State: Pure Service Locator (Minimal Core)" class="deck-card-title" />
+                        <ui:Label name="label-arch-subtitle" text="0 / 16 Optional Modular Packages installed · Minimal runtime footprint" class="deck-card-subtitle" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="label-arch-pill" text="PURE LOCATOR ACTIVE" class="pill-active" />
+            </ui:VisualElement>
+            
+            <ui:Label text="Your project is operating in pure Service Locator mode. Only lightweight core systems (SKCore, EventBus, SaveSystem, Scheduler) are compiled. Zero unnecessary dependencies and zero RAM overhead." style="color: #CBD5E1; font-size: 11px; margin-top: 4px; white-space: normal;" />
+            
+            <ui:VisualElement style="margin-top: 10px; padding-top: 8px; border-top-width: 1px; border-top-color: #242A3C; flex-direction: row; justify-content: space-between; align-items: center;">
+                <ui:Label text="You can install modular packages on demand at any time with one click:" style="font-size: 11px; color: #94A3B8;" />
+                <ui:Button name="btn-open-sdkhub" text="📦 SDK Hub (Browse Modular Packages)" class="deck-btn-primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+        <!-- 2. Active Service Stack Deck -->
+        <ui:VisualElement class="deck-card">
+            <ui:VisualElement class="deck-card-header">
+                <ui:VisualElement style="flex-direction: row; align-items: center;">
+                    <ui:Label text="🛡️" style="font-size: 16px; margin-right: 8px;" />
+                    <ui:Label text="Core Service Registry (Always Available)" class="deck-card-title" />
+                </ui:VisualElement>
+                <ui:Label name="label-services-summary-pill" text="ALL STANDBY" class="pill-active" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="service-cards-grid">
+                <!-- Save Service Card -->
+                <ui:VisualElement class="service-card-item">
+                    <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center;">
+                        <ui:Label text="SaveService" class="service-item-title" />
+                        <ui:Label name="badge-status-save" text="READY" class="pill-active" />
+                    </ui:VisualElement>
+                    <ui:Label text="Segmented SaveData &amp; Fast JSON I/O" class="service-item-desc" />
+                    <ui:Toggle name="toggle-save-service" label="Enable on Boot" value="true" />
+                </ui:VisualElement>
+                
+                <!-- Event Service Card -->
+                <ui:VisualElement class="service-card-item">
+                    <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center;">
+                        <ui:Label text="EventService" class="service-item-title" />
+                        <ui:Label name="badge-status-event" text="READY" class="pill-active" />
+                    </ui:VisualElement>
+                    <ui:Label text="Type-Safe Decoupled Global Event Bus" class="service-item-desc" />
+                    <ui:Toggle name="toggle-event-service" label="Enable on Boot" value="true" />
+                </ui:VisualElement>
+                
+                <!-- Scheduler Service Card -->
+                <ui:VisualElement class="service-card-item">
+                    <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center;">
+                        <ui:Label text="SchedulerService" class="service-item-title" />
+                        <ui:Label name="badge-status-scheduler" text="READY" class="pill-active" />
+                    </ui:VisualElement>
+                    <ui:Label text="Zero-Alloc Timing &amp; Coroutine Dispatcher" class="service-item-desc" />
+                    <ui:Toggle name="toggle-scheduler-service" label="Enable on Boot" value="true" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+        <!-- 3. Diagnostics & Log Configuration Card -->
+        <ui:VisualElement class="deck-card">
+            <ui:VisualElement class="deck-card-header">
+                <ui:VisualElement style="flex-direction: row; align-items: center;">
+                    <ui:Label text="🪵" style="font-size: 16px; margin-right: 8px;" />
+                    <ui:Label text="Log &amp; Diagnostics Manager (LogSettings.asset)" class="deck-card-title" />
+                </ui:VisualElement>
+                <ui:Button name="btn-ping-log-settings" text="🎯 Ping Asset" class="deck-btn-secondary" />
+            </ui:VisualElement>
+            
+            <!-- Build Profile Switcher -->
+            <ui:VisualElement style="background-color: #12141C; padding: 6px 10px; border-radius: 8px; border-width: 1px; border-color: #242A3C; flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <ui:Label text="Active Logging Profile:" style="font-size: 11px; -unity-font-style: bold; color: #94A3B8;" />
+                <ui:VisualElement style="flex-direction: row; gap: 4px;">
+                    <ui:Button name="btn-profile-dev" text="🟢 DEVELOPMENT (Verbose)" class="deck-btn-primary" style="padding: 4px 10px;" />
+                    <ui:Button name="btn-profile-prod" text="🔴 PRODUCTION (Muted)" class="deck-btn-secondary" style="padding: 4px 10px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <!-- Master Controls Row -->
+            <ui:VisualElement class="log-controls-row">
+                <ui:Toggle name="toggle-enable-logging" label="Enable Logging" value="true" />
+                <ui:VisualElement name="container-min-log-level" style="flex-direction: row; align-items: center;" />
+                <ui:Toggle name="toggle-color-tags" label="Color Tags" value="true" />
+                <ui:Toggle name="toggle-timestamps" label="Timestamps" value="true" />
+            </ui:VisualElement>
+
+            <!-- Channel Filters Header -->
+            <ui:VisualElement class="channel-filters-header">
+                <ui:Label text="Channel Filters (Mute / Unmute):" class="channel-filters-title" />
+                <ui:VisualElement style="flex-direction: row; gap: 6px;">
+                    <ui:Button name="btn-enable-all-channels" text="Enable All" class="deck-btn-secondary" style="padding: 2px 10px;" />
+                    <ui:Button name="btn-mute-all-channels" text="Mute All" class="deck-btn-secondary" style="padding: 2px 10px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Channel Filters Grid (Populated dynamically via C#) -->
+            <ui:VisualElement name="channels-grid-container" class="channels-grid-container" />
+
+            <!-- Log Actions Row -->
+            <ui:VisualElement class="log-actions-row">
+                <ui:Button name="btn-send-test-logs" text="⚡ Send Test Logs to Console" class="deck-btn-secondary" />
+                <ui:Button name="btn-sync-define-symbols" text="🔄 Sync Scripting Define Symbols" class="deck-btn-secondary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+    </ui:ScrollView>
+</ui:UXML>

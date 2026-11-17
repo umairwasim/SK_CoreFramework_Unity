@@ -1,0 +1,348 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-09-20T10:53:47.1733348Z",
+  "packages": [
+    {
+      "id": "skc.core",
+      "name": "SKC Core Foundation",
+      "version": "1.0.0",
+      "category": "Core",
+      "description": "Service Locator (SKCore), Segmented SaveData, Event Bus, Logging, and ASMDEF Orchestration.",
+      "defineSymbol": "",
+      "dependencies": [],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Boot",
+        "Assets/Plugins/SKCFramework/_Scripts/SaveSystem",
+        "Assets/Plugins/SKCFramework/_Scripts/Events",
+        "Assets/Plugins/SKCFramework/_Scripts/Logging",
+        "Assets/Plugins/SKCFramework/_Scripts/Constant",
+        "Assets/Plugins/SKCFramework/_Scripts/Helpers",
+        "Assets/Plugins/SKCFramework/_Scripts/Singleton Pattern",
+        "Assets/Plugins/SKCFramework/_Scripts/Text",
+        "Assets/Plugins/SKCFramework/_Scripts/Utils",
+        "Assets/Plugins/SKCFramework/_Scripts/Editor",
+        "Assets/Plugins/SKCFramework/_Scripts/SKC.Framework.asmdef",
+        "Assets/Resources/LogSettings.asset",
+        "Assets/Resources/SKCoreServiceSettings.asset"
+      ],
+      "fileName": "SKC.Core.unitypackage",
+      "isCore": true,
+      "asmdefName": "SKC.Core",
+      "fileSizeBytes": 85846,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Core.unitypackage"
+    },
+    {
+      "id": "skc.economy",
+      "name": "SKC Economy & Currencies",
+      "version": "1.0.0",
+      "category": "Economy",
+      "description": "Multi-currency wallet, safe arithmetic transactions, and UI Fly token visual effects.",
+      "defineSymbol": "SKC_HAS_ECONOMY",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Economy",
+        "Assets/Resources/CurrencySettings.asset"
+      ],
+      "fileName": "SKC.Economy.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Economy",
+      "fileSizeBytes": 13880,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Economy.unitypackage"
+    },
+    {
+      "id": "skc.dailyrewards",
+      "name": "SKC Daily Rewards & Retention",
+      "version": "1.0.0",
+      "category": "Retention",
+      "description": "7-day cycle retention calendars, streak tracking, and time-travel simulation tools.",
+      "defineSymbol": "SKC_HAS_DAILY_REWARDS",
+      "dependencies": [
+        "skc.core",
+        "skc.economy",
+        "skc.ui"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/DailyRewards",
+        "Assets/Resources/DailyRewardSettings.asset"
+      ],
+      "fileName": "SKC.DailyRewards.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.DailyRewards",
+      "fileSizeBytes": 12530,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.DailyRewards.unitypackage"
+    },
+    {
+      "id": "skc.levels",
+      "name": "SKC Level Progression",
+      "version": "1.0.0",
+      "category": "Gameplay",
+      "description": "Dynamic level loading, looping rules, prefab caching, and outcome flow management.",
+      "defineSymbol": "SKC_HAS_LEVELS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Levels",
+        "Assets/Resources/LevelSettings.asset"
+      ],
+      "fileName": "SKC.Levels.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Levels",
+      "fileSizeBytes": 11762,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Levels.unitypackage"
+    },
+    {
+      "id": "skc.audio",
+      "name": "SKC Sound & Music Manager",
+      "version": "1.0.0",
+      "category": "Audio",
+      "description": "BGM cross-fading, 3D SFX playback, pooling integration, and runtime volume controls.",
+      "defineSymbol": "SKC_HAS_AUDIO",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/SoundManager",
+        "Assets/Plugins/SKCFramework/_Scripts/SOs/SoundData.cs",
+        "Assets/Resources/Sounds.asset"
+      ],
+      "fileName": "SKC.Audio.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Audio",
+      "fileSizeBytes": 3848,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Audio.unitypackage"
+    },
+    {
+      "id": "skc.haptics",
+      "name": "SKC Haptic Feedback",
+      "version": "1.0.0",
+      "category": "Feedback",
+      "description": "Cross-platform mobile haptics with iOS Taptic Engine & Android vibration fallbacks.",
+      "defineSymbol": "SKC_HAS_HAPTICS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Haptics"
+      ],
+      "fileName": "SKC.Haptics.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Haptics",
+      "fileSizeBytes": 3403,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Haptics.unitypackage"
+    },
+    {
+      "id": "skc.pooling",
+      "name": "SKC Object Pooling",
+      "version": "1.0.0",
+      "category": "System",
+      "description": "Zero-GC GameObject pooling system with auto-expanding pools and warmup pre-allocation.",
+      "defineSymbol": "SKC_HAS_POOLING",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Pooling",
+        "Assets/Resources/PoolList.asset"
+      ],
+      "fileName": "SKC.Pooling.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Pooling",
+      "fileSizeBytes": 3992,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Pooling.unitypackage"
+    },
+    {
+      "id": "skc.transitions",
+      "name": "SKC Screen Transitions",
+      "version": "1.0.0",
+      "category": "UI",
+      "description": "Async scene and UI fades, curtains, and DOTween overlay animation sequences.",
+      "defineSymbol": "SKC_HAS_TRANSITIONS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Transitions"
+      ],
+      "fileName": "SKC.Transitions.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Transitions",
+      "fileSizeBytes": 3677,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Transitions.unitypackage"
+    },
+    {
+      "id": "skc.ui",
+      "name": "SKC UI & Popups",
+      "version": "1.0.0",
+      "category": "UI",
+      "description": "Popup queue manager, view transitions, responsive layout adapters, and toast overlays.",
+      "defineSymbol": "SKC_HAS_UI",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/UI",
+        "Assets/Resources/UIData.asset"
+      ],
+      "fileName": "SKC.UI.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.UI",
+      "fileSizeBytes": 8464,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.UI.unitypackage"
+    },
+    {
+      "id": "skc.inputs",
+      "name": "SKC Input Service",
+      "version": "1.0.0",
+      "category": "Input",
+      "description": "Unity New Input System abstraction with gesture detection and pointer event dispatching.",
+      "defineSymbol": "SKC_HAS_INPUTS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/InputService"
+      ],
+      "fileName": "SKC.Inputs.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Inputs",
+      "fileSizeBytes": 1798,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Inputs.unitypackage"
+    },
+    {
+      "id": "skc.ads",
+      "name": "SKC Ads Mediation",
+      "version": "1.0.0",
+      "category": "Monetization",
+      "description": "Mediation interfaces for Rewarded, Interstitial, and Banner ads with dummy simulation.",
+      "defineSymbol": "SKC_HAS_ADS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Ads"
+      ],
+      "fileName": "SKC.Ads.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Ads",
+      "fileSizeBytes": 3422,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Ads.unitypackage"
+    },
+    {
+      "id": "skc.analytics",
+      "name": "SKC Analytics Hub",
+      "version": "1.0.0",
+      "category": "Analytics",
+      "description": "Composite multi-provider analytics dispatcher for GameAnalytics, Firebase, and ByteBrew.",
+      "defineSymbol": "SKC_HAS_ANALYTICS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Analytics"
+      ],
+      "fileName": "SKC.Analytics.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Analytics",
+      "fileSizeBytes": 2363,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Analytics.unitypackage"
+    },
+    {
+      "id": "skc.iap",
+      "name": "SKC In-App Purchasing & No-Ads",
+      "version": "1.0.0",
+      "category": "Monetization",
+      "description": "One-click No-Ads automation, entitlement restoration, and store receipt verification.",
+      "defineSymbol": "SKC_HAS_IAP",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/IAP"
+      ],
+      "fileName": "SKC.IAP.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.IAP",
+      "fileSizeBytes": 2869,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.IAP.unitypackage"
+    },
+    {
+      "id": "skc.privacy",
+      "name": "SKC Privacy & Consent (ATT / UMP)",
+      "version": "1.0.0",
+      "category": "Compliance",
+      "description": "Apple ATT and Google UMP/GDPR compliance workflows with automated dialog orchestration.",
+      "defineSymbol": "SKC_HAS_PRIVACY",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Privacy"
+      ],
+      "fileName": "SKC.Privacy.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Privacy",
+      "fileSizeBytes": 2981,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Privacy.unitypackage"
+    },
+    {
+      "id": "skc.review",
+      "name": "SKC In-App Review Prompt",
+      "version": "1.0.0",
+      "category": "Retention",
+      "description": "Google Play In-App Review & Apple SKStoreReviewController smart milestone triggers.",
+      "defineSymbol": "SKC_HAS_REVIEW",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Review"
+      ],
+      "fileName": "SKC.Review.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Review",
+      "fileSizeBytes": 2468,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Review.unitypackage"
+    },
+    {
+      "id": "skc.notifications",
+      "name": "SKC Local Retention Notifications",
+      "version": "1.0.0",
+      "category": "Retention",
+      "description": "Daily retention nudge reminders, streak protection alerts, and energy refills.",
+      "defineSymbol": "SKC_HAS_NOTIFICATIONS",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Notifications"
+      ],
+      "fileName": "SKC.Notifications.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Notifications",
+      "fileSizeBytes": 1952,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Notifications.unitypackage"
+    },
+    {
+      "id": "skc.telemetry",
+      "name": "SKC Telemetry & Funnels",
+      "version": "1.0.0",
+      "category": "Analytics",
+      "description": "Automated level duration, lag spike counter, and low-FPS funnel telemetry tracking.",
+      "defineSymbol": "SKC_HAS_TELEMETRY",
+      "dependencies": [
+        "skc.core"
+      ],
+      "assetPaths": [
+        "Assets/Plugins/SKCFramework/_Scripts/Telemetry"
+      ],
+      "fileName": "SKC.Telemetry.unitypackage",
+      "isCore": false,
+      "asmdefName": "SKC.Telemetry",
+      "fileSizeBytes": 2305,
+      "downloadUrl": "https://github.com/SemihKC94/skc-unity-plugins/releases/download/v1.0.0/SKC.Telemetry.unitypackage"
+    }
+  ]
+}

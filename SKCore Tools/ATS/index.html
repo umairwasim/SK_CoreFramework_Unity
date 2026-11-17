@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATS — Asset Transformation Service • SKCore Tools</title>
+
+    <!-- FOUC Prevention Script -->
+    <script>
+      (function() {
+        try {
+          const saved = localStorage.getItem('skcore_theme');
+          const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Google Fonts & Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+
+    <style>
+      /* SKCore Top Navigation Bar */
+      #skcore-nav-bar {
+        position: relative;
+        z-index: 60;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        background: #0f0f12;
+        border-bottom: 1px solid #26262c;
+        font-family: 'Inter', -apple-system, sans-serif;
+        font-size: 12px;
+        color: #e4e4e7;
+        user-select: none;
+      }
+      .skcore-nav-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .btn-hub-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #e4e4e7;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.15s ease;
+      }
+      .btn-hub-back:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(56, 189, 248, 0.4);
+        color: #38bdf8;
+      }
+      .skcore-brand-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #8b5cf6;
+      }
+      .skcore-meta-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(139, 92, 246, 0.15);
+        color: #c084fc;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+      }
+
+      /* Adjust #root container to account for top suite bar */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      #root {
+        flex: 1;
+        min-height: 0;
+        height: calc(100% - 42px);
+      }
+
+      /* ==========================================================================
+         LIGHT THEME OVERRIDES FOR ATS (EYE-RELIEF MODE)
+         ========================================================================== */
+      html:not(.dark) {
+        --color-background: #f8fafc !important;
+        --color-panel: #ffffff !important;
+        --color-panel-2: #f1f5f9 !important;
+        --color-border: #e2e8f0 !important;
+        --color-fg: #0f172a !important;
+        --color-accent: #0284c7 !important;
+      }
+
+      html:not(.dark) #skcore-nav-bar {
+        background: #ffffff;
+        border-bottom-color: #e2e8f0;
+        color: #0f172a;
+      }
+
+      html:not(.dark) .btn-hub-back {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        color: #334155;
+      }
+      html:not(.dark) .btn-hub-back:hover {
+        background: #e2e8f0;
+        color: #0284c7;
+        border-color: #38bdf8;
+      }
+
+      html:not(.dark) body {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+      }
+
+      html:not(.dark) .bg-background { background-color: #f8fafc !important; }
+      html:not(.dark) .bg-panel { background-color: #ffffff !important; }
+      html:not(.dark) .bg-panel-2 { background-color: #f1f5f9 !important; }
+      html:not(.dark) .border-border { border-color: #e2e8f0 !important; }
+      html:not(.dark) .text-fg { color: #0f172a !important; }
+      html:not(.dark) .text-zinc-100,
+      html:not(.dark) .text-zinc-200,
+      html:not(.dark) .text-zinc-50 { color: #0f172a !important; }
+      html:not(.dark) .text-zinc-300,
+      html:not(.dark) .text-zinc-400 { color: #475569 !important; }
+      html:not(.dark) .text-zinc-500 { color: #64748b !important; }
+      html:not(.dark) .bg-zinc-800,
+      html:not(.dark) .bg-zinc-900\/60,
+      html:not(.dark) .bg-zinc-900\/80,
+      html:not(.dark) .bg-zinc-900\/90,
+      html:not(.dark) .bg-zinc-950 { background-color: #f1f5f9 !important; border-color: #e2e8f0 !important; }
+      html:not(.dark) .hover\:bg-zinc-800:hover,
+      html:not(.dark) .hover\:bg-zinc-700:hover { background-color: #e2e8f0 !important; }
+    </style>
+  </head>
+  <body>
+    <!-- Top Suite Nav Bar -->
+    <header id="skcore-nav-bar">
+      <div class="skcore-nav-left">
+        <a href="../index.html" class="btn-hub-back">
+          <span style="font-size:14px;line-height:1;">◂</span>
+          <span>Hub Deck</span>
+        </a>
+        <span class="skcore-brand-badge">
+          <span>ATS</span>
+          <span class="skcore-meta-tag">Asset Optimizer • GUID Locked</span>
+        </span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;opacity:0.75;">
+        Unity 6 Target • Batch Processing
+      </div>
+    </header>
+
+    <!-- ATS Web App Root Container -->
+    <div id="root"></div>
+
+    <!-- Live Theme Synchronization Listener -->
+    <script>
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'skcore_theme') {
+          if (e.newValue === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+      });
+    </script>
+
+    <!-- Load ATS Web Application (Self-contained IIFE, works on file:/// and http://) -->
+    <script defer src="./ats/dist-web/assets/index-BdZ-WfqG.js"></script>
+  </body>
+</html>

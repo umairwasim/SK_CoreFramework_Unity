@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13ce496f79412645acd59a7afa4ab14, type: 3}
+  m_Name: LogSettings
+  m_EditorClassIdentifier: SKC.Framework::SKC.Logging.LogSettingsSO
+  enableLogging: 1
+  profile: 0
+  minLogLevel: 1
+  useRichTextColor: 1
+  showTimestamp: 1
+  tagConfigs:
+  - tag: 0
+    isEnabled: 1
+    hexColor: '#B2BEC3'
+  - tag: 1
+    isEnabled: 1
+    hexColor: '#00D2D3'
+  - tag: 2
+    isEnabled: 1
+    hexColor: '#FFD700'
+  - tag: 3
+    isEnabled: 1
+    hexColor: '#54A0FF'
+  - tag: 4
+    isEnabled: 1
+    hexColor: '#E056FD'
+  - tag: 5
+    isEnabled: 1
+    hexColor: '#2ED573'
+  - tag: 6
+    isEnabled: 1
+    hexColor: '#FFA502'
+  - tag: 7
+    isEnabled: 1
+    hexColor: '#48DBFB'
+  - tag: 8
+    isEnabled: 1
+    hexColor: '#A29BFE'
+  - tag: 9
+    isEnabled: 1
+    hexColor: '#FF6B81'
+  - tag: 10
+    isEnabled: 1
+    hexColor: '#7BED9F'
+  - tag: 11
+    isEnabled: 1
+    hexColor: '#FF4757'

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SKCore Forge — Unity Build Foundry &amp; Telemetry</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <!-- FOUC Prevention Script -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('skcore_theme');
+        const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Fonts: Inter & JetBrains Mono + Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body class="bg-obsidian text-on-surface antialiased min-h-screen flex flex-col overflow-x-hidden selection:bg-cyan-glow selection:text-obsidian">
+  
+  <!-- BOOT OVERLAY -->
+  <div id="boot" class="boot" aria-live="polite">
+    <div class="boot-card">
+      <div class="boot-header">
+        <div class="forge-badge">
+          <span class="material-symbols-outlined icon-cyan">deployed_code</span>
+        </div>
+        <div>
+          <p class="eyebrow">Initializing SKCore Forge</p>
+          <h1>Scanning Unity Projects</h1>
+        </div>
+      </div>
+
+      <div class="gauge-wrap" data-gauge>
+        <svg viewBox="0 0 120 120" aria-hidden="true" class="gauge-svg">
+          <circle class="g-track" cx="60" cy="60" r="52"></circle>
+          <circle class="g-value" cx="60" cy="60" r="52"></circle>
+        </svg>
+        <div class="g-label">
+          <strong data-gauge-num>0</strong>
+          <span>%</span>
+        </div>
+      </div>
+
+      <div class="linear-bar" aria-hidden="true"><span id="boot-bar"></span></div>
+      <p class="boot-stage" id="boot-stage">Starting scan...</p>
+      <pre class="boot-log" id="boot-transcript">$ unity --projects --format json --no-pager</pre>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION SHELL -->
+  <div class="shell">
+    <!-- TOP NAVBAR -->
+    <header class="top" id="top"></header>
+
+    <div class="body">
+      <!-- SIDE NAVIGATION RAIL -->
+      <nav class="nav" id="nav" aria-label="Sections"></nav>
+
+      <!-- MAIN CONTENT VIEWPORT -->
+      <main class="main-content">
+        <div class="view-wrap">
+          <div class="view" id="view"></div>
+          
+          <!-- RESCAN INDICATOR -->
+          <div id="yard-scan" class="yard-scan" hidden>
+            <div class="gauge-wrap gauge-sm" data-gauge>
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="g-track" cx="60" cy="60" r="52"></circle>
+                <circle class="g-value" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <div class="g-label"><strong data-gauge-num>0</strong><span>%</span></div>
+            </div>
+            <div class="scan-info">
+              <p class="eyebrow">Background Scan</p>
+              <h2 id="yard-scan-stage">Querying Unity CLI...</h2>
+              <div class="linear-bar"><span id="yard-scan-bar"></span></div>
+              <pre id="yard-scan-log"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLOATING BOTTOM COMMAND DOCK -->
+        <form class="dock" id="dock">
+          <div class="dock-top">
+            <span class="dock-label"><span class="material-symbols-outlined">terminal</span> Command Dispatcher</span>
+            <span class="dock-hint">Telegram syntax compatible • AOS = Android</span>
+          </div>
+          <div class="dock-row">
+            <span class="prompt" aria-hidden="true">BUILD</span>
+            <input id="command" name="command" autocomplete="off" spellcheck="false" placeholder="AOS commit 2d5a4e3 Northline" />
+            <button type="submit" id="run-btn" class="btn-primary">
+              <span class="material-symbols-outlined">send</span>
+              <span>Execute</span>
+            </button>
+          </div>
+          <div class="dock-chips" id="chips"></div>
+          <pre class="dock-reply" id="dock-reply" hidden></pre>
+        </form>
+      </main>
+
+      <!-- RIGHT INSPECTOR PANEL -->
+      <aside class="inspector" id="inspector" aria-label="Inspector"></aside>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast" class="toast" hidden role="status"></div>
+
+  <script src="./app.js"></script>
+  <!-- Live Theme Synchronization Listener -->
+  <script>
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'skcore_theme') {
+        if (e.newValue === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

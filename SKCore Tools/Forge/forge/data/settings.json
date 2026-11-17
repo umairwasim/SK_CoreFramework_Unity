@@ -1,0 +1,17 @@
+{
+  "unity_bin": "",
+  "scan_roots": [],
+  "default_project_id": "",
+  "simulate_if_missing": true,
+  "inject_build_script": true,
+  "output_dir": "",
+  "github_token": "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",
+  "telegram_token": "8912435598:AAHzrpumDUzBTKb5TLrc83ZmYlxMAk8thwQ",
+  "telegram_chats": [
+    "6665874003"
+  ],
+  "pair_code": "977507",
+  "android_export": "apk",
+  "links": {},
+  "extra_projects": []
+}

@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cinematic LUT Studio — Unity URP / HDRP Color Grading &amp; 2D LUT Baker</title>
+  <script>
+  (function() {
+    try {
+      const theme = localStorage.getItem('skcore_theme');
+      if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {}
+  })();
+</script>
+<style>
+  :root {
+    --bg: #f8faff;
+    --panel: rgba(255, 255, 255, 0.95);
+    --panel-2: #f1f5f9;
+    --line: rgba(226, 232, 240, 0.9);
+    --line-2: #cbd5e1;
+    --text: #0f172a;
+    --text-heading: #020617;
+    --muted: #64748b;
+    --faint: #94a3b8;
+    --amber: #d97706;
+    --amber-hover: #b45309;
+    --amber-soft: rgba(217, 119, 6, 0.12);
+    --accent: #0284c7;
+    --accent-hover: #0369a1;
+    --accent-soft: rgba(2, 132, 199, 0.09);
+    --green: #10b981;
+    --danger: #ef4444;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --radius: 10px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    --bg: #090d16;
+    --panel: rgba(15, 23, 42, 0.95);
+    --panel-2: #1e293b;
+    --line: rgba(51, 65, 85, 0.75);
+    --line-2: #334155;
+    --text: #f1f5f9;
+    --text-heading: #ffffff;
+    --muted: #94a3b8;
+    --faint: #64748b;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  html.dark body {
+    background-image: radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px) !important;
+  }
+
+  html.dark header {
+    background: rgba(11, 15, 25, 0.95) !important;
+    border-bottom-color: rgba(51, 65, 85, 0.75) !important;
+  }
+
+  /* Aside Tabs & Navigation */
+  html.dark .aside-tabs {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+  }
+  html.dark .aside-tab {
+    color: #94a3b8 !important;
+  }
+  html.dark .aside-tab:hover {
+    background: rgba(30, 41, 59, 0.8) !important;
+    color: #f8fafc !important;
+  }
+  html.dark .aside-tab.active {
+    background: #1e293b !important;
+    color: #f59e0b !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Preset Chips */
+  html.dark .chip {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+  }
+  html.dark .chip:hover {
+    background: #334155 !important;
+    color: #fbbf24 !important;
+    border-color: #d97706 !important;
+  }
+  html.dark .chip.active {
+    background: linear-gradient(180deg, #d97706, #b45309) !important;
+    border-color: #b45309 !important;
+    color: #ffffff !important;
+  }
+
+  /* Action Buttons */
+  html.dark .btn {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+  html.dark .btn:hover {
+    background: #334155 !important;
+    border-color: #475569 !important;
+  }
+  html.dark .btn.ghost {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #94a3b8 !important;
+  }
+  html.dark .btn.ghost:hover {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+  }
+  html.dark .btn.primary {
+    background: linear-gradient(180deg, #d97706, #b45309) !important;
+    color: #ffffff !important;
+    border-color: #b45309 !important;
+  }
+
+  /* Segmented Controls */
+  html.dark .seg {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+  }
+  html.dark .seg button {
+    border-right-color: #334155 !important;
+    color: #94a3b8 !important;
+  }
+  html.dark .seg button.on {
+    background: #1e293b !important;
+    color: #f59e0b !important;
+  }
+
+  /* Cards, Row Labels, Guides */
+  html.dark .card,
+  html.dark .preset-card {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+  }
+  html.dark .card-title {
+    color: #f8fafc !important;
+    border-bottom-color: #1e293b !important;
+  }
+  html.dark .row label {
+    color: #cbd5e1 !important;
+  }
+  html.dark .hint {
+    color: #94a3b8 !important;
+  }
+  html.dark .guide {
+    color: #94a3b8 !important;
+  }
+  html.dark .guide code {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #38bdf8 !important;
+  }
+  html.dark .kvs div {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+  }
+  html.dark .kvs b {
+    color: #94a3b8 !important;
+  }
+  html.dark .kvs span {
+    color: #fbbf24 !important;
+  }
+
+  /* Sliders */
+  html.dark input[type="range"] {
+    background: #334155 !important;
+  }
+  html.dark input[type="range"]::-webkit-slider-thumb {
+    background: #0f172a !important;
+    border: 2px solid #d97706 !important;
+  }
+
+  /* Form Elements */
+  html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  html.dark select,
+  html.dark textarea {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  /* Navigation & Badges */
+  html.dark .nav-logo-btn {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+  }
+  html.dark .nav-logo-btn:hover {
+    border-color: #38bdf8 !important;
+  }
+  html.dark .btn-deck-grid {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+  }
+  html.dark .btn-deck-grid:hover {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+  }
+  html.dark .badge-feature {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+  }
+  html.dark .badge-version {
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    color: #fbbf24 !important;
+  }
+
+  /* 3-Way Color Wheels */
+  html.dark .wheel canvas {
+    box-shadow: 0 0 0 1px #334155, 0 2px 8px rgba(0,0,0,0.4) !important;
+  }
+  html.dark .wheel p {
+    color: #94a3b8 !important;
+  }
+
+  /* Footer Dock */
+  html.dark footer {
+    background: #0b0f19 !important;
+    border-top-color: #1e293b !important;
+  }
+  html.dark footer .lab {
+    color: #94a3b8 !important;
+  }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100vh;
+      background: var(--bg);
+      background-image: radial-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font-family: inherit; color: inherit; }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════ STANDARDIZED SUITE HEADER ═══════════════════════ */
+    header {
+      height: 52px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.95);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(12px);
+      user-select: none;
+      z-index: 20;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: #ffffff;
+      border: 1px solid rgba(203, 213, 225, 0.9);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      flex: 0 0 34px;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .nav-logo-btn:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.2);
+      transform: translateY(-1px);
+    }
+    .nav-logo-btn svg { width: 100%; height: 100%; display: block; }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .nav-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: var(--text-heading);
+    }
+    .badge-version {
+      font-size: 10.5px;
+      font-family: var(--mono);
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+    .badge-feature {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .led-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+      animation: ledPulse 2s infinite ease-in-out;
+    }
+    @keyframes ledPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.9); }
+    }
+
+    .presets {
+      display: flex;
+      gap: 5px;
+      flex: 1;
+      min-width: 0;
+      overflow-x: auto;
+      padding: 4px 0;
+      scrollbar-width: none;
+    }
+    .presets::-webkit-scrollbar { display: none; }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .chip:hover {
+      border-color: var(--amber);
+      color: var(--amber-hover);
+      background: #fffbeb;
+    }
+    .chip.active {
+      background: linear-gradient(180deg, #d97706, #b45309);
+      border-color: #b45309;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn:hover {
+      border-color: var(--line-2);
+      background: var(--panel-2);
+    }
+    .btn.ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--muted);
+      box-shadow: none;
+    }
+    .btn.ghost:hover {
+      background: var(--panel-2);
+      color: var(--text);
+    }
+    .btn.primary {
+      background: linear-gradient(180deg, #d97706, #b45309);
+      color: #ffffff;
+      border-color: #b45309;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+    }
+    .btn.primary:hover {
+      filter: brightness(1.06);
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+    }
+
+    .btn-deck-grid {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      text-decoration: none;
+      transition: all 0.15s;
+      flex: 0 0 32px;
+    }
+    .btn-deck-grid:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #cbd5e1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transform: translateY(-1px);
+    }
+
+    /* ═══════════════════════ MAIN WORKSPACE ═══════════════════════ */
+    .workspace {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      overflow: hidden;
+    }
+
+    /* Calibrated Dark Stage for Grading Accuracy */
+    .stage {
+      position: relative;
+      min-width: 0;
+      background: #08090c;
+      display: grid;
+      grid-template-rows: 1fr 48px;
+      overflow: hidden;
+    }
+    #view { width: 100%; height: 100%; display: block; }
+    .overlay { position: absolute; inset: 0 0 48px 0; pointer-events: none; }
+    .split-hit {
+      position: absolute; top: 0; bottom: 0; width: 28px; margin-left: -14px;
+      pointer-events: auto; cursor: ew-resize; z-index: 3;
+    }
+    .split-line {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+      background: rgba(251, 191, 36, 0.9);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 0 16px rgba(245, 158, 11, 0.4);
+      pointer-events: none;
+    }
+    .split-handle {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 22px; height: 42px; border-radius: 8px;
+      background: linear-gradient(180deg, #fbbf24, #d97706);
+      border: 1px solid #fde68a;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center; gap: 2px;
+      pointer-events: none;
+    }
+    .split-handle i { width: 2px; height: 14px; background: #451a03; border-radius: 1px; opacity: 0.75; }
+    .tag {
+      position: absolute; top: 12px; padding: 4px 9px; border-radius: 6px;
+      font-size: 10px; font-weight: 750; letter-spacing: 0.12em;
+      background: rgba(8, 9, 12, 0.72); border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+    }
+    .tag.l { left: 12px; color: #cbd5e1; }
+    .tag.r { right: 12px; color: #fde68a; }
+
+    .hud {
+      position: absolute; left: 12px; bottom: 12px; display: flex; gap: 6px; pointer-events: auto;
+    }
+    .hud .btn {
+      padding: 5px 10px; font-size: 10.5px;
+      background: rgba(15, 23, 42, 0.82);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .hud .btn:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+
+    .badge-orbit {
+      position: absolute; right: 12px; bottom: 12px;
+      font-size: 9.5px; font-family: var(--mono); color: #94a3b8; letter-spacing: 0.08em;
+      background: rgba(8, 9, 12, 0.65); padding: 4px 9px; border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08); pointer-events: none;
+    }
+
+    /* Graded Ramps (Hue & Gray) */
+    .ramps {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: #1e293b; border-top: 1px solid #1e293b;
+    }
+    .ramp-box { background: #0c0e14; display: flex; flex-direction: column; }
+    .ramp-box span {
+      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #64748b;
+      padding: 3px 8px 0; font-family: var(--mono);
+    }
+    .ramp-box canvas { width: 100%; height: 25px; display: block; image-rendering: pixelated; }
+
+    /* ═══════════════════════ SIDEBAR TABS & PANELS (Clean Screen Fit) ═══════════════════════ */
+    aside {
+      background: var(--panel);
+      border-left: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 10px 12px;
+      overflow: hidden;
+    }
+
+    /* Tab Switcher Header */
+    .aside-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 3px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .aside-tab {
+      flex: 1;
+      padding: 6px 2px;
+      font-size: 11px;
+      font-weight: 650;
+      color: var(--muted);
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.12s ease;
+      white-space: nowrap;
+    }
+    .aside-tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .aside-tab.active {
+      background: #ffffff;
+      color: var(--amber-hover);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      font-weight: 750;
+    }
+
+    /* Scrollable Panels */
+    .aside-panel {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+      padding-right: 4px;
+    }
+    .aside-panel.active {
+      display: flex;
+    }
+    .aside-panel::-webkit-scrollbar { width: 5px; }
+    .aside-panel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .aside-panel::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-heading);
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .row label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #334155;
+    }
+    .val {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--amber);
+      font-weight: 700;
+      min-width: 42px;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--amber);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    .temp { background: linear-gradient(90deg, #60a5fa, #cbd5e1, #f97316) !important; }
+    .tint { background: linear-gradient(90deg, #4ade80, #cbd5e1, #ec4899) !important; }
+
+    /* 3-Way Color Wheels */
+    .wheels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .wheel { text-align: center; }
+    .wheel canvas {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      cursor: crosshair;
+      box-shadow: 0 0 0 1px #cbd5e1, 0 2px 8px rgba(0,0,0,0.12);
+      background: #0b0d12;
+    }
+    .wheel p {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .seg {
+      display: flex;
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .seg button {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      border-right: 1px solid var(--line);
+      padding: 6px 0;
+      font-size: 11px;
+      font-weight: 650;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.12s;
+    }
+    .seg button:last-child { border-right: 0; }
+    .seg button.on {
+      background: #ffffff;
+      color: var(--amber-hover);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      font-weight: 750;
+    }
+
+    .export-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .guide {
+      font-size: 11.5px;
+      color: #334155;
+      line-height: 1.6;
+    }
+    .guide ol {
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+    .guide code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .kvs {
+      display: grid;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .kvs div {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    .kvs b { color: var(--muted); font-weight: 600; }
+    .kvs span { font-family: var(--mono); font-size: 11px; color: var(--amber-hover); font-weight: 600; }
+
+    .code-box {
+      background: #0b1120;
+      color: #e2e8f0;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      line-height: 1.45;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid #1e293b;
+      white-space: pre;
+    }
+
+    /* ═══════════════════════ FOOTER DOCK ═══════════════════════ */
+    footer {
+      height: 74px;
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 160px 1fr 280px;
+      gap: 16px;
+      align-items: center;
+      padding: 6px 16px;
+      background: #ffffff;
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.03);
+      z-index: 10;
+    }
+    footer .lab {
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    #lutIdentity {
+      width: 100%;
+      height: 34px;
+      image-rendering: pixelated;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #000;
+      display: block;
+    }
+    #lutPreview {
+      width: 100%;
+      height: 42px;
+      image-rendering: pixelated;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #000;
+      display: block;
+    }
+    .foot-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 86px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s ease;
+      z-index: 50;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Loading Screen */
+    .load {
+      position: fixed;
+      inset: 0;
+      background: #08090c;
+      display: grid;
+      place-items: center;
+      z-index: 100;
+      transition: opacity 0.3s ease;
+    }
+    .load.hide { opacity: 0; pointer-events: none; }
+    .load .inner { text-align: center; }
+    .load .spin {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      border: 3px solid #1e293b;
+      border-top-color: var(--amber);
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .load p {
+      color: #94a3b8;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: var(--mono);
+    }
+
+    @media (max-width: 1100px) {
+      .workspace { grid-template-columns: 1fr 320px; }
+      .nav-brand .badge-feature { display: none; }
+      footer { grid-template-columns: 1fr 220px; }
+      footer .idlut { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="load" id="loader">
+    <div class="inner">
+      <div class="spin"></div>
+      <p id="loadStatus">Initializing LookDev 3D Stage...</p>
+    </div>
+  </div>
+
+  <div id="app">
+    <!-- Standardized SKCore Header -->
+    <header>
+      <div class="topbar-left">
+        <!-- Return to Hub Logo Link -->
+        <a href="../index.html" class="nav-logo-btn" title="Return to SKCore Tools Suite">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#4648d4"/>
+              </linearGradient>
+            </defs>
+            <polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="url(#navLogoGrad)" stroke-width="6" stroke-linejoin="round" fill="rgba(240, 246, 255, 0.6)"/>
+            <path d="M44 26 L27 36 L27 52 L38 58 L44 54 L33 48 L33 40 L44 34 Z" fill="url(#navLogoGrad)"/>
+            <path d="M44 74 L27 64 L27 56 L34 60 L44 66 Z" fill="url(#navLogoGrad)"/>
+            <path d="M54 26 L54 74 L62 74 L62 54 L72 74 L82 74 L70 50 L81 26 L71 26 L62 44 L62 26 Z" fill="url(#navLogoGrad)"/>
+            <circle cx="50" cy="50" r="5" fill="#0284c7"/>
+          </svg>
+        </a>
+
+        <!-- Brand & Version Badges -->
+        <div class="nav-brand">
+          <span class="nav-title">Cinematic LUT Studio</span>
+          <span class="badge-version">v2.4 • Zero-Alloc</span>
+          <div class="badge-feature">
+            <span class="led-dot"></span>
+            <span>Unity URP / HDRP Color Grading</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Presets Bar (With min-width:0 so it flex-scrolls instead of overflowing) -->
+      <div class="presets" id="presetBar"></div>
+
+      <!-- Topbar Actions & Deck Grid (Always visible with flex-shrink: 0) -->
+      <div class="topbar-right">
+        <button class="btn ghost" id="btnReset" title="Reset all grading parameters to neutral (R)">Reset</button>
+        <button class="btn primary" id="btnBake" title="Bake current grade into Unity-ready 2D Strip LUT (.PNG)">Bake &amp; PNG</button>
+
+        <!-- Deck Grid Return Button -->
+        <a href="../index.html" class="btn-deck-grid" title="Return to SKCore Tools Suite">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- Workspace -->
+    <div class="workspace">
+      <!-- 3D LookDev Calibrated Stage -->
+      <div class="stage">
+        <canvas id="view"></canvas>
+        <div class="overlay" id="overlay">
+          <div class="split-line" id="splitLine">
+            <div class="split-handle"><i></i><i></i></div>
+          </div>
+          <div class="split-hit" id="splitHit"></div>
+          <div class="tag l">BEFORE · RAW</div>
+          <div class="tag r">AFTER · GRADED</div>
+          <div class="hud">
+            <button class="btn" id="btnSplit" title="Toggle Before/After comparison (Space)">Split: ON</button>
+            <button class="btn" id="btnCam" title="Reset camera to default LookDev angle">Reset Camera</button>
+            <button class="btn" id="btnShot" title="Take a high-res screenshot of current viewport (S)">Screenshot</button>
+          </div>
+          <div class="badge-orbit">ORBIT: LMB ROTATE • SCROLL ZOOM • RMB PAN</div>
+        </div>
+        <div class="ramps">
+          <div class="ramp-box"><span>Grayscale Ramp (Graded)</span><canvas id="rampGray"></canvas></div>
+          <div class="ramp-box"><span>Hue Spectrum (Graded)</span><canvas id="rampHue"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Control Sidebar with Clean Tab Navigation (Fits 100% On Screen) -->
+      <aside>
+        <!-- Tab Bar -->
+        <div class="aside-tabs">
+          <button class="aside-tab active" data-tab="tabBalance">Balance</button>
+          <button class="aside-tab" data-tab="tabWheels">Wheels</button>
+          <button class="aside-tab" data-tab="tabLooks">Looks</button>
+          <button class="aside-tab" data-tab="tabBaker">Baker</button>
+          <button class="aside-tab" data-tab="tabGuide">Unity Guide</button>
+        </div>
+
+        <!-- 1. White Balance & Exposure Panel -->
+        <div class="aside-panel active" id="tabBalance">
+          <div class="card">
+            <div class="card-title"><span>Color Temperature &amp; Tint</span></div>
+            <div class="row"><label>Temperature</label><span class="val" data-k="temperature">0.00</span></div>
+            <input type="range" min="-1" max="1" step="0.01" data-k="temperature" class="temp" />
+            <div class="row"><label>Tint</label><span class="val" data-k="tint">0.00</span></div>
+            <input type="range" min="-1" max="1" step="0.01" data-k="tint" class="tint" />
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>Tonal Range &amp; Contrast</span></div>
+            <div class="row"><label>Exposure (EV)</label><span class="val" data-k="exposure">0.00</span></div>
+            <input type="range" min="-2" max="2" step="0.01" data-k="exposure" />
+            <div class="row"><label>Contrast</label><span class="val" data-k="contrast">1.00</span></div>
+            <input type="range" min="0.4" max="2" step="0.01" data-k="contrast" />
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>Chroma &amp; Vibrance</span></div>
+            <div class="row"><label>Saturation</label><span class="val" data-k="saturation">1.00</span></div>
+            <input type="range" min="0" max="2" step="0.01" data-k="saturation" />
+            <div class="row"><label>Vibrance</label><span class="val" data-k="vibrance">0.00</span></div>
+            <input type="range" min="-1" max="1" step="0.01" data-k="vibrance" />
+          </div>
+        </div>
+
+        <!-- 2. Lift · Gamma · Gain 3-Way Wheels Panel -->
+        <div class="aside-panel" id="tabWheels">
+          <div class="card">
+            <div class="card-title"><span>3-Way Color Wheels</span></div>
+            <p class="hint">DaVinci-style 3-way color wheels. Center = neutral. Double-click wheel to reset.</p>
+            <div class="wheels">
+              <div class="wheel"><canvas id="wheelLift" width="96" height="96"></canvas><p>Shadows (Lift)</p></div>
+              <div class="wheel"><canvas id="wheelGamma" width="96" height="96"></canvas><p>Midtones (Gamma)</p></div>
+              <div class="wheel"><canvas id="wheelGain" width="96" height="96"></canvas><p>Highlights (Gain)</p></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>Luma &amp; Power Sliders</span></div>
+            <div class="row"><label>Lift Luma</label><span class="val" data-k="liftY">0.00</span></div>
+            <input type="range" min="-0.35" max="0.35" step="0.005" data-k="liftY" />
+            <div class="row"><label>Gamma Power</label><span class="val" data-k="gammaY">1.00</span></div>
+            <input type="range" min="0.5" max="1.6" step="0.005" data-k="gammaY" />
+            <div class="row"><label>Gain Luma</label><span class="val" data-k="gainY">1.00</span></div>
+            <input type="range" min="0.5" max="1.7" step="0.005" data-k="gainY" />
+          </div>
+        </div>
+
+        <!-- 3. Cinematic Looks Panel -->
+        <div class="aside-panel" id="tabLooks">
+          <div class="card">
+            <div class="card-title"><span>Bleach Bypass Look</span></div>
+            <div class="row"><label>Bleach Bypass</label><span class="val" data-k="bleach">0.00</span></div>
+            <input type="range" min="0" max="1" step="0.01" data-k="bleach" />
+            <p class="hint">Desaturated, high-contrast action combat look (Saving Private Ryan / 300).</p>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>Hollywood Teal &amp; Orange</span></div>
+            <div class="row"><label>Teal &amp; Orange</label><span class="val" data-k="tealOrange">0.00</span></div>
+            <input type="range" min="0" max="1" step="0.01" data-k="tealOrange" />
+            <p class="hint">Split-complementary blockbuster separation: cyan-teal shadows with warm amber skin tones.</p>
+          </div>
+        </div>
+
+        <!-- 4. Unity LUT Baker Panel -->
+        <div class="aside-panel" id="tabBaker">
+          <div class="card">
+            <div class="card-title"><span>3D Cube Resolution</span></div>
+            <div class="seg" id="sizeSeg">
+              <button data-s="16">16³ · 256×16</button>
+              <button data-s="32" class="on">32³ · 1024×32</button>
+              <button data-s="64">64³ · 4096×64</button>
+            </div>
+            <div class="export-grid">
+              <button class="btn primary" id="btnBake2">Bake &amp; PNG</button>
+              <button class="btn" id="btnNeutral">Neutral LUT</button>
+              <button class="btn" id="btnCube">Export .CUBE</button>
+              <button class="btn" id="btnJson">Preset JSON</button>
+            </div>
+            <button class="btn" id="btnLoadJson" style="width:100%">Import Preset JSON</button>
+            <input type="file" id="jsonIn" accept="application/json" hidden />
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>Texture Import Specifications</span></div>
+            <div class="kvs">
+              <div><b>Format</b><span>Unity Color Lookup Strip</span></div>
+              <div><b>Color Space</b><span>sRGB OFF (Linear Data)</span></div>
+              <div><b>Filter Mode</b><span>Bilinear</span></div>
+              <div><b>Resolution</b><span id="sizeLabel">1024 × 32</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Unity Integration & C# Panel -->
+        <div class="aside-panel" id="tabGuide">
+          <div class="card">
+            <div class="card-title"><span>URP / HDRP Setup Steps</span></div>
+            <div class="guide">
+              <ol>
+                <li><b>Drag and drop</b> the downloaded PNG into your Unity Project window.</li>
+                <li>In Texture Inspector: <b>uncheck</b> <code>sRGB (Color Texture)</code>.</li>
+                <li>Set <code>Filter Mode = Bilinear</code>, <code>Compression = None</code>, <code>Wrap Mode = Clamp</code>.</li>
+                <li><b>URP:</b> In your scene, select <b>Global Volume</b> &rarr; Add Override &rarr; Post-processing &rarr; <b>Color Lookup</b>.</li>
+                <li>Assign the baked PNG into the <b>Lookup Texture</b> slot and set <code>Contribution = 1</code>.</li>
+                <li><b>HDRP:</b> In your Volume &rarr; Add <b>Color Lookup</b> override &rarr; assign texture.</li>
+                <li>Tonemapping stays in Unity (ACES / Neutral); this LUT cleanly drives aesthetic color grading without any runtime allocations.</li>
+              </ol>
+              <button class="btn" id="btnCopy" style="margin-top:6px;width:100%">Copy Guide to Clipboard</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>Zero-Alloc C# Volume Controller</span></div>
+            <p class="hint">Smoothly blend between LUT profiles dynamically at runtime with zero GC allocations.</p>
+            <div class="code-box">using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+public sealed class LutVolumeController : MonoBehaviour
+{
+    [SerializeField] private Volume volume;
+    [SerializeField] private Texture2D defaultLut;
+    private ColorLookup colorLookup;
+
+    private void Awake()
+    {
+        if (volume == null) volume = GetComponent<Volume>();
+        if (volume != null && volume.profile != null)
+        {
+            volume.profile.TryGet(out colorLookup);
+        }
+        if (colorLookup != null && defaultLut != null)
+        {
+            colorLookup.texture.value = defaultLut;
+            colorLookup.contribution.value = 1f;
+        }
+    }
+
+    public void SetLut(Texture2D newLut, float weight = 1f)
+    {
+        if (colorLookup == null) return;
+        colorLookup.texture.value = newLut;
+        colorLookup.contribution.value = Mathf.Clamp01(weight);
+    }
+}</div>
+            <button class="btn" id="btnCopyCs" style="width:100%">Copy C# Script to Clipboard</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Footer Dock -->
+    <footer>
+      <div class="idlut">
+        <div class="lab">Identity Strip (Reference)</div>
+        <canvas id="lutIdentity" width="256" height="16"></canvas>
+      </div>
+      <div>
+        <div class="lab">Baked 3D LUT Strip (Real-time Preview)</div>
+        <canvas id="lutPreview" width="1024" height="32"></canvas>
+      </div>
+      <div class="foot-actions">
+        <button class="btn primary" id="btnBake3">Bake &amp; Download PNG</button>
+        <button class="btn" id="btnGuide">URP/HDRP Setup Guide</button>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Local Standalone Vendor Scripts (100% Offline) -->
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/OrbitControls.js"></script>
+
+  <script>
+(function () {
+  "use strict";
+
+  // Check Three.js availability
+  if (typeof THREE === "undefined" || !THREE.WebGLRenderer) {
+    document.getElementById("loadStatus").textContent = "Error: Three.js library not detected in vendor directory.";
+    return;
+  }
+
+  const OrbitControls = THREE.OrbitControls;
+
+  const DEFAULTS = {
+    temperature: 0, tint: 0, exposure: 0, contrast: 1, saturation: 1, vibrance: 0,
+    liftH: 0, liftS: 0, liftY: 0,
+    gammaH: 0, gammaS: 0, gammaY: 1,
+    gainH: 0, gainS: 0, gainY: 1,
+    bleach: 0, tealOrange: 0
+  };
+
+  const PRESETS = {
+    "Neutral": { ...DEFAULTS },
+    "Teal & Orange Blockbuster": {
+      ...DEFAULTS, temperature: 0.16, tint: 0.04, exposure: 0.06, contrast: 1.18,
+      saturation: 1.08, vibrance: 0.12, tealOrange: 0.78, bleach: 0.08,
+      liftH: 0.52, liftS: 0.55, liftY: -0.02,
+      gammaH: 0.06, gammaS: 0.18, gammaY: 1.02,
+      gainH: 0.07, gainS: 0.42, gainY: 1.08
+    },
+    "Nordic Cold Horror": {
+      ...DEFAULTS, temperature: -0.48, tint: -0.06, exposure: -0.18, contrast: 1.26,
+      saturation: 0.52, vibrance: -0.18, tealOrange: 0.12, bleach: 0.16,
+      liftH: 0.58, liftS: 0.62, liftY: -0.06,
+      gammaH: 0.55, gammaS: 0.28, gammaY: 0.92,
+      gainH: 0.58, gainS: 0.2, gainY: 0.96
+    },
+    "Golden Hour Sunset": {
+      ...DEFAULTS, temperature: 0.58, tint: 0.1, exposure: 0.16, contrast: 1.06,
+      saturation: 1.16, vibrance: 0.22, tealOrange: 0.18, bleach: 0,
+      liftH: 0.04, liftS: 0.28, liftY: 0.03,
+      gammaH: 0.08, gammaS: 0.22, gammaY: 1.04,
+      gainH: 0.08, gainS: 0.48, gainY: 1.14
+    },
+    "Sci-Fi Matrix Green": {
+      ...DEFAULTS, temperature: -0.12, tint: -0.42, exposure: -0.05, contrast: 1.32,
+      saturation: 0.72, vibrance: -0.08, tealOrange: 0, bleach: 0.22,
+      liftH: 0.33, liftS: 0.7, liftY: -0.04,
+      gammaH: 0.32, gammaS: 0.35, gammaY: 0.96,
+      gainH: 0.42, gainS: 0.25, gainY: 1.05
+    },
+    "Retro 35mm Film": {
+      ...DEFAULTS, temperature: 0.24, tint: 0.06, exposure: 0.04, contrast: 1.12,
+      saturation: 0.78, vibrance: 0.08, tealOrange: 0.05, bleach: 0.12,
+      liftH: 0.08, liftS: 0.2, liftY: 0.055,
+      gammaH: 0.1, gammaS: 0.12, gammaY: 1.0,
+      gainH: 0.1, gainS: 0.28, gainY: 1.02
+    },
+    "Vibrant Fantasy": {
+      ...DEFAULTS, temperature: 0.1, tint: 0.04, exposure: 0.12, contrast: 1.08,
+      saturation: 1.48, vibrance: 0.42, tealOrange: 0.08, bleach: 0,
+      liftH: 0.7, liftS: 0.22, liftY: 0.01,
+      gammaH: 0.9, gammaS: 0.15, gammaY: 1.04,
+      gainH: 0.12, gainS: 0.22, gainY: 1.1
+    },
+    "Cyberpunk Neon Night": {
+      ...DEFAULTS, temperature: -0.22, tint: 0.32, exposure: -0.08, contrast: 1.35,
+      saturation: 1.36, vibrance: 0.28, tealOrange: 0.35, bleach: 0.05,
+      liftH: 0.68, liftS: 0.65, liftY: -0.05,
+      gammaH: 0.85, gammaS: 0.45, gammaY: 0.98,
+      gainH: 0.52, gainS: 0.55, gainY: 1.12
+    },
+    "Bleach Bypass War": {
+      ...DEFAULTS, temperature: -0.15, tint: -0.05, exposure: 0.12, contrast: 1.42,
+      saturation: 0.38, vibrance: -0.25, tealOrange: 0.0, bleach: 0.75,
+      liftH: 0.08, liftS: 0.15, liftY: -0.06,
+      gammaH: 0.15, gammaS: 0.1, gammaY: 0.95,
+      gainH: 0.12, gainS: 0.18, gainY: 1.06
+    },
+    "Film Noir 1940s": {
+      ...DEFAULTS, temperature: 0.0, tint: 0.0, exposure: -0.1, contrast: 1.45,
+      saturation: 0.0, vibrance: -1.0, tealOrange: 0.0, bleach: 0.35,
+      liftH: 0.0, liftS: 0.0, liftY: -0.08,
+      gammaH: 0.0, gammaS: 0.0, gammaY: 0.92,
+      gainH: 0.0, gainS: 0.0, gainY: 1.15
+    }
+  };
+
+  const params = { ...DEFAULTS };
+  let lutSize = 32;
+  let split = 0.5;
+  let splitOn = true;
+  let draggingSplit = false;
+  let lutDirty = true;
+  let activePreset = "Neutral";
+
+  function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function sat01(x) { return clamp(x, 0, 1); }
+
+  function hsvToRgb(h, s, v) {
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+      case 0: return [v, t, p];
+      case 1: return [q, v, p];
+      case 2: return [p, v, t];
+      case 3: return [p, q, v];
+      case 4: return [t, p, v];
+      default: return [v, p, q];
+    }
+  }
+
+  function wheelOffset(h, s, scale) {
+    const [r, g, b] = hsvToRgb(((h % 1) + 1) % 1, 1, 1);
+    return [(r - 0.5) * s * scale, (g - 0.5) * s * scale, (b - 0.5) * s * scale];
+  }
+
+  function luma(r, g, b) { return r * 0.2126 + g * 0.7152 + b * 0.0722; }
+
+  function gradeColor(r, g, b, p = params) {
+    let c0 = r, c1 = g, c2 = b;
+    const exp = Math.pow(2, p.exposure);
+    c0 *= exp; c1 *= exp; c2 *= exp;
+
+    const wb0 = 1 + p.temperature * 0.22 + p.tint * 0.10;
+    const wb1 = 1 - Math.abs(p.temperature) * 0.05 - p.tint * 0.18;
+    const wb2 = 1 - p.temperature * 0.22 + p.tint * 0.10;
+    c0 *= wb0; c1 *= wb1; c2 *= wb2;
+
+    c0 = (c0 - 0.5) * p.contrast + 0.5;
+    c1 = (c1 - 0.5) * p.contrast + 0.5;
+    c2 = (c2 - 0.5) * p.contrast + 0.5;
+
+    const lift = wheelOffset(p.liftH, p.liftS, 0.42);
+    const gamma = wheelOffset(p.gammaH, p.gammaS, 0.42);
+    const gain = wheelOffset(p.gainH, p.gainS, 0.42);
+    const liftV = [lift[0] + p.liftY, lift[1] + p.liftY, lift[2] + p.liftY];
+    const gainV = [(1 + gain[0]) * p.gainY, (1 + gain[1]) * p.gainY, (1 + gain[2]) * p.gainY];
+    const gammaV = [(1 + gamma[0]) * p.gammaY, (1 + gamma[1]) * p.gammaY, (1 + gamma[2]) * p.gammaY];
+
+    c0 = liftV[0] * (1 - c0) + gainV[0] * c0;
+    c1 = liftV[1] * (1 - c1) + gainV[1] * c1;
+    c2 = liftV[2] * (1 - c2) + gainV[2] * c2;
+    c0 = Math.pow(Math.max(c0, 1e-5), 1 / Math.max(gammaV[0], 0.05));
+    c1 = Math.pow(Math.max(c1, 1e-5), 1 / Math.max(gammaV[1], 0.05));
+    c2 = Math.pow(Math.max(c2, 1e-5), 1 / Math.max(gammaV[2], 0.05));
+
+    let Y = luma(c0, c1, c2);
+    c0 = lerp(Y, c0, p.saturation);
+    c1 = lerp(Y, c1, p.saturation);
+    c2 = lerp(Y, c2, p.saturation);
+
+    Y = luma(c0, c1, c2);
+    const mx = Math.max(c0, c1, c2);
+    const mn = Math.min(c0, c1, c2);
+    const vib = 1 + p.vibrance * (1 - (mx - mn));
+    c0 = lerp(Y, c0, vib);
+    c1 = lerp(Y, c1, vib);
+    c2 = lerp(Y, c2, vib);
+
+    if (p.bleach > 0.0001) {
+      Y = luma(c0, c1, c2);
+      const bw = sat01((Y - 0.5) * 1.65 + 0.5);
+      const ov = (a, b) => a < 0.5 ? 2 * a * b : 1 - 2 * (1 - a) * (1 - b);
+      const d0 = lerp(c0, Y, 0.55), d1 = lerp(c1, Y, 0.55), d2 = lerp(c2, Y, 0.55);
+      let o0 = ov(d0, bw), o1 = ov(d1, bw), o2 = ov(d2, bw);
+      o0 = (o0 - 0.5) * 1.15 + 0.5;
+      o1 = (o1 - 0.5) * 1.15 + 0.5;
+      o2 = (o2 - 0.5) * 1.15 + 0.5;
+      c0 = lerp(c0, o0, p.bleach);
+      c1 = lerp(c1, o1, p.bleach);
+      c2 = lerp(c2, o2, p.bleach);
+    }
+
+    if (p.tealOrange > 0.0001) {
+      Y = luma(c0, c1, c2);
+      const sMask = 1 - sat01((Y - 0.15) / 0.4);
+      const hMask = sat01((Y - 0.4) / 0.5);
+      const t = p.tealOrange;
+      c0 += (-0.18 * sMask + 0.20 * hMask) * t;
+      c1 += (0.04 * sMask + 0.05 * hMask) * t;
+      c2 += (0.16 * sMask - 0.16 * hMask) * t;
+    }
+
+    return [c0, c1, c2];
+  }
+
+  const GRADE_GLSL = /* glsl */`
+  uniform float uTemp, uTint, uExposure, uContrast, uSaturation, uVibrance;
+  uniform vec3 uLift, uGamma, uGain;
+  uniform float uLiftY, uGammaY, uGainY;
+  uniform float uBleach, uTealOrange;
+
+  vec3 gradeColor(vec3 c) {
+    c *= pow(2.0, uExposure);
+    vec3 wb = vec3(
+      1.0 + uTemp * 0.22 + uTint * 0.10,
+      1.0 - abs(uTemp) * 0.05 - uTint * 0.18,
+      1.0 - uTemp * 0.22 + uTint * 0.10
+    );
+    c *= wb;
+    c = (c - 0.5) * uContrast + 0.5;
+    vec3 lift = uLift + vec3(uLiftY);
+    vec3 gain = (vec3(1.0) + uGain) * uGainY;
+    vec3 gamma = (vec3(1.0) + uGamma) * uGammaY;
+    c = lift * (1.0 - c) + gain * c;
+    c = pow(max(c, vec3(1e-5)), 1.0 / max(gamma, vec3(0.05)));
+    float Y = dot(c, vec3(0.2126, 0.7152, 0.0722));
+    c = mix(vec3(Y), c, uSaturation);
+    Y = dot(c, vec3(0.2126, 0.7152, 0.0722));
+    float mx = max(c.r, max(c.g, c.b));
+    float mn = min(c.r, min(c.g, c.b));
+    float vib = 1.0 + uVibrance * (1.0 - (mx - mn));
+    c = mix(vec3(Y), c, vib);
+    if (uBleach > 0.0001) {
+      Y = dot(c, vec3(0.2126, 0.7152, 0.0722));
+      float bw = clamp((Y - 0.5) * 1.65 + 0.5, 0.0, 1.0);
+      vec3 d = mix(c, vec3(Y), 0.55);
+      vec3 ov;
+      ov.r = d.r < 0.5 ? 2.0 * d.r * bw : 1.0 - 2.0 * (1.0 - d.r) * (1.0 - bw);
+      ov.g = d.g < 0.5 ? 2.0 * d.g * bw : 1.0 - 2.0 * (1.0 - d.g) * (1.0 - bw);
+      ov.b = d.b < 0.5 ? 2.0 * d.b * bw : 1.0 - 2.0 * (1.0 - d.b) * (1.0 - bw);
+      ov = (ov - 0.5) * 1.15 + 0.5;
+      c = mix(c, ov, uBleach);
+    }
+    if (uTealOrange > 0.0001) {
+      Y = dot(c, vec3(0.2126, 0.7152, 0.0722));
+      float sMask = 1.0 - clamp((Y - 0.15) / 0.40, 0.0, 1.0);
+      float hMask = clamp((Y - 0.40) / 0.50, 0.0, 1.0);
+      c.r += (-0.18 * sMask + 0.20 * hMask) * uTealOrange;
+      c.g += ( 0.04 * sMask + 0.05 * hMask) * uTealOrange;
+      c.b += ( 0.16 * sMask - 0.16 * hMask) * uTealOrange;
+    }
+    return c;
+  }
+  `;
+
+  function toast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove("show"), 2400);
+  }
+
+  function slug() {
+    return (activePreset || "Custom").replace(/[^a-zA-Z0-9]+/g, "_");
+  }
+
+  function bakeLUTToCanvas(canvas, size, identity = false) {
+    const w = size * size, h = size;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    const den = size - 1;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const r = (x % size) / den;
+        const g = y / den;
+        const b = Math.floor(x / size) / den;
+        const out = identity ? [r, g, b] : gradeColor(r, g, b);
+        const i = (y * w + x) * 4;
+        d[i]     = Math.round(sat01(out[0]) * 255);
+        d[i + 1] = Math.round(sat01(out[1]) * 255);
+        d[i + 2] = Math.round(sat01(out[2]) * 255);
+        d[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return canvas;
+  }
+
+  function downloadCanvas(canvas, name) {
+    canvas.toBlob((blob) => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    }, "image/png");
+  }
+
+  function exportCubeLUT(size = 32) {
+    let out = `# Created with SKCore Cinematic LUT Studio\nTITLE "${activePreset || 'Custom'}"\nLUT_3D_SIZE ${size}\nDOMAIN_MIN 0.0 0.0 0.0\nDOMAIN_MAX 1.0 1.0 1.0\n\n`;
+    const den = size - 1;
+    for (let b = 0; b < size; b++) {
+      for (let g = 0; g < size; g++) {
+        for (let r = 0; r < size; r++) {
+          const [cr, cg, cb] = gradeColor(r / den, g / den, b / den);
+          out += `${sat01(cr).toFixed(6)} ${sat01(cg).toFixed(6)} ${sat01(cb).toFixed(6)}\n`;
+        }
+      }
+    }
+    const blob = new Blob([out], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `LUT_${slug()}_${size}.cube`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    toast(`Exported .CUBE -> LUT_${slug()}_${size}.cube`);
+  }
+
+  function drawRamps() {
+    const g = document.getElementById("rampGray");
+    const h = document.getElementById("rampHue");
+    g.width = 256; g.height = 24;
+    h.width = 256; h.height = 24;
+    const cg = g.getContext("2d");
+    const ch = h.getContext("2d");
+    const ig = cg.createImageData(256, 24);
+    const ih = ch.createImageData(256, 24);
+    for (let x = 0; x < 256; x++) {
+      const t = x / 255;
+      const [gr, gg, gb] = gradeColor(t, t, t);
+      const [hr, hg, hb] = hsvToRgb(t, 0.85, 0.9);
+      const [hr2, hg2, hb2] = gradeColor(hr, hg, hb);
+      for (let y = 0; y < 24; y++) {
+        const i = (y * 256 + x) * 4;
+        ig.data[i] = Math.round(sat01(gr) * 255);
+        ig.data[i+1] = Math.round(sat01(gg) * 255);
+        ig.data[i+2] = Math.round(sat01(gb) * 255);
+        ig.data[i+3] = 255;
+        ih.data[i] = Math.round(sat01(hr2) * 255);
+        ih.data[i+1] = Math.round(sat01(hg2) * 255);
+        ih.data[i+2] = Math.round(sat01(hb2) * 255);
+        ih.data[i+3] = 255;
+      }
+    }
+    cg.putImageData(ig, 0, 0);
+    ch.putImageData(ih, 0, 0);
+  }
+
+  function updateLutPreview() {
+    bakeLUTToCanvas(document.getElementById("lutPreview"), Math.min(lutSize, 32), false);
+    drawRamps();
+    lutDirty = false;
+  }
+
+  function drawIdentity() {
+    bakeLUTToCanvas(document.getElementById("lutIdentity"), 16, true);
+  }
+
+  function setUniforms(u) {
+    const lift = wheelOffset(params.liftH, params.liftS, 0.42);
+    const gamma = wheelOffset(params.gammaH, params.gammaS, 0.42);
+    const gain = wheelOffset(params.gainH, params.gainS, 0.42);
+    u.uTemp.value = params.temperature;
+    u.uTint.value = params.tint;
+    u.uExposure.value = params.exposure;
+    u.uContrast.value = params.contrast;
+    u.uSaturation.value = params.saturation;
+    u.uVibrance.value = params.vibrance;
+    u.uLift.value.set(lift[0], lift[1], lift[2]);
+    u.uGamma.value.set(gamma[0], gamma[1], gamma[2]);
+    u.uGain.value.set(gain[0], gain[1], gain[2]);
+    u.uLiftY.value = params.liftY;
+    u.uGammaY.value = params.gammaY;
+    u.uGainY.value = params.gainY;
+    u.uBleach.value = params.bleach;
+    u.uTealOrange.value = params.tealOrange;
+    u.uSplit.value = splitOn ? split : 1.05;
+  }
+
+  function refreshUI() {
+    document.querySelectorAll("input[type=range][data-k]").forEach((el) => {
+      el.value = params[el.dataset.k];
+    });
+    document.querySelectorAll(".val[data-k]").forEach((el) => {
+      const v = params[el.dataset.k];
+      el.textContent = Number(v).toFixed(2);
+    });
+    document.querySelectorAll(".chip").forEach((c) => {
+      c.classList.toggle("active", c.dataset.name === activePreset);
+    });
+    drawWheels();
+    lutDirty = true;
+  }
+
+  function applyPreset(name) {
+    const src = PRESETS[name];
+    if (!src) return;
+    Object.assign(params, src);
+    activePreset = name;
+    refreshUI();
+    toast(`Applied Preset: ${name}`);
+  }
+
+  // Sidebar Tab Navigation
+  document.querySelectorAll(".aside-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".aside-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".aside-panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      const targetPanel = document.getElementById(tab.dataset.tab);
+      if (targetPanel) targetPanel.classList.add("active");
+    });
+  });
+
+  const bar = document.getElementById("presetBar");
+  Object.keys(PRESETS).forEach((name) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (name === "Neutral" ? " active" : "");
+    b.dataset.name = name;
+    // Clean, readable label
+    b.textContent = name.replace(" Blockbuster", "").replace(" Cold", "").replace(" Hour", "").replace(" Green", "").replace(" Film", "").replace(" Night", "").replace(" War", "").replace(" 1940s", "");
+    b.title = name;
+    b.onclick = () => applyPreset(name);
+    bar.appendChild(b);
+  });
+
+  document.querySelectorAll("input[type=range][data-k]").forEach((el) => {
+    const sync = () => {
+      params[el.dataset.k] = parseFloat(el.value);
+      activePreset = "Custom";
+      document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+      document.querySelectorAll(".val[data-k]").forEach((v) => {
+        if (v.dataset.k === el.dataset.k) v.textContent = Number(params[v.dataset.k]).toFixed(2);
+      });
+      lutDirty = true;
+    };
+    el.addEventListener("input", sync);
+    el.addEventListener("dblclick", () => {
+      el.value = DEFAULTS[el.dataset.k];
+      sync();
+    });
+  });
+
+  document.getElementById("btnReset").onclick = () => applyPreset("Neutral");
+
+  document.getElementById("sizeSeg").onclick = (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    lutSize = parseInt(b.dataset.s, 10);
+    document.querySelectorAll("#sizeSeg button").forEach((x) => x.classList.toggle("on", x === b));
+    document.getElementById("sizeLabel").textContent = `${lutSize * lutSize} × ${lutSize}`;
+    lutDirty = true;
+  };
+
+  function doBake(identity) {
+    const c = document.createElement("canvas");
+    bakeLUTToCanvas(c, lutSize, identity);
+    const name = identity
+      ? `Unity_Neutral_LUT_${lutSize}.png`
+      : `Unity_LUT_${slug()}_${lutSize}.png`;
+    downloadCanvas(c, name);
+    toast(identity ? "Neutral identity LUT downloaded." : `Baked & Downloaded -> ${name}`);
+  }
+
+  document.getElementById("btnBake").onclick = () => doBake(false);
+  document.getElementById("btnBake2").onclick = () => doBake(false);
+  document.getElementById("btnBake3").onclick = () => doBake(false);
+  document.getElementById("btnNeutral").onclick = () => doBake(true);
+  document.getElementById("btnCube").onclick = () => exportCubeLUT(lutSize);
+
+  document.getElementById("btnJson").onclick = () => {
+    const blob = new Blob([JSON.stringify({ name: activePreset, params }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Grade_${slug()}.json`;
+    a.click();
+    toast(`Preset saved -> Grade_${slug()}.json`);
+  };
+
+  document.getElementById("btnLoadJson").onclick = () => document.getElementById("jsonIn").click();
+  document.getElementById("jsonIn").onchange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        Object.assign(params, DEFAULTS, data.params || data);
+        activePreset = data.name || "Custom";
+        refreshUI();
+        toast("Preset loaded successfully.");
+      } catch {
+        toast("Failed to parse JSON preset.");
+      }
+    };
+    reader.readAsText(f);
+  };
+
+  const GUIDE = `Unity URP / HDRP LUT Setup Guide:
+1) Drag and drop the downloaded PNG into your Unity Project window.
+2) In Texture Inspector: UNCHECK 'sRGB (Color Texture)'.
+3) Set Filter Mode = Bilinear, Compression = None, Wrap Mode = Clamp.
+4) URP: Global Volume -> Add Override -> Post-processing -> Color Lookup -> assign PNG (Contribution = 1).
+5) HDRP: Volume -> Add Color Lookup override -> assign PNG.
+LUT applies in LDR after Unity tonemapping with zero runtime allocations.`;
+
+  document.getElementById("btnCopy").onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(GUIDE);
+      toast("Setup instructions copied to clipboard!");
+    } catch {
+      toast("Clipboard access denied.");
+    }
+  };
+
+  const CS_SCRIPT = `using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+public sealed class LutVolumeController : MonoBehaviour
+{
+    [SerializeField] private Volume volume;
+    [SerializeField] private Texture2D defaultLut;
+    private ColorLookup colorLookup;
+
+    private void Awake()
+    {
+        if (volume == null) volume = GetComponent<Volume>();
+        if (volume != null && volume.profile != null)
+        {
+            volume.profile.TryGet(out colorLookup);
+        }
+        if (colorLookup != null && defaultLut != null)
+        {
+            colorLookup.texture.value = defaultLut;
+            colorLookup.contribution.value = 1f;
+        }
+    }
+
+    public void SetLut(Texture2D newLut, float weight = 1f)
+    {
+        if (colorLookup == null) return;
+        colorLookup.texture.value = newLut;
+        colorLookup.contribution.value = Mathf.Clamp01(weight);
+    }
+}`;
+
+  document.getElementById("btnCopyCs").onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(CS_SCRIPT);
+      toast("Zero-Alloc C# script copied to clipboard!");
+    } catch {
+      toast("Clipboard access denied.");
+    }
+  };
+
+  document.getElementById("btnGuide").onclick = () => {
+    const tabBtn = document.querySelector('[data-tab="tabGuide"]');
+    if (tabBtn) tabBtn.click();
+  };
+
+  /* ---------------- Color wheels ---------------- */
+  function drawWheel(canvas, h, s) {
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width, cx = w / 2, cy = w / 2, R = w / 2 - 3;
+    const img = ctx.createImageData(w, w);
+    for (let y = 0; y < w; y++) {
+      for (let x = 0; x < w; x++) {
+        const dx = x - cx, dy = y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy) / R;
+        const i = (y * w + x) * 4;
+        if (dist <= 1) {
+          const hue = (Math.atan2(dy, dx) / Math.PI + 1) * 0.5;
+          const [r, g, b] = hsvToRgb(hue, dist, 1);
+          const a = dist > 0.96 ? (1 - dist) / 0.04 : 1;
+          img.data[i] = r * 255;
+          img.data[i+1] = g * 255;
+          img.data[i+2] = b * 255;
+          img.data[i+3] = a * 255;
+        }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const ang = h * Math.PI * 2;
+    const px = cx + Math.cos(ang) * s * R;
+    const py = cy + Math.sin(ang) * s * R;
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI * 2);
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function drawWheels() {
+    drawWheel(document.getElementById("wheelLift"), params.liftH, params.liftS);
+    drawWheel(document.getElementById("wheelGamma"), params.gammaH, params.gammaS);
+    drawWheel(document.getElementById("wheelGain"), params.gainH, params.gainS);
+  }
+
+  function bindWheel(id, hKey, sKey) {
+    const canvas = document.getElementById(id);
+    const pick = (ev) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = ((ev.clientY - rect.top) / rect.height) * 2 - 1;
+      const s = clamp(Math.sqrt(x * x + y * y), 0, 1);
+      let h = Math.atan2(y, x) / (Math.PI * 2);
+      if (h < 0) h += 1;
+      params[hKey] = h;
+      params[sKey] = s;
+      activePreset = "Custom";
+      document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+      drawWheels();
+      lutDirty = true;
+    };
+    let down = false;
+    canvas.addEventListener("mousedown", (e) => { down = true; pick(e); });
+    window.addEventListener("mousemove", (e) => { if (down) pick(e); });
+    window.addEventListener("mouseup", () => { down = false; });
+    canvas.addEventListener("dblclick", () => {
+      params[hKey] = 0; params[sKey] = 0; drawWheels(); lutDirty = true;
+    });
+  }
+  bindWheel("wheelLift", "liftH", "liftS");
+  bindWheel("wheelGamma", "gammaH", "gammaS");
+  bindWheel("wheelGain", "gainH", "gainS");
+
+  /* ---------------- Split overlay ---------------- */
+  const splitLine = document.getElementById("splitLine");
+  const splitHit = document.getElementById("splitHit");
+  const overlay = document.getElementById("overlay");
+
+  function layoutSplit() {
+    splitLine.style.left = split * 100 + "%";
+    splitHit.style.left = split * 100 + "%";
+    splitLine.style.display = splitOn ? "block" : "none";
+    splitHit.style.display = splitOn ? "block" : "none";
+    document.querySelector(".tag.l").style.opacity = splitOn && split > 0.08 ? 1 : 0;
+    document.querySelector(".tag.r").style.opacity = splitOn && split < 0.92 ? 1 : 0;
+  }
+
+  function setSplitFromEvent(e) {
+    const rect = overlay.getBoundingClientRect();
+    split = clamp((e.clientX - rect.left) / rect.width, 0.02, 0.98);
+    layoutSplit();
+  }
+  splitHit.addEventListener("mousedown", (e) => { draggingSplit = true; e.preventDefault(); });
+  window.addEventListener("mousemove", (e) => { if (draggingSplit) setSplitFromEvent(e); });
+  window.addEventListener("mouseup", () => { draggingSplit = false; });
+  splitHit.addEventListener("dblclick", () => { split = 0.5; layoutSplit(); });
+
+  document.getElementById("btnSplit").onclick = function () {
+    splitOn = !splitOn;
+    this.textContent = splitOn ? "Split: ON" : "Split: OFF";
+    layoutSplit();
+  };
+
+  /* ---------------- Three.js Scene & Calibrated Lighting ---------------- */
+  const canvas = document.getElementById("view");
+  const renderer = new THREE.WebGLRenderer({
+    canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance"
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.NoToneMapping;
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x6a5c4e, 16, 38);
+
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+  camera.position.set(6.2, 3.4, 7.4);
+
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.minDistance = 3.2;
+  controls.maxDistance = 18;
+  controls.maxPolarAngle = Math.PI * 0.49;
+  controls.target.set(0, 1.35, 0);
+  const homeCam = { pos: camera.position.clone(), target: controls.target.clone() };
+
+  document.getElementById("btnCam").onclick = () => {
+    camera.position.copy(homeCam.pos);
+    controls.target.copy(homeCam.target);
+  };
+
+  function shadow(m) {
+    m.castShadow = true;
+    m.receiveShadow = true;
+    return m;
+  }
+
+  function mat(opts) {
+    return new THREE.MeshStandardMaterial({ roughness: 0.65, metalness: 0.05, ...opts });
+  }
+
+  const sunDir = new THREE.Vector3(0.55, 0.72, 0.42).normalize();
+
+  // Balanced sky dome without overexposing background
+  const skyMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    toneMapped: false,
+    uniforms: { uSun: { value: sunDir } },
+    vertexShader: `varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `
+      varying vec3 vW; uniform vec3 uSun;
+      void main(){
+        vec3 rd = normalize(vW);
+        float h = rd.y;
+        vec3 zen = vec3(0.18, 0.32, 0.62);
+        vec3 hor = vec3(0.72, 0.58, 0.46);
+        vec3 grd = vec3(0.10, 0.09, 0.08);
+        vec3 col = mix(hor, zen, smoothstep(0.0, 0.85, h));
+        col = mix(grd, col, smoothstep(-0.15, 0.08, h));
+        float sun = pow(max(dot(rd, normalize(uSun)), 0.0), 180.0) * 3.5;
+        float glo = pow(max(dot(rd, normalize(uSun)), 0.0), 6.0) * 0.3;
+        col += vec3(1.0, 0.86, 0.55) * sun;
+        col += vec3(1.0, 0.62, 0.28) * glo;
+        gl_FragColor = vec4(col, 1.0);
+      }`
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(42, 32, 20), skyMat));
+
+  // Balanced, calibrated scene lighting (Clean & Glare-Free)
+  const hemi = new THREE.HemisphereLight(0xbad7ff, 0x3d3026, 0.65);
+  scene.add(hemi);
+
+  const sun = new THREE.DirectionalLight(0xfff3db, 1.35);
+  sun.position.copy(sunDir.clone().multiplyScalar(16));
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.camera.left = -9;
+  sun.shadow.camera.right = 9;
+  sun.shadow.camera.top = 9;
+  sun.shadow.camera.bottom = -9;
+  sun.shadow.camera.near = 2;
+  sun.shadow.camera.far = 40;
+  sun.shadow.bias = -0.0004;
+  sun.shadow.normalBias = 0.03;
+  scene.add(sun);
+
+  const rim = new THREE.DirectionalLight(0x7fb2ff, 0.45);
+  rim.position.set(-8, 4, -6);
+  scene.add(rim);
+
+  const stone = mat({ color: 0x8d8680, roughness: 0.92, metalness: 0.04 });
+  const stoneDark = mat({ color: 0x6d6862, roughness: 0.95 });
+  const moss = mat({ color: 0x4d6a45, roughness: 0.88 });
+
+  const dais = shadow(new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.55, 0.28, 48), stone));
+  dais.position.y = 0.14;
+  scene.add(dais);
+  const step = shadow(new THREE.Mesh(new THREE.CylinderGeometry(3.85, 4.05, 0.16, 48), stoneDark));
+  step.position.y = -0.08;
+  scene.add(step);
+
+  const floor = shadow(new THREE.Mesh(new THREE.CircleGeometry(14, 48), mat({ color: 0x5a534c, roughness: 1 })));
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -0.16;
+  scene.add(floor);
+
+  for (let i = 0; i < 18; i++) {
+    const a = (i / 18) * Math.PI * 2 + 0.2;
+    const r = 4.3 + (i % 3) * 0.45;
+    const s = 0.12 + (i % 5) * 0.05;
+    const rock = shadow(new THREE.Mesh(new THREE.DodecahedronGeometry(s, 0), i % 2 ? stoneDark : moss));
+    rock.position.set(Math.cos(a) * r, s * 0.4, Math.sin(a) * r);
+    rock.rotation.set(i, i * 0.7, i * 0.3);
+    scene.add(rock);
+  }
+
+  function makeKnight() {
+    const g = new THREE.Group();
+    const metal = mat({ color: 0x5b6572, metalness: 0.88, roughness: 0.28 });
+    const metalD = mat({ color: 0x2c323a, metalness: 0.82, roughness: 0.38 });
+    const gold = mat({ color: 0xc9a24a, metalness: 0.95, roughness: 0.22 });
+    const skin = mat({ color: 0xe1b48c, metalness: 0.0, roughness: 0.62 });
+    const leather = mat({ color: 0x4a3022, metalness: 0.08, roughness: 0.8 });
+    const cloth = mat({ color: 0x7a2438, metalness: 0.04, roughness: 0.72 });
+    const plume = mat({ color: 0xb51d2c, metalness: 0.02, roughness: 0.55 });
+
+    const torso = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.46, 0.9, 14), metal));
+    torso.position.y = 1.05;
+    g.add(torso);
+    const chest = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.42, 0.38), metal));
+    chest.position.set(0, 1.28, 0.02);
+    g.add(chest);
+    const crossV = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.34, 0.06), gold));
+    crossV.position.set(0, 1.28, 0.22);
+    g.add(crossV);
+    const crossH = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.08, 0.06), gold));
+    crossH.position.set(0, 1.32, 0.22);
+    g.add(crossH);
+
+    const belt = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.47, 0.47, 0.1, 14), leather));
+    belt.position.y = 0.66;
+    g.add(belt);
+
+    for (const sx of [-1, 1]) {
+      const pad = shadow(new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 10), metal));
+      pad.scale.set(1.15, 0.7, 1);
+      pad.position.set(sx * 0.46, 1.42, 0);
+      g.add(pad);
+      const arm = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.55, 10), metalD));
+      arm.position.set(sx * 0.55, 1.05, 0.02);
+      arm.rotation.z = sx * 0.25;
+      g.add(arm);
+    }
+
+    const cape = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.05, 0.08), cloth));
+    cape.position.set(0, 1.05, -0.28);
+    cape.rotation.x = 0.18;
+    g.add(cape);
+
+    const neck = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.18, 10), skin));
+    neck.position.y = 1.58;
+    g.add(neck);
+    const head = shadow(new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), skin));
+    head.position.y = 1.78;
+    g.add(head);
+
+    const helm = shadow(new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.62), metalD));
+    helm.position.y = 1.84;
+    g.add(helm);
+    const brim = shadow(new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.03, 8, 20), gold));
+    brim.rotation.x = Math.PI / 2;
+    brim.position.y = 1.72;
+    g.add(brim);
+    const visor = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.045, 0.12), mat({ color: 0x0b0d10, metalness: 0.4, roughness: 0.3 })));
+    visor.position.set(0, 1.8, 0.16);
+    g.add(visor);
+    const crest = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.16, 0.28), gold));
+    crest.position.set(0, 2.05, 0);
+    g.add(crest);
+    const feather = shadow(new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.42, 8), plume));
+    feather.position.set(0, 2.28, -0.02);
+    feather.rotation.x = -0.35;
+    g.add(feather);
+
+    g.position.set(0.15, 0, 0.1);
+    return g;
+  }
+  scene.add(makeKnight());
+
+  function goldish() { return mat({ color: 0xc9a24a, metalness: 0.9, roughness: 0.28 }); }
+
+  function makeColumn() {
+    const g = new THREE.Group();
+    const marble = mat({ color: 0xd8d1c4, roughness: 0.45, metalness: 0.08 });
+    const base = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.18, 0.7), stoneDark));
+    g.add(base);
+    const torus = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.14, 16), marble));
+    torus.position.y = 0.16;
+    g.add(torus);
+    const shaft = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 2.1, 16), marble));
+    shaft.position.y = 1.25;
+    g.add(shaft);
+    const cap = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.14, 0.62), marble));
+    cap.position.y = 2.36;
+    g.add(cap);
+    const top = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), goldish()));
+    top.position.y = 2.48;
+    g.add(top);
+    const banner = shadow(new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.7), mat({ color: 0x1f6b6a, roughness: 0.7, side: THREE.DoubleSide })));
+    banner.position.set(0.28, 1.5, 0);
+    banner.rotation.y = Math.PI / 2;
+    g.add(banner);
+    g.position.set(-2.15, 0.28, -1.15);
+    return g;
+  }
+  scene.add(makeColumn());
+
+  function makeTree() {
+    const g = new THREE.Group();
+    const bark = mat({ color: 0x5a3b28, roughness: 0.92 });
+    const trunk = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 1.5, 8), bark));
+    trunk.position.y = 0.75;
+    g.add(trunk);
+    [[0.35, 1.35, 0.1, 0.6, 0.4], [-0.2, 1.5, -0.15, -0.5, 0.5]].forEach((b) => {
+      const br = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.07, 0.7, 6), bark));
+      br.position.set(b[0], b[1], b[2]);
+      br.rotation.z = b[3];
+      br.rotation.x = b[4];
+      g.add(br);
+    });
+    const greens = [0x2f6b38, 0x3d8a46, 0x1f4f28, 0x6a9a3a, 0x2c5a30];
+    const spots = [
+      [0, 2.05, 0, 0.62], [0.35, 1.85, 0.15, 0.42], [-0.38, 1.9, -0.1, 0.4],
+      [0.1, 2.25, -0.25, 0.38], [-0.15, 1.7, 0.32, 0.34], [0.45, 1.55, -0.2, 0.3],
+      [0.05, 2.45, 0.1, 0.28]
+    ];
+    spots.forEach((s, i) => {
+      const leaf = shadow(new THREE.Mesh(new THREE.IcosahedronGeometry(s[3], 0), mat({ color: greens[i % greens.length], roughness: 0.78 })));
+      leaf.position.set(s[0], s[1], s[2]);
+      leaf.rotation.set(i, i * 0.7, i * 0.4);
+      g.add(leaf);
+    });
+    g.position.set(2.25, 0.28, -1.35);
+    return g;
+  }
+  scene.add(makeTree());
+
+  function makeSword() {
+    const g = new THREE.Group();
+    const steel = mat({ color: 0xc5cdd8, metalness: 0.95, roughness: 0.18 });
+    const blade = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.07, 1.35, 0.018), steel));
+    blade.position.y = 0.95;
+    g.add(blade);
+    const guard = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.05, 0.06), goldish()));
+    guard.position.y = 0.28;
+    g.add(guard);
+    const hilt = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.22, 8), mat({ color: 0x3a2418, roughness: 0.7 })));
+    hilt.position.y = 0.14;
+    g.add(hilt);
+    const pommel = shadow(new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), goldish()));
+    pommel.position.y = 0.0;
+    g.add(pommel);
+    g.position.set(1.15, 0.28, 0.85);
+    g.rotation.z = -0.18;
+    g.rotation.y = 0.4;
+    return g;
+  }
+  scene.add(makeSword());
+
+  // Standard Macbeth ColorChecker Chart (24 calibrated patches)
+  const MACBETH = [
+    [115,82,68],[194,150,130],[98,122,157],[87,108,67],[133,128,177],[103,189,170],
+    [214,126,44],[80,91,166],[193,90,99],[94,60,108],[157,188,64],[224,163,46],
+    [56,61,150],[70,148,73],[175,54,60],[231,199,31],[187,86,149],[8,133,161],
+    [243,243,242],[200,200,200],[160,160,160],[122,122,121],[85,85,85],[52,52,52]
+  ];
+  const chart = new THREE.Group();
+  const board = shadow(new THREE.Mesh(new THREE.BoxGeometry(1.52, 1.02, 0.06), mat({ color: 0x1a1c20, roughness: 0.8 })));
+  chart.add(board);
+  MACBETH.forEach((rgb, i) => {
+    const col = i % 6, row = Math.floor(i / 6);
+    const patch = shadow(new THREE.Mesh(
+      new THREE.BoxGeometry(0.22, 0.22, 0.04),
+      mat({ color: new THREE.Color(rgb[0]/255, rgb[1]/255, rgb[2]/255), roughness: 0.55, metalness: 0 })
+    ));
+    patch.position.set(-0.62 + col * 0.25, 0.38 - row * 0.25, 0.05);
+    chart.add(patch);
+  });
+  chart.position.set(-2.05, 1.05, 1.35);
+  chart.rotation.y = 0.55;
+  scene.add(chart);
+
+  const stands = [
+    { c: 0xf2f0ea, m: 0.0, r: 0.22, x: 1.55, z: 1.55, name: "dielectric" },
+    { c: 0xc8ccd4, m: 1.0, r: 0.12, x: 2.05, z: 1.35, name: "chrome" },
+    { c: 0xc9a24a, m: 0.95, r: 0.22, x: 2.5, z: 1.6, name: "gold" }
+  ];
+  stands.forEach((s) => {
+    const sph = shadow(new THREE.Mesh(new THREE.SphereGeometry(0.22, 28, 20), mat({ color: s.c, metalness: s.m, roughness: s.r })));
+    sph.position.set(s.x, 0.58, s.z);
+    scene.add(sph);
+    const ped = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.16, 12), stoneDark));
+    ped.position.set(s.x, 0.28, s.z);
+    scene.add(ped);
+  });
+
+  const lantern = new THREE.Group();
+  const post = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.1, 8), mat({ color: 0x2a241c, metalness: 0.4, roughness: 0.5 })));
+  post.position.y = 0.55;
+  lantern.add(post);
+  const cage = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.32, 0.28), mat({ color: 0x3a3228, metalness: 0.6, roughness: 0.4, transparent: true, opacity: 0.85 })));
+  cage.position.y = 1.2;
+  lantern.add(cage);
+  const flame = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.2, 0.16), new THREE.MeshBasicMaterial({ color: 0xffc56a }));
+  flame.position.y = 1.2;
+  lantern.add(flame);
+  const lamp = new THREE.PointLight(0xffb45a, 1.4, 7, 1.5);
+  lamp.position.y = 1.2;
+  lamp.castShadow = true;
+  lantern.add(lamp);
+  lantern.position.set(-1.15, 0.28, 1.9);
+  scene.add(lantern);
+
+  const pot = shadow(new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.72), mat({ color: 0x8b2c2c, roughness: 0.45 })));
+  pot.position.set(0.55, 0.42, 1.85);
+  scene.add(pot);
+  const potTop = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.08, 12), mat({ color: 0x6e2222, roughness: 0.5 })));
+  potTop.position.set(0.55, 0.58, 1.85);
+  scene.add(potTop);
+
+  const crystal = shadow(new THREE.Mesh(new THREE.OctahedronGeometry(0.2, 0), mat({ color: 0x3aa0d8, metalness: 0.3, roughness: 0.15, transparent: true, opacity: 0.85 })));
+  crystal.position.set(-0.35, 0.52, 1.7);
+  scene.add(crystal);
+
+  /* Post-process Color Grading Quad */
+  const rt = new THREE.WebGLRenderTarget(4, 4, {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBAFormat,
+    depthBuffer: true
+  });
+
+  const postScene = new THREE.Scene();
+  const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const postUni = {
+    tDiffuse: { value: rt.texture },
+    uSplit: { value: 0.5 },
+    uTemp: { value: 0 }, uTint: { value: 0 }, uExposure: { value: 0 },
+    uContrast: { value: 1 }, uSaturation: { value: 1 }, uVibrance: { value: 0 },
+    uLift: { value: new THREE.Vector3() },
+    uGamma: { value: new THREE.Vector3() },
+    uGain: { value: new THREE.Vector3() },
+    uLiftY: { value: 0 }, uGammaY: { value: 1 }, uGainY: { value: 1 },
+    uBleach: { value: 0 }, uTealOrange: { value: 0 }
+  };
+  const postMat = new THREE.ShaderMaterial({
+    uniforms: postUni,
+    toneMapped: false,
+    depthTest: false,
+    depthWrite: false,
+    vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+    fragmentShader: `
+      varying vec2 vUv;
+      uniform sampler2D tDiffuse;
+      uniform float uSplit;
+      ${GRADE_GLSL}
+      vec3 ACES(vec3 x){
+        const float a=2.51,b=0.03,c=2.43,d=0.59,e=0.14;
+        return clamp((x*(a*x+b))/(x*(c*x+d)+e),0.0,1.0);
+      }
+      void main(){
+        vec3 hdr = texture2D(tDiffuse, vUv).rgb;
+        vec3 ldr = ACES(hdr * 0.95);
+        vec3 graded = clamp(gradeColor(ldr), 0.0, 1.0);
+        float side = step(uSplit, vUv.x);
+        vec3 col = mix(ldr, graded, side);
+        float line = 1.0 - smoothstep(0.0, 0.0018, abs(vUv.x - uSplit));
+        col = mix(col, vec3(0.95, 0.84, 0.48), line * 0.85 * step(uSplit, 1.0));
+        gl_FragColor = vec4(col, 1.0);
+      }`
+  });
+  postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), postMat));
+
+  function resize() {
+    const w = Math.max(1, canvas.clientWidth);
+    const h = Math.max(1, canvas.clientHeight);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    const pr = renderer.getPixelRatio();
+    rt.setSize(Math.max(1, Math.floor(w * pr)), Math.max(1, Math.floor(h * pr)));
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  document.getElementById("btnShot").onclick = () => {
+    downloadCanvas(renderer.domElement, `LookDev_${slug()}.png`);
+    toast(`Screenshot saved -> LookDev_${slug()}.png`);
+  };
+
+  drawIdentity();
+  drawWheels();
+  layoutSplit();
+  refreshUI();
+
+  function tick() {
+    requestAnimationFrame(tick);
+    controls.enabled = !draggingSplit;
+    controls.update();
+    crystal.rotation.y += 0.008;
+    crystal.rotation.x += 0.003;
+    setUniforms(postUni);
+    renderer.setRenderTarget(rt);
+    renderer.render(scene, camera);
+    renderer.setRenderTarget(null);
+    renderer.render(postScene, postCam);
+    if (lutDirty) updateLutPreview();
+  }
+  tick();
+  document.getElementById("loader").classList.add("hide");
+
+  window.addEventListener("keydown", (e) => {
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    const names = Object.keys(PRESETS);
+    if (e.key >= "1" && e.key <= "9" && names[parseInt(e.key, 10) - 1]) {
+      applyPreset(names[parseInt(e.key, 10) - 1]);
+    } else if (e.key === "0" && names[9]) {
+      applyPreset(names[9]);
+    }
+    if (e.key === "r" || e.key === "R") applyPreset("Neutral");
+    if (e.key === " ") { e.preventDefault(); document.getElementById("btnSplit").click(); }
+    if (e.key === "s" || e.key === "S") { e.preventDefault(); document.getElementById("btnShot").click(); }
+  });
+
+  // Live Theme Sync across Hub and Tools
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'skcore_theme') {
+      if (e.newValue === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  });
+})();
+  </script>
+</body>
+</html>

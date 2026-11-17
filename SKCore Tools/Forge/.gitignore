@@ -1,0 +1,20 @@
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# Python build & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+*.egg-info/
+
+# Forge runtime data & logs
+data/logs/
+*.log
+
+# Electron / Node
+node_modules/
+out/
+release/

@@ -1,0 +1,1395 @@
+[
+  {
+    "id": "bf4b03fd00a",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bf4b03fd00a",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "telegram",
+    "chatId": 6665874003,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bf4b03fd00a' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/fe-gb-starter_unity_v0.1.0.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bf4b03fd00a.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bf4b03fd00a.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/fe-gb-starter_unity_v0.1.0.apk",
+    "error": null,
+    "createdAt": "2026-09-23T19:01:35.213199+00:00",
+    "startedAt": "2026-09-23T19:01:35.215461+00:00",
+    "finishedAt": "2026-09-23T19:06:23.507382+00:00",
+    "telegramMessageId": 33,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932081,
+    "updatedAt": "2026-09-23T19:06:23.507428+00:00",
+    "_tg_edit": 1790190381.831103,
+    "_stagePct": 100,
+    "logTail": [
+      "processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor",
+      "running Unity.Jobs.CodeGen.JobsILPostProcessor",
+      "running zzzUnity.Burst.CodeGen.BurstILPostProcessor",
+      "[1304/1568  0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Unity.Purchasing.WebshopService.dll (+pdb)",
+      "Processing assembly Library/Bee/artifacts/1300b0aE.dag/Unity.Purchasing.WebshopService.dll, with 170 defines and 289 references",
+      "processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor",
+      "running Unity.Jobs.CodeGen.JobsILPostProcessor",
+      "running zzzUnity.Burst.CodeGen.BurstILPostProcessor",
+      "[1305/1568  0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/UnityEngine.Advertisements.dll (+pdb)",
+      "Processing assembly Library/Bee/artifacts/1300b0aE.dag/UnityEngine.Advertisements.dll, with 170 defines and 285 references",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 1m00s elapsed, last log output 0s ago\"}",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 1m30s elapsed, last log output 1s ago\"}",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 2m00s elapsed, last log output 19s ago\"}",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 2m30s elapsed, last log output 0s ago\"}",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 3m00s elapsed, last log output 1s ago\"}",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 3m31s elapsed, last log output 0s ago\"}",
+      "{\"type\":\"progress\",\"pct\":0,\"msg\":\"Still building \u2014 4m01s elapsed, last log output 4s ago\"}",
+      "{\"type\":\"progress\",\"pct\":100,\"msg\":\"Build complete\"}",
+      "{\"type\":\"result\",\"success\":true,\"command\":\"build\",\"data\":{\"target\":\"Android\",\"logFile\":\"/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bf4b03fd00a.log\",\"version\":null,\"editorErrors\":[],\"provenance\":\"/Users/semih/GBGithub/skc-framework/Build/fe-gb-starter_unity_v0.1.0.provenance.json\"},\"errors\":[],\"warnings\":[]}",
+      "Build finished."
+    ]
+  },
+  {
+    "id": "b1c99758633",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b1c99758633",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "telegram",
+    "chatId": 6665874003,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b1c99758633' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/fe-gb-starter_unity_v0.1.0.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b1c99758633.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b1c99758633.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/fe-gb-starter_unity_v0.1.0.apk",
+    "error": null,
+    "createdAt": "2026-09-23T18:47:14.004154+00:00",
+    "startedAt": "2026-09-23T18:47:14.005438+00:00",
+    "finishedAt": "2026-09-23T18:51:50.637710+00:00",
+    "telegramMessageId": 25,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932077,
+    "updatedAt": "2026-09-23T18:51:50.637785+00:00",
+    "_stagePct": 100,
+    "_tg_edit": 1790189509.024875,
+    "downloadUrl": "https://gofile.io/d/IdKKxZDi",
+    "logTail": [],
+    "backupUrl": "https://litter.catbox.moe/z6mlsy.apk"
+  },
+  {
+    "id": "bf807c9e5a1",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bf807c9e5a1",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "telegram",
+    "chatId": 6665874003,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bf807c9e5a1' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bf807c9e5a1.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bf807c9e5a1.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-23T18:29:38.581448+00:00",
+    "startedAt": "2026-09-23T18:29:38.584506+00:00",
+    "finishedAt": "2026-09-23T18:34:21.245995+00:00",
+    "telegramMessageId": 17,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932081,
+    "updatedAt": "2026-09-23T18:34:21.246017+00:00",
+    "_stagePct": 100,
+    "_tg_edit": 1790188459.571949,
+    "downloadUrl": "https://gofile.io/d/xwhL5iCO",
+    "logTail": []
+  },
+  {
+    "id": "b81b4128a8e",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b81b4128a8e",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "telegram",
+    "chatId": 6665874003,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b81b4128a8e' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b81b4128a8e.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b81b4128a8e.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-23T18:12:38.420325+00:00",
+    "startedAt": "2026-09-23T18:12:38.424635+00:00",
+    "finishedAt": "2026-09-23T18:17:18.583607+00:00",
+    "telegramMessageId": 12,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932085,
+    "updatedAt": "2026-09-23T18:17:18.583666+00:00",
+    "_tg_edit": 1790187436.8979788,
+    "_stagePct": 100,
+    "logTail": []
+  },
+  {
+    "id": "b01229c8a5b",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b01229c8a5b",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "telegram",
+    "chatId": 6665874003,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b01229c8a5b' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b01229c8a5b.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b01229c8a5b.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-23T17:53:48.570410+00:00",
+    "startedAt": "2026-09-23T17:53:48.572743+00:00",
+    "finishedAt": "2026-09-23T17:58:26.666652+00:00",
+    "telegramMessageId": 6,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932081,
+    "updatedAt": "2026-09-23T17:58:26.666679+00:00",
+    "_stagePct": 100,
+    "_tg_edit": 1790186305.025532,
+    "logTail": []
+  },
+  {
+    "id": "b44da4a32e3",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b44da4a32e3",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "ui",
+    "chatId": null,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b44da4a32e3' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b44da4a32e3.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b44da4a32e3.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-23T17:48:37.951627+00:00",
+    "startedAt": "2026-09-23T17:48:37.952562+00:00",
+    "finishedAt": "2026-09-23T17:53:18.236499+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932085,
+    "updatedAt": "2026-09-23T17:53:18.236516+00:00",
+    "_stagePct": 100,
+    "logTail": []
+  },
+  {
+    "id": "bce1e9754e2",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bce1e9754e2",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "55f29972bf87df169e64b99ca9538c6965fa9abc",
+    "shortSha": "55f2997",
+    "commitSubject": "fix: fallback to standard BuildPlayerOptions if no active BuildProfile in AndroidCLIBuilder",
+    "source": "ui",
+    "chatId": null,
+    "status": "succeeded",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 100,
+    "stage": "Finished",
+    "message": "Build finished.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Current checkout",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bce1e9754e2' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bce1e9754e2.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bce1e9754e2.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-23T17:42:16.049701+00:00",
+    "startedAt": "2026-09-23T17:42:16.050276+00:00",
+    "finishedAt": "2026-09-23T17:47:08.325734+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": 53932085,
+    "updatedAt": "2026-09-23T17:47:08.325757+00:00",
+    "_stagePct": 100,
+    "logTail": []
+  },
+  {
+    "id": "b2052eb6eb0",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b2052eb6eb0",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "c31b4519f9fe5bb468981ab3c7ab0795eedc5154",
+    "shortSha": "c31b451",
+    "commitSubject": "Fix assembly reference in AndroidCLIBuilder using reflection",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b2052eb6eb0.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b2052eb6eb0' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b2052eb6eb0.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b2052eb6eb0.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b2052eb6eb0.log",
+    "createdAt": "2026-09-23T17:39:04.986817+00:00",
+    "startedAt": "2026-09-23T17:39:04.988545+00:00",
+    "finishedAt": "2026-09-23T17:40:16.241242+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T17:40:16.241266+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "b3e10127c64",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b3e10127c64",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "c31b4519f9fe5bb468981ab3c7ab0795eedc5154",
+    "shortSha": "c31b451",
+    "commitSubject": "Fix assembly reference in AndroidCLIBuilder using reflection",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b3e10127c64.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Current checkout",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b3e10127c64' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b3e10127c64.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b3e10127c64.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b3e10127c64.log",
+    "createdAt": "2026-09-23T17:36:13.967792+00:00",
+    "startedAt": "2026-09-23T17:36:13.968954+00:00",
+    "finishedAt": "2026-09-23T17:37:33.111778+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T17:37:33.111808+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "b685918ba96",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b685918ba96",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "95a9af249bf3110ec9f1876494124631aa8c0af2",
+    "shortSha": "95a9af2",
+    "commitSubject": "CLI Error fixed",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b685918ba96.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b685918ba96' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b685918ba96.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b685918ba96.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b685918ba96.log",
+    "createdAt": "2026-09-23T16:58:57.093426+00:00",
+    "startedAt": "2026-09-23T16:58:57.094820+00:00",
+    "finishedAt": "2026-09-23T16:59:30.096945+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T16:59:30.096967+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "b227f07071f",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b227f07071f",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "43ccf980761bab24246d4fc5d395101ba12b78c4",
+    "shortSha": "43ccf98",
+    "commitSubject": "Fix builder issue",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b227f07071f.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b227f07071f' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b227f07071f.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b227f07071f.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b227f07071f.log",
+    "createdAt": "2026-09-23T16:54:08.476165+00:00",
+    "startedAt": "2026-09-23T16:54:08.477483+00:00",
+    "finishedAt": "2026-09-23T16:54:46.048137+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T16:54:46.048164+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "be5af2eada8",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/be5af2eada8",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "43ccf980761bab24246d4fc5d395101ba12b78c4",
+    "shortSha": "43ccf98",
+    "commitSubject": "Fix builder issue",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/be5af2eada8.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/be5af2eada8' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/be5af2eada8.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/be5af2eada8.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/be5af2eada8.log",
+    "createdAt": "2026-09-23T11:07:40.373900+00:00",
+    "startedAt": "2026-09-23T11:07:40.375266+00:00",
+    "finishedAt": "2026-09-23T11:08:08.542755+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T11:08:08.542771+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "bd235818498",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bd235818498",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "43ccf980761bab24246d4fc5d395101ba12b78c4",
+    "shortSha": "43ccf98",
+    "commitSubject": "Fix builder issue",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/bd235818498.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/bd235818498' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bd235818498.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/bd235818498.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/bd235818498.log",
+    "createdAt": "2026-09-23T11:05:43.404686+00:00",
+    "startedAt": "2026-09-23T11:05:43.406382+00:00",
+    "finishedAt": "2026-09-23T11:06:11.348576+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T11:06:11.348608+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "b574ead89fb",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b574ead89fb",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "0abe2779636f6064c5b9b42837a22cc9bfb037f7",
+    "shortSha": "0abe277",
+    "commitSubject": "Pure Service Locater",
+    "source": "ui",
+    "chatId": null,
+    "status": "dry_run",
+    "mode": "dry-run",
+    "simulated": true,
+    "percent": 100,
+    "stage": "Dry run finished",
+    "message": "Editor 6000.3.3f1 (Apple Silicon) is not installed. Re-run with --allow-install to install it automatically. Progress after that line is a dry run. Install the project's editor to build for real.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b574ead89fb' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b574ead89fb.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b574ead89fb.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-23T10:58:27.880706+00:00",
+    "startedAt": "2026-09-23T10:58:27.881737+00:00",
+    "finishedAt": "2026-09-23T10:58:41.201207+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T10:58:41.201309+00:00",
+    "_stagePct": 100,
+    "logTail": []
+  },
+  {
+    "id": "b889e4cb2e1",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b889e4cb2e1",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "53250de1836df6bc2e8fc9e2b854c6714bad1e29",
+    "shortSha": "53250de",
+    "commitSubject": "Add build path to cli builder",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b889e4cb2e1.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b889e4cb2e1' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b889e4cb2e1.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b889e4cb2e1.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b889e4cb2e1.log",
+    "createdAt": "2026-09-23T10:57:17.531346+00:00",
+    "startedAt": "2026-09-23T10:57:17.535330+00:00",
+    "finishedAt": "2026-09-23T10:57:51.209311+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-23T10:57:51.209333+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "b966ab41c63",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b966ab41c63",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "d2833f2f6bb7a259a80df42e306c31a332da02ba",
+    "shortSha": "d2833f2",
+    "commitSubject": "Change SKCore Visual",
+    "source": "ui",
+    "chatId": null,
+    "status": "dry_run",
+    "mode": "dry-run",
+    "simulated": true,
+    "percent": 100,
+    "stage": "Dry run finished",
+    "message": "Editor 6000.3.3f1 (Apple Silicon) is not installed. Re-run with --allow-install to install it automatically. Progress after that line is a dry run. Install the project's editor to build for real.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b966ab41c63' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b966ab41c63.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b966ab41c63.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": null,
+    "createdAt": "2026-09-22T14:03:51.383655+00:00",
+    "startedAt": "2026-09-22T14:03:51.385101+00:00",
+    "finishedAt": "2026-09-22T14:04:04.692968+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-22T14:04:04.693286+00:00",
+    "_stagePct": 100,
+    "logTail": []
+  },
+  {
+    "id": "b4b484d12e9",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b4b484d12e9",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "53250de1836df6bc2e8fc9e2b854c6714bad1e29",
+    "shortSha": "53250de",
+    "commitSubject": "Add build path to cli builder",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 93.6,
+    "stage": "Failed",
+    "message": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b4b484d12e9.log",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "fail"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b4b484d12e9' --target Android --execute-method AndroidCLIBuilder.BuildAPKWithProfile --output-path /Users/semih/GBGithub/skc-framework/Build/GameBuild.apk --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b4b484d12e9.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b4b484d12e9.log",
+    "outputPath": "/Users/semih/GBGithub/skc-framework/Build/GameBuild.apk",
+    "error": "Build failed (exit 1). See log: /Users/semih/GBGithub/SKCore Forge/forge/data/logs/b4b484d12e9.log",
+    "createdAt": "2026-09-22T13:55:00.915837+00:00",
+    "startedAt": "2026-09-22T13:55:00.919830+00:00",
+    "finishedAt": "2026-09-22T13:55:49.581292+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-22T13:55:49.581315+00:00",
+    "_stagePct": 94.0,
+    "logTail": []
+  },
+  {
+    "id": "b91d7a256fa",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b91d7a256fa",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "156fd0e41dc8dc14df007d2f17d908ab914f787b",
+    "shortSha": "156fd0e",
+    "commitSubject": "Add AndroidCLIBuilder",
+    "source": "ui",
+    "chatId": null,
+    "status": "dry_run",
+    "mode": "dry-run",
+    "simulated": true,
+    "percent": 100,
+    "stage": "Dry run finished",
+    "message": "Editor 6000.3.3f1 (Apple Silicon) is not installed. Re-run with --allow-install to install it automatically. Progress after that line is a dry run. Install the project's editor to build for real.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "/Users/semih/.unity/bin/unity build '/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b91d7a256fa' --target Android --execute-method Forge.CLI.PerformBuild --output-path '/Users/semih/GBGithub/SKCore Forge/forge/data/artifacts/fe-gb-starter_unity_AOS_156fd0e_20260922-173920.apk' --log-file '/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b91d7a256fa.log' --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b91d7a256fa.log",
+    "outputPath": "/Users/semih/GBGithub/SKCore Forge/forge/data/artifacts/fe-gb-starter_unity_AOS_156fd0e_20260922-173920.apk",
+    "error": null,
+    "createdAt": "2026-09-22T13:39:19.898968+00:00",
+    "startedAt": "2026-09-22T13:39:19.900660+00:00",
+    "finishedAt": "2026-09-22T13:39:33.237855+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-22T13:39:33.237948+00:00",
+    "_stagePct": 100,
+    "logTail": []
+  },
+  {
+    "id": "b3207314345",
+    "projectId": "c775c7a75583",
+    "projectName": "fe-gb-starter_unity",
+    "projectPath": "/Users/semih/GBGithub/skc-framework",
+    "worktree": "/Users/semih/GBGithub/SKCore Forge/forge/data/worktrees/b3207314345",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "156fd0e41dc8dc14df007d2f17d908ab914f787b",
+    "shortSha": "156fd0e",
+    "commitSubject": "Add AndroidCLIBuilder",
+    "source": "ui",
+    "chatId": null,
+    "status": "failed",
+    "mode": "unity",
+    "simulated": false,
+    "percent": 20,
+    "stage": "Failed",
+    "message": "[Errno 45] Operation not supported: '/home/user'",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "run"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "wait"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "",
+    "logFile": "/Users/semih/GBGithub/SKCore Forge/forge/data/logs/b-pending.log",
+    "outputPath": "",
+    "error": "[Errno 45] Operation not supported: '/home/user'",
+    "createdAt": "2026-09-22T13:33:54.614594+00:00",
+    "startedAt": "2026-09-22T13:33:54.616284+00:00",
+    "finishedAt": "2026-09-22T13:33:54.860664+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-22T13:33:54.860699+00:00",
+    "logTail": []
+  },
+  {
+    "id": "bb8fbfbf1d5",
+    "projectId": "e507eff923f9",
+    "projectName": "Northline",
+    "projectPath": "/home/user/UnityProjects/Northline",
+    "worktree": "/home/user/forge/data/worktrees/bb8fbfbf1d5",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "51edda97a8e4ac75fa0eb4b3507a313fa94bdce7",
+    "shortSha": "51edda9",
+    "commitSubject": "Android player settings for AOS",
+    "source": "ui",
+    "chatId": null,
+    "status": "cancelled",
+    "mode": "dry-run",
+    "simulated": true,
+    "percent": 29.9,
+    "stage": "Cancelled",
+    "message": "Cancelled during dry run.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "run"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "wait"
+      }
+    ],
+    "command": "/home/user/.local/bin/unity build /home/user/forge/data/worktrees/bb8fbfbf1d5 --target Android --execute-method Forge.CLI.PerformBuild --output-path /home/user/forge/data/artifacts/Northline_AOS_51edda9_20260922-102611.apk --log-file /home/user/forge/data/logs/bb8fbfbf1d5.log --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/home/user/forge/data/logs/bb8fbfbf1d5.log",
+    "outputPath": "/home/user/forge/data/artifacts/Northline_AOS_51edda9_20260922-102611.apk",
+    "error": "Cancelled during dry run.",
+    "createdAt": "2026-09-22T10:26:11.650831+00:00",
+    "startedAt": "2026-09-22T10:26:11.651485+00:00",
+    "finishedAt": "2026-09-22T10:26:12.338778+00:00",
+    "telegramMessageId": null,
+    "cancel": true,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-22T10:26:12.338889+00:00",
+    "_stagePct": 8.0,
+    "logTail": []
+  },
+  {
+    "id": "b346234b40b",
+    "projectId": "e507eff923f9",
+    "projectName": "Northline",
+    "projectPath": "/home/user/UnityProjects/Northline",
+    "worktree": "/home/user/forge/data/worktrees/b346234b40b",
+    "targetAlias": "AOS",
+    "target": "Android",
+    "sha": "51edda97a8e4ac75fa0eb4b3507a313fa94bdce7",
+    "shortSha": "51edda9",
+    "commitSubject": "Android player settings for AOS",
+    "source": "ui",
+    "chatId": null,
+    "status": "dry_run",
+    "mode": "dry-run",
+    "simulated": true,
+    "percent": 100,
+    "stage": "Dry run finished",
+    "message": "Unity CLI is not installed, so no player was produced. The pipeline and progress view ran against the resolved commit.",
+    "phases": [
+      {
+        "id": "resolve",
+        "label": "Find commit",
+        "state": "done"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch",
+        "state": "done"
+      },
+      {
+        "id": "checkout",
+        "label": "Checkout worktree",
+        "state": "done"
+      },
+      {
+        "id": "prepare",
+        "label": "Prepare build method",
+        "state": "done"
+      },
+      {
+        "id": "unity",
+        "label": "Unity CLI",
+        "state": "done"
+      },
+      {
+        "id": "package",
+        "label": "Package",
+        "state": "done"
+      }
+    ],
+    "command": "unity build /home/user/forge/data/worktrees/b346234b40b --target Android --execute-method Forge.CLI.PerformBuild --output-path /home/user/forge/data/artifacts/Northline_AOS_51edda9_20260922-101857.apk --log-file /home/user/forge/data/logs/b346234b40b.log --format ndjson --non-interactive --no-banner --no-color --allow-dirty-build --android-export-type apk",
+    "logFile": "/home/user/forge/data/logs/b346234b40b.log",
+    "outputPath": "/home/user/forge/data/artifacts/Northline_AOS_51edda9_20260922-101857.apk",
+    "error": null,
+    "createdAt": "2026-09-22T10:18:57.330479+00:00",
+    "startedAt": "2026-09-22T10:18:57.331030+00:00",
+    "finishedAt": "2026-09-22T10:19:10.373974+00:00",
+    "telegramMessageId": null,
+    "cancel": false,
+    "pid": null,
+    "artifactSize": null,
+    "updatedAt": "2026-09-22T10:19:10.374057+00:00",
+    "logTail": []
+  }
+]

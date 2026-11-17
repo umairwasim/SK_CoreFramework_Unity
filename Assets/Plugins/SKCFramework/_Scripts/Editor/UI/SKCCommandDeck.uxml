@@ -1,0 +1,76 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="command-deck-root" class="command-deck-root">
+        
+        <!-- Left Icon Rail (52px Slim Navigation) -->
+        <ui:VisualElement name="icon-rail" class="icon-rail">
+            <ui:VisualElement name="rail-top-group" class="rail-top-group">
+                <ui:VisualElement class="rail-logo-badge">
+                    <ui:Label text="⚡" class="rail-logo-text" />
+                </ui:VisualElement>
+                
+                <ui:VisualElement class="rail-divider" />
+                
+                <ui:Button name="rail-btn-overview" tooltip="Overview &amp; Core Architecture" class="rail-button rail-button-active">
+                    <ui:Label text="⚙️" class="rail-icon-text" />
+                </ui:Button>
+                <ui:Button name="rail-btn-save" tooltip="Save &amp; Segmented Storage" class="rail-button">
+                    <ui:Label text="💾" class="rail-icon-text" />
+                </ui:Button>
+                <ui:Button name="rail-btn-sdkhub" tooltip="SDK Hub &amp; Modular Packages (17)" class="rail-button">
+                    <ui:Label text="🌐" class="rail-icon-text" />
+                </ui:Button>
+                <ui:Button name="rail-btn-tools" tooltip="Quick Developer Tools" class="rail-button">
+                    <ui:Label text="⚡" class="rail-icon-text" />
+                </ui:Button>
+                <ui:Button name="rail-btn-preflight" tooltip="Pre-Flight Production Checklist" class="rail-button">
+                    <ui:Label text="🚀" class="rail-icon-text" />
+                </ui:Button>
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="rail-bottom-group">
+                <ui:VisualElement class="rail-branch-badge" tooltip="Active Branch: main">
+                    <ui:Label text="M" class="rail-branch-text" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+        <!-- Main Workspace (Top HUD + Viewport + Bottom Dock) -->
+        <ui:VisualElement name="main-workspace" class="main-workspace">
+            
+            <!-- Top HUD Header -->
+            <ui:VisualElement name="top-hud-header" class="top-hud-header">
+                <ui:VisualElement class="hud-title-container">
+                    <ui:Label text="SKCORE CONTROL CENTER" class="hud-title" />
+                    <ui:Label text="PURE LOCATOR" class="hud-pill-badge" />
+                </ui:VisualElement>
+                
+                <ui:VisualElement class="hud-status-group">
+                    <ui:VisualElement name="hud-env-badge" class="hud-env-badge">
+                        <ui:VisualElement class="hud-env-dot" />
+                        <ui:Label name="hud-env-text" text="EDIT MODE" class="hud-env-text" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <!-- Content Viewport -->
+            <ui:VisualElement name="content-viewport" class="content-viewport">
+                <!-- Injected dynamically via C# based on selected tab -->
+            </ui:VisualElement>
+            
+            <!-- Bottom Sticky Action Dock -->
+            <ui:VisualElement name="floating-action-dock" class="floating-action-dock">
+                <ui:VisualElement class="dock-actions-group">
+                    <ui:Label text="QUICK DOCK:" class="dock-label" />
+                    <ui:Button name="dock-btn-save-folder" text="📁 Save Folder" class="dock-btn" />
+                    <ui:Button name="dock-btn-wipe-save" text="🗑️ Wipe Save" class="dock-btn" />
+                    <ui:Button name="dock-btn-test-log" text="🪵 Send Test Log" class="dock-btn" />
+                    <ui:Button name="dock-btn-core-settings" text="⚙️ Core Settings" class="dock-btn" />
+                </ui:VisualElement>
+                
+                <ui:Label text="Unity 6.0 · UI Toolkit Engine" class="dock-engine-info" />
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

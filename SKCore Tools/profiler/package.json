@@ -1,0 +1,38 @@
+{
+  "name": "omniprofiler",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OmniProfiler — Unity için sıfır-overhead, derinlemesine profilleme ve hata ayıklama panosu (Electron'a sarılabilir web prototipi)",
+  "scripts": {
+    "dev": "concurrently -k -n server,ui -c cyan,magenta \"npm:dev:server\" \"npm:dev:ui\"",
+    "dev:server": "node --no-warnings server/index.js",
+    "dev:ui": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit --pretty false",
+    "sim": "node --no-warnings tools/mock-unity-agent.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "lightweight-charts": "^5.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "ws": "^8.18.0",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/ws": "^8.5.13",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "jsdom": "^29.1.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vitest": "^4.1.11"
+  }
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OmniProfiler — Unity Deep Frame Profiler &amp; Diagnostics • SKCore Tools</title>
+    <!-- FOUC Prevention Script -->
+    <script>
+      (function() {
+        try {
+          const saved = localStorage.getItem('skcore_theme') || localStorage.getItem('omni.theme');
+          const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+          if (isDark) document.documentElement.classList.add('dark');
+          else document.documentElement.classList.remove('dark');
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      html, body, #root { height: 100%; margin: 0; background: var(--bg, #0b0e14); }
+      #boot { color: var(--fg-2, #7d8797); font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 24px; }
+    </style>
+  </head>
+  <body>
+    <div id="root"><div id="boot">Starting OmniProfiler dashboard...</div></div>
+    <script type="module" src="/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50/50">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SKCore Verlet Physics Studio • Cloth &amp; Cable Cartridge</title>
+<meta name="description" content="Interactive 3D Verlet cloth, cape, flag, rope, and hair physics simulator generating zero-GC Unity C# code.">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%234648d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%23f0f6ff' stroke='%23cce5ff'/%3E%3Cpolygon points='16,5 26,11 26,21 16,27 6,21 6,11' fill='none' stroke='url(%23g)' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%230284c7'/%3E%3C/svg%3E">
+
+<!-- Google Fonts: Inter, JetBrains Mono, Plus Jakarta Sans -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<!-- Three.js Import Map -->
+<script src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          primary: '#0284c7',
+          'primary-dark': '#0369a1',
+          'primary-light': '#e0f2fe',
+          secondary: '#4648d4',
+          'surface-bg': '#f8faff'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        }
+      }
+    }
+  };
+</script>
+
+<script>
+  (function() {
+    try {
+      const theme = localStorage.getItem('skcore_theme');
+      if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+  /* ==========================================================================
+     SKCORE LIGHT GLASSMORPHISM & TACTILE CONTROLS
+     ========================================================================== */
+  :root {
+    --bg: #f8faff;
+    --card-radius: 16px;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    background-color: #0b0f19 !important;
+  }
+
+  html.dark body {
+    background-color: #0b0f19 !important;
+    color: #f1f5f9 !important;
+  }
+
+  html.dark header {
+    background: rgba(11, 15, 25, 0.95) !important;
+    border-bottom-color: rgba(51, 65, 85, 0.8) !important;
+  }
+
+  html.dark footer {
+    background: rgba(11, 15, 25, 0.95) !important;
+    border-top-color: rgba(51, 65, 85, 0.8) !important;
+    color: #94a3b8 !important;
+  }
+
+  html.dark footer strong {
+    color: #f8fafc !important;
+  }
+
+  html.dark .glass-panel {
+    background: rgba(15, 23, 42, 0.94) !important;
+    border-color: rgba(51, 65, 85, 0.75) !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+  }
+
+  html.dark .bg-white,
+  html.dark [class*="bg-white"] {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+  }
+
+  html.dark .bg-slate-50,
+  html.dark [class*="bg-slate-50"] {
+    background-color: #151d2e !important;
+  }
+
+  html.dark .bg-slate-100,
+  html.dark [class*="bg-slate-100"] {
+    background-color: #1e293b !important;
+  }
+
+  html.dark .text-slate-900,
+  html.dark .text-slate-800,
+  html.dark .text-slate-700 {
+    color: #f8fafc !important;
+  }
+
+  html.dark .text-slate-600,
+  html.dark .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+
+  html.dark .border-slate-200,
+  html.dark [class*="border-slate-200"],
+  html.dark .border-slate-100 {
+    border-color: rgba(51, 65, 85, 0.7) !important;
+  }
+
+  html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  html.dark select,
+  html.dark textarea {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  /* Preset buttons */
+  html.dark .preset-btn {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+  html.dark .preset-btn:hover {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+  }
+  html.dark .preset-btn.active {
+    background-color: rgba(2, 132, 199, 0.25) !important;
+    border-color: #38bdf8 !important;
+  }
+
+  /* Range Sliders */
+  html.dark input[type="range"] {
+    background: #334155 !important;
+  }
+  html.dark input[type="range"]::-webkit-slider-thumb {
+    background: #38bdf8 !important;
+    border: 2px solid #0284c7 !important;
+  }
+
+  /* 3D Viewport container & interaction hint */
+  html.dark #viewport {
+    background-color: #0b0f19 !important;
+  }
+  html.dark #dragHint {
+    background: rgba(15, 23, 42, 0.88) !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+    color: #cbd5e1 !important;
+  }
+
+  /* Code Tabs & Action Buttons */
+  html.dark .code-tab {
+    color: #94a3b8 !important;
+  }
+  html.dark .code-tab.active {
+    color: #38bdf8 !important;
+    border-bottom-color: #38bdf8 !important;
+  }
+  html.dark #copyCode {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+  html.dark #copyCode:hover {
+    background: #334155 !important;
+  }
+
+  /* Navigation & Toolbar Buttons */
+  html.dark .btn-deck-grid,
+  html.dark a[title*="SKCore Tools"] {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+  }
+  html.dark .btn-deck-grid:hover,
+  html.dark a[title*="SKCore Tools"]:hover {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+  }
+  html.dark #slowMo {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: #0f172a;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Glass Panels */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 0 #ffffff;
+  }
+
+  /* Custom Sliders */
+  input[type=range] {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #e2e8f0;
+    border-radius: 2px;
+    outline: none;
+    display: block;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #0284c7;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #0284c7;
+    border: 2px solid #ffffff;
+    cursor: pointer;
+  }
+
+  /* Material Symbols */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  @keyframes ledPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.9); }
+  }
+  .led-live {
+    animation: ledPulse 2s infinite ease-in-out;
+  }
+
+  .btn-deck-grid {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    transition: all 0.15s;
+    flex: 0 0 32px;
+  }
+  .btn-deck-grid:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+</style>
+</head>
+<body class="selection:bg-sky-100 selection:text-sky-900 h-screen select-none flex flex-col">
+
+  <!-- ================= 1. COMPACT TOP NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 h-14 shrink-0 px-6 flex items-center justify-between gap-4">
+    
+    <!-- Brand & Hub Name -->
+    <div class="flex items-center gap-3">
+      <a href="../index.html" class="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-2xs flex items-center justify-center p-1 hover:border-sky-400 transition" title="Return to SKCore Tools Suite">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+          <defs>
+            <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0284c7"/>
+              <stop offset="100%" stop-color="#4648d4"/>
+            </linearGradient>
+          </defs>
+          <polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="url(#navLogoGrad)" stroke-width="6" stroke-linejoin="round" fill="rgba(240, 246, 255, 0.6)"/>
+          <path d="M44 26 L27 36 L27 52 L38 58 L44 54 L33 48 L33 40 L44 34 Z" fill="url(#navLogoGrad)"/>
+          <path d="M44 74 L27 64 L27 56 L34 60 L44 66 Z" fill="url(#navLogoGrad)"/>
+          <path d="M54 26 L54 74 L62 74 L62 54 L72 74 L82 74 L70 50 L81 26 L71 26 L62 44 L62 26 Z" fill="url(#navLogoGrad)"/>
+          <circle cx="50" cy="50" r="5" fill="#0284c7"/>
+        </svg>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-[15px] text-slate-900 tracking-tight">Verlet Physics Studio</span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 border border-sky-200 font-semibold">v2.8 • Zero-GC</span>
+      </div>
+
+      <div class="hidden xl:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/80 ml-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 led-live"></span>
+        <span class="text-[11px] font-mono text-slate-600 font-medium">PhysX-Free Native Solver</span>
+      </div>
+    </div>
+
+    <!-- Center Mode Switcher Tabs -->
+    <div class="flex items-center bg-slate-100/90 rounded-xl p-0.5 border border-slate-200 text-xs">
+      <button id="modeCloth" class="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-semibold shadow-2xs transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">flag</span>
+        <span>Cape &amp; Flag (Cloth)</span>
+      </button>
+      <button id="modeRope" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">cable</span>
+        <span>Rope &amp; Cable</span>
+      </button>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-2">
+      <!-- Play/Pause -->
+      <button id="playPause" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition active:scale-[0.98]">
+        <span class="material-symbols-outlined text-[16px]" id="playPauseIcon">pause</span>
+        <span id="playPauseLabel">Pause</span>
+      </button>
+
+      <!-- Slow Mo -->
+      <button id="slowMo" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+        <span class="material-symbols-outlined text-[15px]">hourglass_top</span>
+        <span id="slowMoLabel">0.25x</span>
+      </button>
+
+      <!-- Reset -->
+      <button id="reset" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold border border-rose-200 transition">
+        <span class="material-symbols-outlined text-[15px]">restart_alt</span>
+        <span>Reset</span>
+      </button>
+
+      <!-- Return to SKCore Tools Hub -->
+      <a href="../index.html" class="btn-deck-grid" title="Return to SKCore Tools Suite">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        </svg>
+      </a>
+    </div>
+
+  </header>
+
+  <!-- ================= 2. MAIN 3-COLUMN WORKSPACE ================= -->
+  <div class="flex-1 flex overflow-hidden min-h-0 relative">
+    
+    <!-- LEFT PANEL: PRESETS & SIMULATION CONTROLS -->
+    <aside class="w-80 min-w-[320px] glass-panel border-r border-slate-200/90 flex flex-col z-10 select-none">
+      
+      <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+        <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">Presets &amp; Dynamics</span>
+        <span class="text-[10px] font-mono text-sky-700 bg-sky-50 border border-sky-200 px-1.5 py-0.2 rounded font-bold">PHYSICS v2.8</span>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+        
+        <!-- Preset Cards -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 mb-2">Preset Archetypes</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button class="preset-btn active p-2 rounded-xl border border-sky-400 bg-sky-50/70 text-left transition hover:border-sky-500" data-preset="silk">
+              <div class="font-semibold text-slate-900 flex items-center gap-1 text-[11px]">🪶 Silk Cape</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Light, flowing drape</div>
+            </button>
+            <button class="preset-btn p-2 rounded-xl border border-slate-200 bg-white text-left transition hover:border-slate-300" data-preset="leather">
+              <div class="font-semibold text-slate-900 flex items-center gap-1 text-[11px]">🛡️ Leather Cape</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Heavy, stiff &amp; thick</div>
+            </button>
+            <button class="preset-btn p-2 rounded-xl border border-slate-200 bg-white text-left transition hover:border-slate-300" data-preset="wire">
+              <div class="font-semibold text-slate-900 flex items-center gap-1 text-[11px]">⚡ Power Cable</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Dual-pinned catenary</div>
+            </button>
+            <button class="preset-btn p-2 rounded-xl border border-slate-200 bg-white text-left transition hover:border-slate-300" data-preset="flag">
+              <div class="font-semibold text-slate-900 flex items-center gap-1 text-[11px]">🚩 Storm Flag</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Strong wind flutter</div>
+            </button>
+            <button class="preset-btn col-span-2 p-2 rounded-xl border border-slate-200 bg-white text-left transition hover:border-slate-300" data-preset="lantern">
+              <div class="font-semibold text-slate-900 flex items-center gap-1 text-[11px]">🏮 Dungeon Lantern</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Top-pinned cable with heavy bottom mass (5kg)</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="h-[1px] bg-slate-200"></div>
+
+        <!-- Simulation Parameters -->
+        <div class="space-y-3">
+          <label class="block text-[11px] font-semibold text-slate-700">Solver Configuration</label>
+
+          <!-- Stiffness / Iterations -->
+          <div>
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Solver Iterations</span>
+              <b id="valIter" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">5</b>
+            </div>
+            <input type="range" id="solverIter" min="1" max="20" value="5" step="1">
+          </div>
+
+          <!-- Damping -->
+          <div>
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Air Drag &amp; Damping</span>
+              <b id="valDamp" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">2.0%</b>
+            </div>
+            <input type="range" id="damping" min="0" max="10" value="2" step="0.1">
+          </div>
+
+          <!-- Bending Stiffness -->
+          <div>
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Bending Resistance</span>
+              <b id="valBend" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">0.35</b>
+            </div>
+            <input type="range" id="bending" min="0.05" max="1.2" value="0.35" step="0.05">
+          </div>
+
+          <!-- Character Movement Inertia -->
+          <div>
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Movement Inertia (Whipping)</span>
+              <b id="valInertia" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">0.85</b>
+            </div>
+            <input type="range" id="inertia" min="0.0" max="1.0" value="0.85" step="0.05">
+          </div>
+
+          <!-- Gravity -->
+          <div>
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Gravity Y</span>
+              <b id="valGrav" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">-9.8</b>
+            </div>
+            <input type="range" id="gravity" min="-20" max="0" value="-9.8" step="0.1">
+          </div>
+
+          <!-- Wind Strength & Turbulence -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <div class="flex justify-between items-center text-[10.5px] mb-1">
+                <span class="text-slate-600 font-medium">Wind Force</span>
+                <b id="valWind" class="font-mono text-sky-700 font-bold text-[10px]">2.5</b>
+              </div>
+              <input type="range" id="windStrength" min="0" max="10" value="2.5" step="0.1">
+            </div>
+            <div>
+              <div class="flex justify-between items-center text-[10.5px] mb-1">
+                <span class="text-slate-600 font-medium">Turbulence</span>
+                <b id="valTurb" class="font-mono text-sky-700 font-bold text-[10px]">1.2</b>
+              </div>
+              <input type="range" id="turbulence" min="0" max="5" value="1.2" step="0.1">
+            </div>
+          </div>
+
+          <!-- Wind Direction -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <div class="flex justify-between items-center text-[10.5px] mb-1">
+                <span class="text-slate-600 font-medium">Wind X</span>
+                <b id="valWindX" class="font-mono text-slate-700 font-bold text-[10px]">0.6</b>
+              </div>
+              <input type="range" id="windX" min="-1" max="1" value="0.6" step="0.05">
+            </div>
+            <div>
+              <div class="flex justify-between items-center text-[10.5px] mb-1">
+                <span class="text-slate-600 font-medium">Wind Z</span>
+                <b id="valWindZ" class="font-mono text-slate-700 font-bold text-[10px]">0.2</b>
+              </div>
+              <input type="range" id="windZ" min="-1" max="1" value="0.2" step="0.05">
+            </div>
+          </div>
+
+          <!-- Collider Radius & Capsule Height -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <div class="flex justify-between items-center text-[10.5px] mb-1">
+                <span class="text-slate-600 font-medium">Collider Radius</span>
+                <b id="valColl" class="font-mono text-slate-700 font-bold text-[10px]">0.55</b>
+              </div>
+              <input type="range" id="colliderRadius" min="0.1" max="2.0" value="0.55" step="0.05">
+            </div>
+            <div>
+              <div class="flex justify-between items-center text-[10.5px] mb-1">
+                <span class="text-slate-600 font-medium">Capsule Height</span>
+                <b id="valCapH" class="font-mono text-slate-700 font-bold text-[10px]">0.6</b>
+              </div>
+              <input type="range" id="capsuleHeight" min="0" max="2.5" value="0.6" step="0.1">
+            </div>
+          </div>
+
+          <!-- Grid Resolution (Cloth) -->
+          <div id="clothResGroup">
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Mesh Grid Resolution</span>
+              <b id="valRes" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">12x12</b>
+            </div>
+            <select id="resolution" class="w-full bg-slate-50 text-slate-800 p-1.5 rounded-lg border border-slate-200 text-xs focus:ring-sky-500 focus:border-sky-500">
+              <option value="8">8 x 8 (64 Particles - Mobile Optimized)</option>
+              <option value="12" selected>12 x 12 (144 Particles - Balanced)</option>
+              <option value="16">16 x 16 (256 Particles - High Quality)</option>
+              <option value="20">20 x 20 (400 Particles - Cinematic)</option>
+            </select>
+          </div>
+
+          <!-- Rope Segments -->
+          <div id="ropeResGroup" class="hidden">
+            <div class="flex justify-between items-center text-[11px] mb-1">
+              <span class="text-slate-600 font-medium">Rope Segment Count</span>
+              <b id="valRopeSeg" class="font-mono text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 text-[10px]">24</b>
+            </div>
+            <input type="range" id="ropeSegments" min="8" max="48" value="24" step="1">
+          </div>
+
+        </div>
+
+        <div class="h-[1px] bg-slate-200"></div>
+
+        <!-- Viewport Visual Toggles -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 mb-2">Display Layers</label>
+          <div class="space-y-1.5">
+            <label class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+              <span class="text-slate-700 font-medium">Solid Shaded Surface</span>
+              <input type="checkbox" id="visSolid" checked class="rounded text-sky-600 focus:ring-sky-500">
+            </label>
+            <label class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+              <span class="text-slate-700 font-medium">Wireframe Mesh</span>
+              <input type="checkbox" id="visWire" class="rounded text-sky-600 focus:ring-sky-500">
+            </label>
+            <label class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+              <span class="text-slate-700 font-medium">Particle Vertices</span>
+              <input type="checkbox" id="visPoints" class="rounded text-sky-600 focus:ring-sky-500">
+            </label>
+            <label class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+              <span class="text-slate-700 font-medium">Collision Body (Capsule)</span>
+              <input type="checkbox" id="visCollider" checked class="rounded text-sky-600 focus:ring-sky-500">
+            </label>
+            <label class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+              <span class="text-slate-700 font-medium">Structural Constraints</span>
+              <input type="checkbox" id="visConstraints" class="rounded text-sky-600 focus:ring-sky-500">
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- CENTER 3D VIEWPORT -->
+    <div id="viewport" class="flex-1 relative bg-slate-100/50 min-w-0 overflow-hidden">
+      <!-- Interaction Tip Overlay -->
+      <div id="dragHint" class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/85 border border-slate-200/90 shadow-md backdrop-blur-md text-[11px] font-mono text-slate-600 pointer-events-none z-10 flex items-center gap-2">
+        <span class="material-symbols-outlined text-sky-600 text-[15px]">touch_app</span>
+        <span>Left-click + drag anchor to swing • Click cloth surface to push • Right-click to orbit</span>
+      </div>
+
+      <!-- Error Overlay (if WebGL crashes) -->
+      <div id="errorOverlay" class="absolute inset-0 bg-slate-900/90 z-50 hidden items-center justify-center p-6">
+        <div class="bg-white border border-rose-400 p-6 rounded-2xl max-w-lg font-mono text-xs text-rose-700 whitespace-pre-wrap" id="errorBox"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: UNITY C# EXPORT HUB -->
+    <aside class="w-96 min-w-[380px] glass-panel border-l border-slate-200/90 flex flex-col z-10 select-none">
+      
+      <!-- Panel Header -->
+      <div class="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-sky-600 text-[18px]">developer_mode</span>
+          <span class="font-display font-bold text-slate-900 text-xs">Unity C# Generator</span>
+        </div>
+        <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono font-bold text-[10px]">Zero GC Alloc</span>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="px-4 pt-2.5 border-b border-slate-200 bg-slate-50/70 flex gap-2 text-xs font-semibold">
+        <button class="code-tab active pb-2 border-b-2 border-sky-600 text-sky-700" data-tab="cloth">VerletClothMesh.cs</button>
+        <button class="code-tab pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800" data-tab="rope">VerletRope.cs</button>
+        <button class="code-tab pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800" data-tab="params">Params (JSON)</button>
+      </div>
+
+      <!-- Code Header & Copy -->
+      <div class="px-4 py-2 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between text-xs">
+        <span id="codeFileName" class="font-mono text-[10.5px] text-slate-600 truncate">VerletClothMesh.cs — 12x12 grid</span>
+        <button id="copyCode" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs font-semibold text-[11px] transition">
+          <span class="material-symbols-outlined text-[14px]">content_copy</span>
+          <span>Copy</span>
+        </button>
+      </div>
+
+      <!-- Code Box -->
+      <div class="flex-1 overflow-hidden p-3 bg-slate-900">
+        <pre id="codeBlock" class="w-full h-full overflow-auto font-mono text-[10.5px] leading-relaxed text-sky-300 select-all"></pre>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="p-3 bg-slate-50 border-t border-slate-200 text-[10.5px] text-slate-500 leading-normal">
+        ✅ <b>Unity 2021+ Verified:</b> Mesh.MarkDynamic + preallocated arrays. Features movement inertia damping and capsule collision without PhysX overhead.
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ================= 3. BOTTOM TELEMETRY DOCK ================= -->
+  <footer class="h-9 min-h-[36px] bg-white/95 backdrop-blur-md border-t border-slate-200/90 flex items-center px-6 select-none font-mono text-[11px] text-slate-500 justify-between shrink-0">
+    <div class="flex items-center gap-4">
+      <span class="flex items-center gap-1.5 font-bold text-slate-800">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 led-live"></span>
+        <span id="statFps">60</span> FPS
+      </span>
+      <span>•</span>
+      <span>Particles: <strong id="statParticles" class="text-slate-800 font-bold">0</strong></span>
+      <span>•</span>
+      <span>Constraints: <strong id="statConstraints" class="text-slate-800 font-bold">0</strong></span>
+      <span>•</span>
+      <span>Solver: <strong id="statMs" class="text-sky-700 font-bold">0.0</strong> ms</span>
+      <span>•</span>
+      <span>Mode: <strong id="statMode" class="text-slate-800 font-bold">CLOTH</strong></span>
+    </div>
+
+    <div class="hidden sm:flex items-center gap-3 text-slate-400 text-[10.5px]">
+      <span>x_new = 2*x - x_old + a*dt²</span>
+      <span>•</span>
+      <span>NaN Guard Active</span>
+      <span>•</span>
+      <span>Deterministic</span>
+    </div>
+  </footer>
+
+  <!-- ================= 4. THREE.JS & VERLET SIMULATION SCRIPT ================= -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const $ = s => document.querySelector(s);
+
+    function showError(e) {
+      const ov = $('#errorOverlay');
+      const box = $('#errorBox');
+      ov.style.display = 'flex';
+      box.textContent = 'ERROR: ' + (e?.message || e) + '\n\n' + (e?.stack || '');
+      console.error(e);
+    }
+
+    window.addEventListener('error', ev => showError(ev.error || ev.message));
+    window.addEventListener('unhandledrejection', ev => showError(ev.reason));
+
+    try {
+
+      // Presets
+      const PRESETS = {
+        silk: { name: 'Silk Cape', mode: 'cloth', iter: 5, damp: 2.0, bend: 0.35, inertia: 0.85, grav: -7.5, wind: 2.8, turb: 1.4, windX: 0.7, windZ: 0.2, coll: 0.55, capH: 0.6, res: 12, ropeSeg: 20, pinMode: 'top' },
+        leather: { name: 'Leather Cape', mode: 'cloth', iter: 12, damp: 6.0, bend: 1.0, inertia: 0.5, grav: -12.5, wind: 0.8, turb: 0.25, windX: 0.3, windZ: 0.1, coll: 0.7, capH: 1.0, res: 12, ropeSeg: 20, pinMode: 'top' },
+        wire: { name: 'Power Line', mode: 'rope', iter: 15, damp: 2.5, bend: 0.9, inertia: 0.2, grav: -9.8, wind: 0.4, turb: 0.15, windX: 0.2, windZ: 0, coll: 0.3, capH: 0, res: 12, ropeSeg: 28, pinMode: 'both' },
+        flag: { name: 'Storm Flag', mode: 'cloth', iter: 8, damp: 1.0, bend: 0.55, inertia: 0.9, grav: -2.5, wind: 6.5, turb: 2.8, windX: 1.0, windZ: 0.3, coll: 0.2, capH: 0, res: 14, ropeSeg: 24, pinMode: 'left' },
+        lantern: { name: 'Dungeon Lantern', mode: 'rope', iter: 10, damp: 5.0, bend: 0.6, inertia: 0.8, grav: -9.8, wind: 0.6, turb: 0.4, windX: 0.4, windZ: 0.2, coll: 0.5, capH: 0, res: 12, ropeSeg: 16, pinMode: 'topHeavy' }
+      };
+
+      // State
+      let state = {
+        mode: 'cloth',
+        playing: true,
+        slowMo: false,
+        iter: 5,
+        damping: 0.02,
+        bending: 0.35,
+        inertia: 0.85,
+        gravity: -9.8,
+        windStr: 2.5,
+        turb: 1.2,
+        windX: 0.6,
+        windZ: 0.2,
+        collR: 0.55,
+        capH: 0.6,
+        res: 12,
+        ropeSeg: 24,
+        pinMode: 'top',
+        vis: { solid: true, wire: false, points: false, collider: true, constraints: false }
+      };
+
+      // Three.js Scene Setup (Neutral Light Studio Backdrop)
+      const viewport = $('#viewport');
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf8faff);
+      scene.fog = new THREE.Fog(0xf8faff, 10, 24);
+
+      const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+      camera.position.set(1.8, 1.7, 3.4);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.domElement.tabIndex = 0;
+      viewport.appendChild(renderer.domElement);
+
+      function resize() {
+        const w = viewport.clientWidth;
+        const h = viewport.clientHeight;
+        if (w === 0 || h === 0) return;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      new ResizeObserver(resize).observe(viewport);
+
+      // Camera Orbit Controls
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.minDistance = 0.6;
+      controls.maxDistance = 10;
+      controls.target.set(0, 1.2, 0);
+      controls.maxPolarAngle = Math.PI * 0.495;
+      controls.update();
+
+      // Studio Lighting
+      const ambient = new THREE.AmbientLight(0xdbeafe, 0.75);
+      scene.add(ambient);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight.position.set(3, 6, 2.5);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.set(1024, 1024);
+      dirLight.shadow.camera.near = 0.5;
+      dirLight.shadow.camera.far = 12;
+      dirLight.shadow.camera.left = -4;
+      dirLight.shadow.camera.right = 4;
+      dirLight.shadow.camera.top = 4;
+      dirLight.shadow.camera.bottom = -4;
+      dirLight.shadow.bias = -0.0003;
+      scene.add(dirLight);
+
+      const fillLight = new THREE.DirectionalLight(0xe0e7ff, 0.45);
+      fillLight.position.set(-2.5, 3, -3);
+      scene.add(fillLight);
+
+      const rimLight = new THREE.PointLight(0x0284c7, 0.6, 8);
+      rimLight.position.set(0, 2.5, -1.2);
+      scene.add(rimLight);
+
+      // Studio Ground Grid & Contact Shadow Plane
+      const grid = new THREE.GridHelper(10, 20, 0xcce5ff, 0xe2e8f0);
+      grid.position.y = 0.001;
+      scene.add(grid);
+
+      const groundMat = new THREE.ShadowMaterial({ opacity: 0.15 });
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      // Reactive 3D Dark/Light Theme Handler
+      function updateTheme3D() {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+          scene.background.set(0x0b0f19);
+          scene.fog.color.set(0x0b0f19);
+          ambient.color.set(0x1e293b);
+          dirLight.color.set(0xe2e8f0);
+          fillLight.color.set(0x38bdf8);
+        } else {
+          scene.background.set(0xf8faff);
+          scene.fog.color.set(0xf8faff);
+          ambient.color.set(0xdbeafe);
+          dirLight.color.set(0xffffff);
+          fillLight.color.set(0xe0e7ff);
+        }
+      }
+      updateTheme3D();
+
+      // Collider Group (Sphere + Capsule)
+      const colliderGroup = new THREE.Group();
+      scene.add(colliderGroup);
+      colliderGroup.position.set(0, 0.9, -0.35);
+
+      const sphereMat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.1,
+        roughness: 0.35,
+        metalness: 0.1,
+        transparent: true,
+        opacity: 0.35
+      });
+      let sphereMesh = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 24), sphereMat);
+      sphereMesh.castShadow = true;
+      sphereMesh.receiveShadow = true;
+      colliderGroup.add(sphereMesh);
+
+      let capsuleMesh = null;
+      const capsuleMat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.22,
+        roughness: 0.4
+      });
+
+      function updateCapsuleVisual() {
+        if (capsuleMesh) {
+          colliderGroup.remove(capsuleMesh);
+          capsuleMesh.traverse?.(o => o.geometry?.dispose());
+          capsuleMesh = null;
+        }
+        sphereMesh.geometry.dispose();
+        sphereMesh.geometry = new THREE.SphereGeometry(state.collR, 24, 24);
+
+        if (state.capH > 0.01) {
+          const g = new THREE.Group();
+          const cyl = new THREE.Mesh(new THREE.CylinderGeometry(state.collR, state.collR, state.capH, 20), capsuleMat);
+          cyl.position.y = state.capH / 2;
+          cyl.castShadow = true;
+          g.add(cyl);
+
+          const topS = new THREE.Mesh(new THREE.SphereGeometry(state.collR, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), capsuleMat);
+          topS.position.y = state.capH;
+          g.add(topS);
+
+          const botS = new THREE.Mesh(new THREE.SphereGeometry(state.collR, 16, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), capsuleMat);
+          g.add(botS);
+
+          capsuleMesh = g;
+          colliderGroup.add(capsuleMesh);
+          sphereMesh.position.y = state.capH;
+        } else {
+          sphereMesh.position.y = 0;
+        }
+      }
+      updateCapsuleVisual();
+
+      // Anchors
+      const anchorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x0284c7, emissiveIntensity: 0.4, roughness: 0.2 });
+      const anchorA = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), anchorMat);
+      anchorA.position.set(0, 2.6, 0);
+      scene.add(anchorA);
+
+      const anchorB = new THREE.Mesh(new THREE.SphereGeometry(0.06, 14, 12), new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.35 }));
+      anchorB.position.set(2.2, 2.6, 0);
+      anchorB.visible = false;
+      scene.add(anchorB);
+
+      // Simulation Meshes
+      let clothSolid = null, clothWire = null, pointsMesh = null, constraintLines = null;
+      let ropeTube = null, ropeLine = null;
+      let clothGeometry = null;
+
+      // ==========================================
+      // VERLET PHYSICS ENGINE
+      // ==========================================
+      class Particle {
+        constructor(x, y, z, pinned = false, mass = 1) {
+          this.x = x; this.y = y; this.z = z;
+          this.ox = x; this.oy = y; this.oz = z;
+          this.ax = 0; this.ay = 0; this.az = 0;
+          this.pinned = pinned;
+          this.invMass = pinned ? 0 : 1 / mass;
+          this.mass = mass;
+        }
+      }
+
+      class Constraint {
+        constructor(p1, p2, rest, type = 'struct') {
+          this.p1 = p1; this.p2 = p2; this.rest = rest; this.type = type;
+        }
+      }
+
+      class VerletSystem {
+        constructor() {
+          this.particles = [];
+          this.constraints = [];
+          this.pinnedOffsets = [];
+          this.anchorPos = new THREE.Vector3(0, 2.6, 0);
+          this.anchorBPos = new THREE.Vector3(2.2, 2.6, 0);
+        }
+
+        initCloth(resX, resY, width, height, pinMode) {
+          this.particles = [];
+          this.constraints = [];
+          this.pinnedOffsets = [];
+          this.pinMode = pinMode;
+          const offX = width / (resX - 1);
+          const offY = height / (resY - 1);
+
+          for (let y = 0; y < resY; y++) {
+            for (let x = 0; x < resX; x++) {
+              const px = (x / (resX - 1) - 0.5) * width;
+              const py = this.anchorPos.y - y * offY;
+              const pz = 0;
+              let pinned = false;
+              if (pinMode === 'top' && y === 0) pinned = true;
+              if (pinMode === 'left' && x === 0) pinned = true;
+              const p = new Particle(px, py, pz, pinned, 1);
+              this.particles.push(p);
+              if (pinned) {
+                this.pinnedOffsets.push({ idx: this.particles.length - 1, ox: px - this.anchorPos.x, oy: 0, oz: 0, which: 'A' });
+              }
+            }
+          }
+
+          const idx = (x, y) => y * resX + x;
+          for (let y = 0; y < resY; y++) {
+            for (let x = 0; x < resX; x++) {
+              if (x < resX - 1) this.constraints.push(new Constraint(idx(x, y), idx(x + 1, y), offX, 'struct'));
+              if (y < resY - 1) this.constraints.push(new Constraint(idx(x, y), idx(x, y + 1), offY, 'struct'));
+              if (x < resX - 1 && y < resY - 1) this.constraints.push(new Constraint(idx(x, y), idx(x + 1, y + 1), Math.hypot(offX, offY), 'shear'));
+              if (x > 0 && y < resY - 1) this.constraints.push(new Constraint(idx(x, y), idx(x - 1, y + 1), Math.hypot(offX, offY), 'shear'));
+              if (x < resX - 2) this.constraints.push(new Constraint(idx(x, y), idx(x + 2, y), offX * 2, 'bend'));
+              if (y < resY - 2) this.constraints.push(new Constraint(idx(x, y), idx(x, y + 2), offY * 2, 'bend'));
+            }
+          }
+          this.resX = resX;
+          this.resY = resY;
+        }
+
+        initRope(seg, length, pinMode) {
+          this.particles = [];
+          this.constraints = [];
+          this.pinnedOffsets = [];
+          this.pinMode = pinMode;
+          const both = pinMode === 'both';
+          const start = this.anchorPos.clone();
+          const end = this.anchorBPos.clone();
+
+          for (let i = 0; i < seg; i++) {
+            let t = i / (seg - 1);
+            let x, y, z;
+            if (both) {
+              x = THREE.MathUtils.lerp(start.x, end.x, t);
+              y = THREE.MathUtils.lerp(start.y, end.y, t);
+              z = THREE.MathUtils.lerp(start.z, end.z, t);
+            } else {
+              x = start.x;
+              y = start.y - t * length;
+              z = start.z;
+            }
+            let mass = (pinMode === 'topHeavy' && i === seg - 1) ? 5 : 1;
+            let pinned = false;
+            if (i === 0) pinned = true;
+            if (both && i === seg - 1) pinned = true;
+            const p = new Particle(x, y, z, pinned, mass);
+            this.particles.push(p);
+            if (pinned) {
+              this.pinnedOffsets.push({ idx: i, ox: 0, oy: 0, oz: 0, which: i === 0 ? 'A' : 'B' });
+            }
+          }
+
+          for (let i = 0; i < seg - 1; i++) {
+            const rest = both ? start.distanceTo(end) / (seg - 1) : length / (seg - 1);
+            this.constraints.push(new Constraint(i, i + 1, rest, 'struct'));
+          }
+          for (let i = 0; i < seg - 2; i++) {
+            const rest = (both ? start.distanceTo(end) / (seg - 1) : length / (seg - 1)) * 2;
+            this.constraints.push(new Constraint(i, i + 2, rest, 'bend'));
+          }
+          this.seg = seg;
+        }
+
+        step(dt, params, time, colliderBase, colliderR, capH) {
+          const g = params.gravity;
+          const windStr = params.windStr;
+          const windX = params.windX;
+          const windZ = params.windZ;
+          const turb = params.turb;
+          const damp = params.damping;
+          const bendStiff = params.bending;
+
+          // 1. Integration
+          for (let i = 0; i < this.particles.length; i++) {
+            const p = this.particles[i];
+            if (p.pinned) continue;
+
+            const noise = Math.sin(time * 1.7 + i * 0.13) * 0.5 + Math.sin(time * 2.3 + i * 0.07) * 0.3;
+            const turbX = noise * turb * 0.4;
+            const turbY = Math.cos(time * 1.1 + i * 0.11) * turb * 0.2;
+            const turbZ = Math.sin(time * 0.9 + i * 0.19) * turb * 0.4;
+
+            p.ax = windX * windStr + turbX;
+            p.ay = g + turbY * 0.5;
+            p.az = windZ * windStr + turbZ;
+
+            if (!isFinite(p.x) || !isFinite(p.y) || !isFinite(p.z)) {
+              p.x = p.ox; p.y = p.oy; p.z = p.oz;
+            }
+
+            const vx = (p.x - p.ox) * (1 - damp);
+            const vy = (p.y - p.oy) * (1 - damp);
+            const vz = (p.z - p.oz) * (1 - damp);
+
+            const nx = p.x + vx + p.ax * dt * dt;
+            const ny = p.y + vy + p.ay * dt * dt;
+            const nz = p.z + vz + p.az * dt * dt;
+
+            p.ox = p.x; p.oy = p.y; p.oz = p.z;
+            p.x = nx; p.y = ny; p.z = nz;
+          }
+
+          // Anchor alignment
+          for (const off of this.pinnedOffsets) {
+            const p = this.particles[off.idx];
+            if (!p) continue;
+            if (off.which === 'B') {
+              p.x = this.anchorBPos.x + off.ox;
+              p.y = this.anchorBPos.y + off.oy;
+              p.z = this.anchorBPos.z + off.oz;
+            } else {
+              p.x = this.anchorPos.x + off.ox;
+              p.y = this.anchorPos.y + off.oy;
+              p.z = this.anchorPos.z + off.oz;
+            }
+            p.ox = p.x; p.oy = p.y; p.oz = p.z;
+          }
+
+          // 2. Constraints & Capsule Collision Relaxation
+          for (let iter = 0; iter < params.iter; iter++) {
+            for (const c of this.constraints) {
+              const p1 = this.particles[c.p1];
+              const p2 = this.particles[c.p2];
+              if (!p1 || !p2) continue;
+
+              let dx = p2.x - p1.x;
+              let dy = p2.y - p1.y;
+              let dz = p2.z - p1.z;
+              let dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+              if (dist < 1e-6 || !isFinite(dist)) continue;
+
+              let diff = (dist - c.rest) / dist;
+              let stiff = 1.0;
+              if (c.type === 'shear') stiff = 0.85;
+              if (c.type === 'bend') stiff = bendStiff;
+              diff = Math.max(-0.5, Math.min(0.5, diff));
+
+              const cx = dx * 0.5 * diff * stiff;
+              const cy = dy * 0.5 * diff * stiff;
+              const cz = dz * 0.5 * diff * stiff;
+
+              if (!p1.pinned && p1.invMass > 0) { p1.x += cx; p1.y += cy; p1.z += cz; }
+              if (!p2.pinned && p2.invMass > 0) { p2.x -= cx; p2.y -= cy; p2.z -= cz; }
+            }
+
+            if (colliderR > 0.01) {
+              for (const p of this.particles) {
+                if (p.pinned) continue;
+                let closestX = colliderBase.x, closestY = colliderBase.y, closestZ = colliderBase.z;
+                if (capH > 0.01) {
+                  const ay = colliderBase.y;
+                  const by = colliderBase.y + capH;
+                  const t = Math.max(0, Math.min(1, (p.y - ay) / ((by - ay) || 1)));
+                  closestY = ay + t * (by - ay);
+                }
+                const dx = p.x - closestX;
+                const dy = p.y - closestY;
+                const dz = p.z - closestZ;
+                const d2 = dx * dx + dy * dy + dz * dz;
+                const r = colliderR + 0.02;
+
+                if (d2 < r * r && d2 > 1e-8) {
+                  const d = Math.sqrt(d2);
+                  const inv = (r - d) / d;
+                  p.x += dx * inv; p.y += dy * inv; p.z += dz * inv;
+                } else if (d2 < 1e-8) {
+                  p.x += 0.01;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      const verlet = new VerletSystem();
+
+      function buildClothGeometry(res) {
+        if (clothGeometry) clothGeometry.dispose();
+        const geo = new THREE.BufferGeometry();
+        const count = res * res;
+        const pos = new Float32Array(count * 3);
+        const uv = new Float32Array(count * 2);
+        const indices = [];
+
+        for (let y = 0; y < res; y++) {
+          for (let x = 0; x < res; x++) {
+            const i = y * res + x;
+            uv[i * 2] = x / (res - 1);
+            uv[i * 2 + 1] = 1 - y / (res - 1);
+          }
+        }
+        for (let y = 0; y < res - 1; y++) {
+          for (let x = 0; x < res - 1; x++) {
+            const a = y * res + x, b = y * res + x + 1, c = (y + 1) * res + x, d = (y + 1) * res + x + 1;
+            indices.push(a, b, d, a, d, c);
+          }
+        }
+
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+        geo.setIndex(indices);
+        geo.computeVertexNormals();
+        return geo;
+      }
+
+      function ensureClothMeshes(res) {
+        if (clothSolid) { scene.remove(clothSolid); clothSolid.geometry.dispose(); clothSolid = null; }
+        if (clothWire) { scene.remove(clothWire); clothWire.geometry.dispose(); clothWire = null; }
+        if (pointsMesh) { scene.remove(pointsMesh); pointsMesh.geometry.dispose(); pointsMesh = null; }
+        if (constraintLines) { scene.remove(constraintLines); constraintLines.geometry.dispose(); constraintLines = null; }
+        if (ropeTube) { scene.remove(ropeTube); ropeTube.geometry.dispose(); ropeTube = null; }
+        if (ropeLine) { scene.remove(ropeLine); ropeLine.geometry.dispose(); ropeLine = null; }
+
+        clothGeometry = buildClothGeometry(res);
+
+        // Tactile satin sky cloth material
+        const solidMat = new THREE.MeshStandardMaterial({
+          color: 0x0284c7,
+          side: THREE.DoubleSide,
+          roughness: 0.45,
+          metalness: 0.08
+        });
+        clothSolid = new THREE.Mesh(clothGeometry, solidMat);
+        clothSolid.castShadow = true;
+        clothSolid.receiveShadow = true;
+        scene.add(clothSolid);
+
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x0369a1, wireframe: true, transparent: true, opacity: 0.25 });
+        clothWire = new THREE.Mesh(clothGeometry, wireMat);
+        scene.add(clothWire);
+
+        const ptsGeo = new THREE.BufferGeometry();
+        ptsGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(res * res * 3), 3));
+        const ptsMat = new THREE.PointsMaterial({ color: 0x0369a1, size: 0.045, sizeAttenuation: true });
+        pointsMesh = new THREE.Points(ptsGeo, ptsMat);
+        scene.add(pointsMesh);
+
+        const lineGeo = new THREE.BufferGeometry();
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.2 });
+        constraintLines = new THREE.LineSegments(lineGeo, lineMat);
+        scene.add(constraintLines);
+
+        updateVis();
+      }
+
+      function ensureRopeMeshes() {
+        if (clothSolid) clothSolid.visible = false;
+        if (clothWire) clothWire.visible = false;
+        if (constraintLines) constraintLines.visible = false;
+        if (ropeTube) { scene.remove(ropeTube); ropeTube.geometry.dispose(); ropeTube = null; }
+        if (ropeLine) { scene.remove(ropeLine); ropeLine.geometry.dispose(); ropeLine = null; }
+        if (pointsMesh) { scene.remove(pointsMesh); pointsMesh.geometry.dispose(); pointsMesh = null; }
+
+        const ptsGeo = new THREE.BufferGeometry();
+        ptsGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verlet.particles.length * 3), 3));
+        const ptsMat = new THREE.PointsMaterial({ color: 0x0284c7, size: 0.06, sizeAttenuation: true });
+        pointsMesh = new THREE.Points(ptsGeo, ptsMat);
+        scene.add(pointsMesh);
+
+        updateVis();
+      }
+
+      function updateMeshesFromParticles() {
+        try {
+          if (state.mode === 'cloth') {
+            if (!clothGeometry) return;
+            const posAttr = clothGeometry.attributes.position;
+            const ptsPos = pointsMesh?.geometry.attributes.position;
+            if (!posAttr) return;
+
+            for (let i = 0; i < verlet.particles.length; i++) {
+              const p = verlet.particles[i];
+              posAttr.array[i * 3] = p.x;
+              posAttr.array[i * 3 + 1] = p.y;
+              posAttr.array[i * 3 + 2] = p.z;
+              if (ptsPos) {
+                ptsPos.array[i * 3] = p.x;
+                ptsPos.array[i * 3 + 1] = p.y;
+                ptsPos.array[i * 3 + 2] = p.z;
+              }
+            }
+            posAttr.needsUpdate = true;
+            if (ptsPos) ptsPos.needsUpdate = true;
+            clothGeometry.computeVertexNormals();
+
+            if (state.vis.constraints && constraintLines) {
+              const positions = [];
+              for (const c of verlet.constraints) {
+                if (c.type !== 'struct') continue;
+                const p1 = verlet.particles[c.p1], p2 = verlet.particles[c.p2];
+                if (!p1 || !p2) continue;
+                positions.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+              }
+              constraintLines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+              constraintLines.geometry.computeBoundingSphere();
+            }
+          } else {
+            const pts = [];
+            for (const p of verlet.particles) { pts.push(new THREE.Vector3(p.x, p.y, p.z)); }
+            if (pts.length < 2) return;
+
+            const ropeCurve = new THREE.CatmullRomCurve3(pts);
+            if (state.vis.solid) {
+              if (ropeTube) { scene.remove(ropeTube); ropeTube.geometry.dispose(); }
+              try {
+                const tubeGeo = new THREE.TubeGeometry(ropeCurve, Math.max(pts.length * 3, 12), 0.038, 8, false);
+                const tubeMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.5, metalness: 0.1 });
+                ropeTube = new THREE.Mesh(tubeGeo, tubeMat);
+                ropeTube.castShadow = true;
+                scene.add(ropeTube);
+              } catch (e) {}
+            }
+            if (state.vis.wire || !state.vis.solid) {
+              if (ropeLine) { scene.remove(ropeLine); ropeLine.geometry.dispose(); }
+              const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+              const lineMat = new THREE.LineBasicMaterial({ color: 0xd97706, linewidth: 2 });
+              ropeLine = new THREE.Line(lineGeo, lineMat);
+              scene.add(ropeLine);
+            }
+            if (pointsMesh) {
+              let attr = pointsMesh.geometry.attributes.position;
+              if (attr.count !== verlet.particles.length) {
+                pointsMesh.geometry.dispose();
+                pointsMesh.geometry = new THREE.BufferGeometry();
+                attr = new THREE.BufferAttribute(new Float32Array(verlet.particles.length * 3), 3);
+                pointsMesh.geometry.setAttribute('position', attr);
+              }
+              for (let i = 0; i < verlet.particles.length; i++) {
+                attr.array[i * 3] = verlet.particles[i].x;
+                attr.array[i * 3 + 1] = verlet.particles[i].y;
+                attr.array[i * 3 + 2] = verlet.particles[i].z;
+              }
+              attr.needsUpdate = true;
+            }
+          }
+        } catch (e) {
+          console.warn('updateMesh error', e);
+        }
+      }
+
+      function updateVis() {
+        if (clothSolid) clothSolid.visible = state.vis.solid && state.mode === 'cloth';
+        if (clothWire) clothWire.visible = state.vis.wire && state.mode === 'cloth';
+        if (pointsMesh) pointsMesh.visible = state.vis.points;
+        if (constraintLines) constraintLines.visible = state.vis.constraints && state.mode === 'cloth';
+        if (ropeTube) ropeTube.visible = state.vis.solid && state.mode === 'rope';
+        if (ropeLine) ropeLine.visible = state.vis.wire || !state.vis.solid;
+        colliderGroup.visible = state.vis.collider;
+        anchorA.visible = true;
+        anchorB.visible = state.mode === 'rope' && state.pinMode === 'both';
+      }
+
+      function rebuildPhysics() {
+        try {
+          if (state.mode === 'cloth') {
+            verlet.anchorPos.set(0, 2.6, 0);
+            verlet.initCloth(state.res, state.res, 2.2, 2.2, state.pinMode);
+            ensureClothMeshes(state.res);
+          } else {
+            verlet.anchorPos.set(0, 2.6, 0);
+            verlet.anchorBPos.set(2.2, 2.6, 0);
+            verlet.initRope(state.ropeSeg, 2.5, state.pinMode);
+            ensureRopeMeshes();
+          }
+          updateVis();
+          updateStatsCount();
+          generateCode();
+        } catch (e) {
+          showError(e);
+        }
+      }
+      rebuildPhysics();
+
+      // Pointer Dragging for Anchor Orbs & Surface Push
+      let isDragging = false, dragPlane = new THREE.Plane(), dragOffset = new THREE.Vector3(), raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), dragAnchor = 'A';
+
+      function onPointerDown(e) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        const hitsA = raycaster.intersectObject(anchorA);
+        const hitsB = anchorB.visible ? raycaster.intersectObject(anchorB) : [];
+
+        if (hitsA.length > 0) {
+          isDragging = true; dragAnchor = 'A'; controls.enabled = false;
+          dragPlane.setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()), anchorA.position);
+          const inter = new THREE.Vector3(); raycaster.ray.intersectPlane(dragPlane, inter);
+          dragOffset.copy(inter).sub(anchorA.position);
+          renderer.domElement.style.cursor = 'grabbing';
+          e.preventDefault();
+        } else if (hitsB.length > 0) {
+          isDragging = true; dragAnchor = 'B'; controls.enabled = false;
+          dragPlane.setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()), anchorB.position);
+          const inter = new THREE.Vector3(); raycaster.ray.intersectPlane(dragPlane, inter);
+          dragOffset.copy(inter).sub(anchorB.position);
+          renderer.domElement.style.cursor = 'grabbing';
+          e.preventDefault();
+        } else {
+          if (state.mode === 'cloth' && clothSolid) {
+            const hits = raycaster.intersectObject(clothSolid);
+            if (hits.length > 0) {
+              const pt = hits[0].point;
+              for (const p of verlet.particles) {
+                const dx = p.x - pt.x, dy = p.y - pt.y, dz = p.z - pt.z;
+                const d2 = dx * dx + dy * dy + dz * dz;
+                if (d2 < 0.4) {
+                  const f = (0.6 - Math.sqrt(d2)) * 0.14;
+                  p.x += dx * f; p.y += dy * f; p.z += dz * f;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const inter = new THREE.Vector3();
+        if (raycaster.ray.intersectPlane(dragPlane, inter)) {
+          const target = inter.sub(dragOffset);
+          target.y = Math.max(0.4, Math.min(4, target.y));
+          target.x = Math.max(-3, Math.min(3, target.x));
+          target.z = Math.max(-3, Math.min(3, target.z));
+          if (dragAnchor === 'A') { anchorA.position.copy(target); verlet.anchorPos.copy(target); }
+          else { anchorB.position.copy(target); verlet.anchorBPos.copy(target); }
+        }
+      }
+
+      function onPointerUp() {
+        if (isDragging) {
+          isDragging = false;
+          controls.enabled = true;
+          renderer.domElement.style.cursor = 'grab';
+        }
+      }
+
+      renderer.domElement.addEventListener('pointerdown', onPointerDown, { passive: false });
+      window.addEventListener('pointermove', onPointerMove, { passive: false });
+      window.addEventListener('pointerup', onPointerUp);
+      renderer.domElement.style.cursor = 'grab';
+
+      // UI Slider Bindings
+      function bindSlider(id, key, transform, displayId, formatter) {
+        const el = $(id); if (!el) return;
+        el.addEventListener('input', () => {
+          let v = parseFloat(el.value);
+          state[key] = transform ? transform(v) : v;
+          if (displayId) { $(displayId).textContent = formatter ? formatter(v) : v.toString(); }
+          if (key === 'collR' || key === 'capH') { updateCapsuleVisual(); }
+          if (key === 'ropeSeg') { rebuildPhysics(); return; }
+          if (key === 'damping') { state.damping = v / 100; }
+          generateCode();
+        });
+      }
+
+      bindSlider('#solverIter', 'iter', v => v, '#valIter');
+      bindSlider('#damping', 'damping', v => v / 100, '#valDamp', v => v.toFixed(1) + '%');
+      bindSlider('#bending', 'bending', v => v, '#valBend');
+      bindSlider('#inertia', 'inertia', v => v, '#valInertia');
+      bindSlider('#gravity', 'gravity', v => v, '#valGrav');
+      bindSlider('#windStrength', 'windStr', v => v, '#valWind');
+      bindSlider('#turbulence', 'turb', v => v, '#valTurb');
+      bindSlider('#windX', 'windX', v => v, '#valWindX');
+      bindSlider('#windZ', 'windZ', v => v, '#valWindZ');
+      bindSlider('#colliderRadius', 'collR', v => v, '#valColl');
+      bindSlider('#capsuleHeight', 'capH', v => v, '#valCapH');
+      bindSlider('#ropeSegments', 'ropeSeg', v => v, '#valRopeSeg');
+
+      $('#resolution')?.addEventListener('change', (e) => {
+        state.res = parseInt(e.target.value);
+        $('#valRes').textContent = e.target.value + 'x' + e.target.value;
+        rebuildPhysics();
+      });
+
+      $('#visSolid')?.addEventListener('change', e => { state.vis.solid = e.target.checked; updateVis(); });
+      $('#visWire')?.addEventListener('change', e => { state.vis.wire = e.target.checked; updateVis(); });
+      $('#visPoints')?.addEventListener('change', e => { state.vis.points = e.target.checked; updateVis(); });
+      $('#visCollider')?.addEventListener('change', e => { state.vis.collider = e.target.checked; updateVis(); });
+      $('#visConstraints')?.addEventListener('change', e => { state.vis.constraints = e.target.checked; updateVis(); });
+
+      function setMode(m) {
+        state.mode = m;
+        const isCloth = m === 'cloth';
+        $('#modeCloth')?.classList.toggle('bg-sky-600', isCloth);
+        $('#modeCloth')?.classList.toggle('text-white', isCloth);
+        $('#modeCloth')?.classList.toggle('text-slate-600', !isCloth);
+
+        $('#modeRope')?.classList.toggle('bg-sky-600', !isCloth);
+        $('#modeRope')?.classList.toggle('text-white', !isCloth);
+        $('#modeRope')?.classList.toggle('text-slate-600', isCloth);
+
+        $('#clothResGroup').style.display = isCloth ? 'block' : 'none';
+        $('#ropeResGroup').style.display = isCloth ? 'none' : 'block';
+        $('#statMode').textContent = isCloth ? 'CLOTH' : 'ROPE';
+        rebuildPhysics();
+      }
+      $('#modeCloth')?.addEventListener('click', () => setMode('cloth'));
+      $('#modeRope')?.addEventListener('click', () => setMode('rope'));
+
+      $('#playPause')?.addEventListener('click', () => {
+        state.playing = !state.playing;
+        $('#playPauseLabel').textContent = state.playing ? 'Pause' : 'Play';
+        $('#playPauseIcon').textContent = state.playing ? 'pause' : 'play_arrow';
+      });
+
+      $('#slowMo')?.addEventListener('click', () => {
+        state.slowMo = !state.slowMo;
+        $('#slowMoLabel').textContent = state.slowMo ? '1.0x Normal' : '0.25x Slow';
+        $('#slowMo').classList.toggle('bg-sky-100', state.slowMo);
+        $('#slowMo').classList.toggle('border-sky-300', state.slowMo);
+        $('#slowMo').classList.toggle('text-sky-800', state.slowMo);
+      });
+
+      $('#reset')?.addEventListener('click', () => rebuildPhysics());
+
+      // Preset buttons
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.preset-btn').forEach(b => {
+            b.classList.remove('border-sky-400', 'bg-sky-50/70');
+            b.classList.add('border-slate-200', 'bg-white');
+          });
+          btn.classList.add('border-sky-400', 'bg-sky-50/70');
+          btn.classList.remove('border-slate-200', 'bg-white');
+
+          const p = PRESETS[btn.dataset.preset];
+          if (!p) return;
+
+          state.iter = p.iter; $('#solverIter').value = p.iter; $('#valIter').textContent = p.iter;
+          state.damping = p.damp / 100; $('#damping').value = p.damp; $('#valDamp').textContent = p.damp.toFixed(1) + '%';
+          state.bending = p.bend; $('#bending').value = p.bend; $('#valBend').textContent = p.bend;
+          state.inertia = p.inertia || 0.85; $('#inertia').value = state.inertia; $('#valInertia').textContent = state.inertia;
+          state.gravity = p.grav; $('#gravity').value = p.grav; $('#valGrav').textContent = p.grav;
+          state.windStr = p.wind; $('#windStrength').value = p.wind; $('#valWind').textContent = p.wind;
+          state.turb = p.turb; $('#turbulence').value = p.turb; $('#valTurb').textContent = p.turb;
+          state.windX = p.windX; $('#windX').value = p.windX; $('#valWindX').textContent = p.windX;
+          state.windZ = p.windZ; $('#windZ').value = p.windZ; $('#valWindZ').textContent = p.windZ;
+          state.collR = p.coll; $('#colliderRadius').value = p.coll; $('#valColl').textContent = p.coll;
+          state.capH = p.capH; $('#capsuleHeight').value = p.capH; $('#valCapH').textContent = p.capH;
+          state.pinMode = p.pinMode;
+
+          if (p.mode !== state.mode) setMode(p.mode);
+          if (p.mode === 'cloth') {
+            state.res = p.res; $('#resolution').value = p.res; $('#valRes').textContent = p.res + 'x' + p.res;
+          } else {
+            state.ropeSeg = p.ropeSeg; $('#ropeSegments').value = p.ropeSeg; $('#valRopeSeg').textContent = p.ropeSeg;
+          }
+          updateCapsuleVisual();
+          rebuildPhysics();
+        });
+      });
+
+      function updateStatsCount() {
+        $('#statParticles').textContent = verlet.particles.length;
+        $('#statConstraints').textContent = verlet.constraints.length;
+      }
+
+      // ==========================================
+      // UNITY C# GENERATOR (GC=0, INERTIA & MULTI-COLLIDER)
+      // ==========================================
+      function generateCode() {
+        try {
+          const clothCS = `using UnityEngine;
+
+// ------------------------------------------------------------------------------
+// VerletClothMesh.cs — SKCore Tools Suite
+// Zero-GC Allocation, Mobile 60 FPS, Movement Inertia & Capsule Collision
+// Compatible with Unity 2021+ without Jobs/Burst dependency.
+// ------------------------------------------------------------------------------
+
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+public class VerletClothMesh : MonoBehaviour
+{
+    [Header("Grid Resolution")]
+    [Range(4, 32)] public int resX = ${state.res};
+    [Range(4, 32)] public int resY = ${state.res};
+    public float width = 2.2f, height = 2.2f;
+
+    [Header("Physics Settings")]
+    [Range(1, 20)] public int solverIterations = ${state.iter};
+    [Range(0f, 0.1f)] public float damping = ${state.damping.toFixed(4)}f;
+    [Range(0.05f, 1.2f)] public float bendingStiffness = ${state.bending.toFixed(2)}f;
+    public Vector3 gravity = new Vector3(0f, ${state.gravity.toFixed(2)}f, 0f);
+
+    [Header("Movement Inertia")]
+    [Tooltip("Transfers character velocity into the cloth for realistic whipping when sprinting or turning.")]
+    [Range(0f, 1f)] public float movementInertia = ${state.inertia.toFixed(2)}f;
+
+    [Header("Wind & Flutter")]
+    public float windStrength = ${state.windStr.toFixed(2)}f;
+    public float turbulence = ${state.turb.toFixed(2)}f;
+    public Vector3 windDirection = new Vector3(${state.windX.toFixed(2)}f, 0f, ${state.windZ.toFixed(2)}f);
+
+    [Header("Collision Body")]
+    public Transform characterCollider;
+    public float colliderRadius = ${state.collR.toFixed(2)}f;
+    public float capsuleHeight = ${state.capH.toFixed(2)}f;
+    public Vector3 colliderOffset = new Vector3(0f, 0.9f, -0.35f);
+
+    [Header("Pinning")]
+    public string pinMode = "${state.pinMode}"; // "top", "left"
+
+    private Vector3[] pos, prevPos, acc;
+    private bool[] pinned;
+    private struct Constraint { public int a, b; public float rest; public int type; }
+    private Constraint[] constraints;
+    private Vector3[] vertices;
+    private Vector2[] uvs;
+    private int[] tris;
+    private Mesh mesh;
+    private Vector3 lastAnchorPos;
+
+    void Awake()
+    {
+        mesh = new Mesh();
+        mesh.name = "VerletCloth_Instance";
+        mesh.MarkDynamic();
+        GetComponent<MeshFilter>().mesh = mesh;
+        BuildCloth();
+        lastAnchorPos = transform.position;
+    }
+
+    public void BuildCloth()
+    {
+        int count = resX * resY;
+        pos = new Vector3[count];
+        prevPos = new Vector3[count];
+        acc = new Vector3[count];
+        pinned = new bool[count];
+        vertices = new Vector3[count];
+        uvs = new Vector2[count];
+
+        float dx = width / (resX - 1);
+        float dy = height / (resY - 1);
+        Vector3 anchor = transform.position + Vector3.up * 2.6f;
+
+        for (int y = 0; y < resY; y++)
+        {
+            for (int x = 0; x < resX; x++)
+            {
+                int i = y * resX + x;
+                Vector3 p = anchor + new Vector3((x / (float)(resX - 1) - 0.5f) * width, -y * dy, 0f);
+                pos[i] = p;
+                prevPos[i] = p;
+                uvs[i] = new Vector2(x / (float)(resX - 1), 1f - y / (float)(resY - 1));
+                pinned[i] = (pinMode == "top" && y == 0) || (pinMode == "left" && x == 0);
+            }
+        }
+
+        var list = new System.Collections.Generic.List<Constraint>(count * 6);
+        System.Func<int, int, int> idx = (cx, cy) => cy * resX + cx;
+        for (int y = 0; y < resY; y++)
+        {
+            for (int x = 0; x < resX; x++)
+            {
+                if (x < resX - 1) list.Add(new Constraint { a = idx(x, y), b = idx(x + 1, y), rest = dx, type = 0 });
+                if (y < resY - 1) list.Add(new Constraint { a = idx(x, y), b = idx(x, y + 1), rest = dy, type = 0 });
+                if (x < resX - 1 && y < resY - 1) list.Add(new Constraint { a = idx(x, y), b = idx(x + 1, y + 1), rest = Mathf.Sqrt(dx * dx + dy * dy), type = 1 });
+                if (x > 0 && y < resY - 1) list.Add(new Constraint { a = idx(x, y), b = idx(x - 1, y + 1), rest = Mathf.Sqrt(dx * dx + dy * dy), type = 1 });
+                if (x < resX - 2) list.Add(new Constraint { a = idx(x, y), b = idx(x + 2, y), rest = dx * 2f, type = 2 });
+                if (y < resY - 2) list.Add(new Constraint { a = idx(x, y), b = idx(x, y + 2), rest = dy * 2f, type = 2 });
+            }
+        }
+        constraints = list.ToArray();
+
+        tris = new int[(resX - 1) * (resY - 1) * 6];
+        int t = 0;
+        for (int y = 0; y < resY - 1; y++)
+        {
+            for (int x = 0; x < resX - 1; x++)
+            {
+                int a = idx(x, y), b = idx(x + 1, y), c = idx(x, y + 1), d = idx(x + 1, y + 1);
+                tris[t++] = a; tris[t++] = b; tris[t++] = d;
+                tris[t++] = a; tris[t++] = d; tris[t++] = c;
+            }
+        }
+    }
+
+    void LateUpdate()
+    {
+        float dt = Mathf.Clamp(Time.deltaTime, 0.001f, 0.033f);
+        float time = Time.time;
+        Vector3 anchorShift = (transform.position - lastAnchorPos) * movementInertia;
+        lastAnchorPos = transform.position;
+
+        // 1. Position-based Verlet Integration with Wind Turbulence & Inertia
+        Vector3 wDir = windDirection.sqrMagnitude > 0.001f ? windDirection.normalized : Vector3.zero;
+        for (int i = 0; i < pos.Length; i++)
+        {
+            if (pinned[i])
+            {
+                pos[i] += anchorShift / Mathf.Max(0.001f, movementInertia);
+                prevPos[i] = pos[i];
+                continue;
+            }
+
+            float noise = Mathf.Sin(time * 1.7f + i * 0.13f) * 0.5f + Mathf.Sin(time * 2.3f + i * 0.07f) * 0.3f;
+            Vector3 wind = wDir * windStrength + new Vector3(
+                noise * turbulence * 0.4f,
+                Mathf.Cos(time * 1.1f + i * 0.11f) * turbulence * 0.2f,
+                Mathf.Sin(time * 0.9f + i * 0.19f) * turbulence * 0.4f
+            );
+
+            acc[i] = gravity + wind;
+            Vector3 vel = (pos[i] - prevPos[i]) * (1f - damping) - anchorShift;
+            Vector3 next = pos[i] + vel + acc[i] * dt * dt;
+
+            // NaN Guard
+            if (float.IsNaN(next.x)) next = prevPos[i];
+            prevPos[i] = pos[i];
+            pos[i] = next;
+        }
+
+        // 2. Constraints & Capsule Collision Relaxation
+        Vector3 colPos = characterCollider ? characterCollider.position : transform.position + colliderOffset;
+        for (int it = 0; it < solverIterations; it++)
+        {
+            for (int c = 0; c < constraints.Length; c++)
+            {
+                var con = constraints[c];
+                Vector3 d = pos[con.b] - pos[con.a];
+                float dist = d.magnitude;
+                if (dist < 1e-5f) continue;
+                float diff = Mathf.Clamp((dist - con.rest) / dist, -0.5f, 0.5f);
+                float stiff = con.type == 0 ? 1f : con.type == 1 ? 0.85f : bendingStiffness;
+                Vector3 corr = d * 0.5f * diff * stiff;
+                if (!pinned[con.a]) pos[con.a] += corr;
+                if (!pinned[con.b]) pos[con.b] -= corr;
+            }
+
+            if (colliderRadius > 0.01f)
+            {
+                float r = colliderRadius + 0.02f;
+                float r2 = r * r;
+                for (int i = 0; i < pos.Length; i++)
+                {
+                    if (pinned[i]) continue;
+                    Vector3 closest = colPos;
+                    if (capsuleHeight > 0.01f)
+                    {
+                        float ay = colPos.y, by = colPos.y + capsuleHeight;
+                        float tt = Mathf.Clamp01((pos[i].y - ay) / (by - ay));
+                        closest.y = Mathf.Lerp(ay, by, tt);
+                    }
+                    Vector3 toP = pos[i] - closest;
+                    float d2 = toP.sqrMagnitude;
+                    if (d2 < r2 && d2 > 1e-8f)
+                    {
+                        pos[i] = closest + toP.normalized * r;
+                    }
+                }
+            }
+        }
+
+        // 3. Update Procedural Mesh (Zero GC Alloc)
+        for (int i = 0; i < pos.Length; i++)
+        {
+            vertices[i] = transform.InverseTransformPoint(pos[i]);
+        }
+        mesh.SetVertices(vertices);
+        mesh.SetUVs(0, uvs);
+        mesh.SetTriangles(tris, 0, false);
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+    }
+}
+`;
+
+          const ropeCS = `using UnityEngine;
+
+// ------------------------------------------------------------------------------
+// VerletRope.cs — SKCore Tools Suite
+// Zero-GC Allocation, LineRenderer or Bone Chain Hierarchy support.
+// Compatible with cables, hanging lanterns, hair strands, and weapon cords.
+// ------------------------------------------------------------------------------
+
+public class VerletRope : MonoBehaviour
+{
+    [Header("Rope Configuration")]
+    [Range(8, 64)] public int segments = ${state.ropeSeg};
+    public float length = 2.5f;
+    public bool bothEndsPinned = ${state.pinMode === 'both' ? 'true' : 'false'};
+    public bool heavyBottom = ${state.pinMode === 'topHeavy' ? 'true' : 'false'};
+    public float bottomMass = 5f;
+
+    [Header("Physics Settings")]
+    [Range(1, 20)] public int solverIterations = ${state.iter};
+    [Range(0f, 0.1f)] public float damping = ${state.damping.toFixed(4)}f;
+    [Range(0.05f, 1.2f)] public float bendingStiffness = ${state.bending.toFixed(2)}f;
+    [Range(0f, 1f)] public float movementInertia = ${state.inertia.toFixed(2)}f;
+    public Vector3 gravity = new Vector3(0f, ${state.gravity.toFixed(2)}f, 0f);
+
+    [Header("Wind & Flutter")]
+    public float windStrength = ${state.windStr.toFixed(2)}f;
+    public float turbulence = ${state.turb.toFixed(2)}f;
+    public Vector3 windDirection = new Vector3(${state.windX.toFixed(2)}f, 0f, ${state.windZ.toFixed(2)}f);
+
+    [Header("Collision")]
+    public Transform sphereCollider;
+    public float colliderRadius = ${state.collR.toFixed(2)}f;
+
+    [Header("Optional Bone Rigging")]
+    [Tooltip("If populated, updates these Transform joints directly (e.g. for hair or tentacles).")]
+    public Transform[] boneChain;
+
+    private Vector3[] pos, prevPos, acc;
+    private bool[] pinned;
+    private float[] invMass;
+    private struct C { public int a, b; public float rest; public int type; }
+    private C[] cons;
+    private LineRenderer lr;
+    private Vector3 lastAnchorPos;
+
+    void Awake()
+    {
+        lr = GetComponent<LineRenderer>();
+        if (lr != null)
+        {
+            lr.useWorldSpace = true;
+            lr.positionCount = segments;
+        }
+        Build();
+        lastAnchorPos = transform.position;
+    }
+
+    public void Build()
+    {
+        pos = new Vector3[segments];
+        prevPos = new Vector3[segments];
+        acc = new Vector3[segments];
+        pinned = new bool[segments];
+        invMass = new float[segments];
+
+        Vector3 start = transform.position, end = start + Vector3.right * 2.2f;
+        for (int i = 0; i < segments; i++)
+        {
+            float t = i / (float)(segments - 1);
+            Vector3 p = bothEndsPinned ? Vector3.Lerp(start, end, t) : start + Vector3.down * t * length;
+            pos[i] = p;
+            prevPos[i] = p;
+            bool pin = (i == 0) || (bothEndsPinned && i == segments - 1);
+            pinned[i] = pin;
+            float m = (heavyBottom && i == segments - 1) ? bottomMass : 1f;
+            invMass[i] = pin ? 0f : 1f / m;
+        }
+
+        var list = new System.Collections.Generic.List<C>();
+        float segLen = bothEndsPinned ? Vector3.Distance(start, end) / (segments - 1) : length / (segments - 1);
+        for (int i = 0; i < segments - 1; i++) list.Add(new C { a = i, b = i + 1, rest = segLen, type = 0 });
+        for (int i = 0; i < segments - 2; i++) list.Add(new C { a = i, b = i + 2, rest = segLen * 2f, type = 1 });
+        cons = list.ToArray();
+    }
+
+    void LateUpdate()
+    {
+        float dt = Mathf.Clamp(Time.deltaTime, 0.001f, 0.033f);
+        float time = Time.time;
+        Vector3 anchorShift = (transform.position - lastAnchorPos) * movementInertia;
+        lastAnchorPos = transform.position;
+
+        // 1. Verlet Integration
+        Vector3 wDir = windDirection.sqrMagnitude > 0.001f ? windDirection.normalized : Vector3.zero;
+        for (int i = 0; i < segments; i++)
+        {
+            if (pinned[i])
+            {
+                pos[i] += anchorShift / Mathf.Max(0.001f, movementInertia);
+                prevPos[i] = pos[i];
+                continue;
+            }
+
+            float n = Mathf.Sin(time * 1.7f + i * 0.13f) * 0.5f + Mathf.Sin(time * 2.3f + i * 0.07f) * 0.3f;
+            Vector3 wind = wDir * windStrength + new Vector3(
+                n * turbulence * 0.4f,
+                Mathf.Cos(time * 1.1f + i * 0.11f) * turbulence * 0.2f,
+                Mathf.Sin(time * 0.9f + i * 0.19f) * turbulence * 0.4f
+            );
+
+            acc[i] = gravity + wind;
+            Vector3 vel = (pos[i] - prevPos[i]) * (1f - damping) - anchorShift;
+            Vector3 next = pos[i] + vel + acc[i] * dt * dt;
+
+            if (float.IsNaN(next.x)) next = prevPos[i];
+            prevPos[i] = pos[i];
+            pos[i] = next;
+        }
+
+        // 2. Constraints & Collider
+        Vector3 colPos = sphereCollider ? sphereCollider.position : transform.position + new Vector3(0, 0.9f, -0.35f);
+        for (int it = 0; it < solverIterations; it++)
+        {
+            for (int c = 0; c < cons.Length; c++)
+            {
+                var con = cons[c];
+                Vector3 d = pos[con.b] - pos[con.a];
+                float dist = d.magnitude;
+                if (dist < 1e-5f) continue;
+                float diff = Mathf.Clamp((dist - con.rest) / dist, -0.5f, 0.5f);
+                float stiff = con.type == 0 ? 1f : bendingStiffness;
+                Vector3 corr = d * 0.5f * diff * stiff;
+                if (!pinned[con.a]) pos[con.a] += corr;
+                if (!pinned[con.b]) pos[con.b] -= corr;
+            }
+
+            if (colliderRadius > 0.01f)
+            {
+                float r = colliderRadius + 0.02f;
+                float r2 = r * r;
+                for (int i = 0; i < segments; i++)
+                {
+                    if (pinned[i]) continue;
+                    Vector3 toP = pos[i] - colPos;
+                    float d2 = toP.sqrMagnitude;
+                    if (d2 < r2 && d2 > 1e-8f)
+                    {
+                        pos[i] = colPos + toP.normalized * r;
+                    }
+                }
+            }
+        }
+
+        // 3. Render via LineRenderer
+        if (lr != null)
+        {
+            for (int i = 0; i < segments; i++) lr.SetPosition(i, pos[i]);
+        }
+
+        // 4. Optional Bone Chain Update
+        if (boneChain != null && boneChain.Length == segments)
+        {
+            for (int i = 0; i < segments; i++)
+            {
+                if (boneChain[i] != null) boneChain[i].position = pos[i];
+            }
+        }
+    }
+}
+`;
+
+          const paramsJSON = `// Inspector Values — Preset: ${document.querySelector('.preset-btn.border-sky-400')?.dataset.preset || 'custom'}
+public int solverIterations = ${state.iter};
+public float damping = ${state.damping.toFixed(4)}f; // ${(state.damping * 100).toFixed(1)}%
+public float bendingStiffness = ${state.bending.toFixed(2)}f;
+public float movementInertia = ${state.inertia.toFixed(2)}f;
+public Vector3 gravity = new Vector3(0f, ${state.gravity.toFixed(2)}f, 0f);
+public float windStrength = ${state.windStr.toFixed(2)}f;
+public float turbulence = ${state.turb.toFixed(2)}f;
+public Vector3 windDirection = new Vector3(${state.windX.toFixed(2)}f, 0f, ${state.windZ.toFixed(2)}f);
+public float colliderRadius = ${state.collR.toFixed(2)}f;
+public float capsuleHeight = ${state.capH.toFixed(2)}f;
+public string pinMode = "${state.pinMode}";
+
+// Raw JSON Configuration
+{
+  "preset": "${document.querySelector('.preset-btn.border-sky-400')?.dataset.preset || 'custom'}",
+  "mode": "${state.mode}",
+  "iterations": ${state.iter},
+  "damping": ${state.damping.toFixed(4)},
+  "bendingStiffness": ${state.bending.toFixed(3)},
+  "movementInertia": ${state.inertia.toFixed(2)},
+  "gravity": { "x": 0, "y": ${state.gravity}, "z": 0 },
+  "wind": {
+    "strength": ${state.windStr},
+    "turbulence": ${state.turb},
+    "dir": { "x": ${state.windX}, "y": 0, "z": ${state.windZ} }
+  },
+  "collider": {
+    "radius": ${state.collR},
+    "capsuleHeight": ${state.capH}
+  },
+  "resolution": {
+    "cloth": "${state.res}x${state.res}",
+    "ropeSegments": ${state.ropeSeg}
+  },
+  "pinMode": "${state.pinMode}"
+}
+`;
+
+          const activeTab = document.querySelector('.code-tab.active')?.dataset.tab || 'cloth';
+          let code = '';
+          if (activeTab === 'cloth') {
+            code = clothCS;
+            $('#codeFileName').textContent = `VerletClothMesh.cs — ${state.res}x${state.res}, iter=${state.iter}`;
+          } else if (activeTab === 'rope') {
+            code = ropeCS;
+            $('#codeFileName').textContent = `VerletRope.cs — ${state.ropeSeg} seg, ${state.pinMode}`;
+          } else {
+            code = paramsJSON;
+            $('#codeFileName').textContent = `Params.json — ${state.mode}`;
+          }
+          $('#codeBlock').textContent = code;
+        } catch (e) {
+          console.error('genCode', e);
+        }
+      }
+
+      document.querySelectorAll('.code-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.code-tab').forEach(t => {
+            t.classList.remove('active', 'border-sky-600', 'text-sky-700');
+            t.classList.add('border-transparent', 'text-slate-500');
+          });
+          tab.classList.add('active', 'border-sky-600', 'text-sky-700');
+          tab.classList.remove('border-transparent', 'text-slate-500');
+          generateCode();
+        });
+      });
+
+      $('#copyCode')?.addEventListener('click', async () => {
+        const txt = $('#codeBlock').textContent;
+        try {
+          await navigator.clipboard.writeText(txt);
+          $('#copyCode').innerHTML = `<span class="material-symbols-outlined text-[14px] text-emerald-600">check</span><span class="text-emerald-700">Copied!</span>`;
+          setTimeout(() => {
+            $('#copyCode').innerHTML = `<span class="material-symbols-outlined text-[14px]">content_copy</span><span>Copy</span>`;
+          }, 1500);
+        } catch (e) {
+          const r = document.createRange();
+          r.selectNode($('#codeBlock'));
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(r);
+          document.execCommand('copy');
+        }
+      });
+
+      // Animation Loop & Performance Profiler
+      let fps = 60, lastFpsTime = performance.now(), frames = 0;
+      let lastTime = performance.now();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const now = performance.now();
+        lastTime = now;
+        try { controls.update(); } catch (e) {}
+
+        frames++;
+        if (now - lastFpsTime > 500) {
+          fps = Math.round(frames * 1000 / (now - lastFpsTime));
+          const el = $('#statFps'); if (el) el.textContent = fps;
+          lastFpsTime = now; frames = 0;
+        }
+
+        if (state.playing) {
+          const dt = (1 / 60) * (state.slowMo ? 0.25 : 1);
+          const t0 = performance.now();
+          const colliderBase = new THREE.Vector3().copy(colliderGroup.position);
+
+          try {
+            verlet.step(
+              dt,
+              {
+                iter: state.iter,
+                damping: state.damping,
+                bending: state.bending,
+                gravity: state.gravity,
+                windStr: state.windStr,
+                turb: state.turb,
+                windX: state.windX,
+                windZ: state.windZ
+              },
+              now * 0.001,
+              colliderBase,
+              state.collR,
+              state.capH
+            );
+          } catch (e) {
+            console.error('step', e);
+          }
+          const t1 = performance.now();
+          const msEl = $('#statMs'); if (msEl) msEl.textContent = (t1 - t0).toFixed(2);
+          updateMeshesFromParticles();
+        }
+
+        try {
+          renderer.render(scene, camera);
+        } catch (e) {
+          console.error('render', e);
+        }
+      }
+      animate();
+
+      generateCode();
+
+      // Live Theme Sync across Hub and Tools
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'skcore_theme') {
+          if (e.newValue === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          updateTheme3D();
+        }
+      });
+
+    } catch (e) {
+      showError(e);
+    }
+  </script>
+</body>
+</html>

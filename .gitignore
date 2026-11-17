@@ -1,0 +1,106 @@
+# ==============================================================================
+# UNITY PROJECT GITIGNORE
+# ==============================================================================
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+.utmp/
+.gradle/
+ExportedObj/
+
+# Unity generated and crash files
+*.apk
+*.aab
+*.app
+crashlytics-build.properties
+mono_crash.*
+sysinfo.txt
+InitTestScene*.unity*
+
+# IDE & Editor Solution Files
+.vs/
+.vscode/
+.idea/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==============================================================================
+# SKCORE TOOLS SUITE
+# ==============================================================================
+# Node dependencies & temp build artifacts across all cartridges
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+
+# Vite / Electron / ATS specific
+**/.vite/
+**/out/
+**/release/
+**/.ats/
+**/.ats-appdata/
+**/sample-project/
+
+# Profiler & QuestBoard runtime caches & journals
+**/profiler/data/
+*.sqlite-journal
+*.db-wal
+*.db-shm
+
+# Forge Python & graft graph caches
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/.venv/
+**/env/
+**/venv/
+**/graft/
+**/data/logs/
+
+# Scratch & Temporary Testing Folders
+scratch/
+temp/
+**/dist-test/
+*.log
+
+# ==============================================================================
+# COMPILED WEB TOOL DISTRIBUTIONS (Preserved for out-of-the-box browser execution)
+# ==============================================================================
+!SKCore Tools/ATS/ats/dist-web/
+!SKCore Tools/ATS/ats/dist-web/**
+!SKCore Tools/questboard/dist/
+!SKCore Tools/questboard/dist/**
+!SKCore Tools/profiler/dist/
+!SKCore Tools/profiler/dist/**

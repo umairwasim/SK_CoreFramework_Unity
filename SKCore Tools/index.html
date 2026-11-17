@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50/50">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SKCore Tools Suite • Creative Developer Cartridge Deck</title>
+  <meta name="description" content="Creative, tactile developer card deck for SKCore Tools Suite - High-performance Unity & WebGL utilities.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%234648d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%23f0f6ff' stroke='%23cce5ff'/%3E%3Cpolygon points='16,5 26,11 26,21 16,27 6,21 6,11' fill='none' stroke='url(%23g)' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%230284c7'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#0284c7",
+            "primary-dark": "#0369a1",
+            "primary-light": "#e0f2fe",
+            secondary: "#4648d4",
+            "surface-bg": "#f8faff"
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Instant Theme Initializer (Prevents FOUC) -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('skcore_theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+
+  <style>
+    /* ==========================================================================
+       SKCORE CREATIVE CARD DECK — MINIMALIST TACTILE GLASSMORPHISM
+       ========================================================================== */
+    :root {
+      --bg: #f8faff;
+      --card-radius: 20px;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #0f172a;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient Canvas */
+    .ambient-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      pointer-events: none;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% -5%, #ebf5ff 0%, #f8faff 65%);
+    }
+
+    .ambient-canvas::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(186, 230, 253, 0.4), rgba(224, 231, 255, 0.25), transparent 70%);
+      border-radius: 50%;
+      filter: blur(75px);
+    }
+
+    /* Subtle Dot Grid */
+    .grid-dots {
+      background-image: radial-gradient(rgba(2, 132, 199, 0.12) 1.2px, transparent 1.2px);
+      background-size: 28px 28px;
+    }
+
+    /* Tactile Card Style */
+    .cartridge-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: var(--card-radius);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 0 #ffffff;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .cartridge-card:hover {
+      transform: translateY(-5px);
+      background: #ffffff;
+      border-color: rgba(2, 132, 199, 0.4);
+      box-shadow: 0 20px 40px -8px rgba(2, 132, 199, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 0 #ffffff;
+    }
+
+    /* Creative Interactive Canvas Box */
+    .creative-stage {
+      height: 135px;
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      cursor: crosshair;
+      background: #fafcff;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.02);
+      transition: border-color 0.2s ease;
+    }
+
+    .cartridge-card:hover .creative-stage {
+      border-color: rgba(2, 132, 199, 0.3);
+    }
+
+    .creative-stage canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .stage-hint {
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Material Symbols */
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Live Telemetry Pulse */
+    @keyframes ledPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.9); }
+    }
+    .led-live {
+      animation: ledPulse 2s infinite ease-in-out;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* ==========================================================================
+       DARK MODE SYSTEM (EYE-RELIEF MODE)
+       ========================================================================== */
+    html {
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    html.dark {
+      color-scheme: dark;
+    }
+
+    html.dark body {
+      background-color: #0b0f19;
+      color: #f1f5f9;
+    }
+
+    html.dark .ambient-canvas {
+      background: radial-gradient(circle at 50% -5%, #0f1f3d 0%, #0b0f19 70%) !important;
+    }
+
+    html.dark .ambient-canvas::before {
+      background: radial-gradient(ellipse, rgba(30, 58, 138, 0.35), rgba(14, 165, 233, 0.12), transparent 70%) !important;
+    }
+
+    html.dark .grid-dots {
+      background-image: radial-gradient(rgba(56, 189, 248, 0.16) 1.2px, transparent 1.2px) !important;
+    }
+
+    html.dark header {
+      background: rgba(11, 15, 25, 0.88) !important;
+      border-bottom-color: rgba(30, 41, 59, 0.8) !important;
+    }
+
+    html.dark header .bg-white {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+    }
+
+    html.dark header .text-slate-900 {
+      color: #f8fafc !important;
+    }
+
+    html.dark header .bg-slate-100 {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+    }
+
+    html.dark header .text-slate-600 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark .filter-tab:not(.active) {
+      color: #94a3b8 !important;
+    }
+
+    html.dark .filter-tab:not(.active):hover {
+      color: #ffffff !important;
+      background: #1e293b !important;
+    }
+
+    html.dark .filter-tab.active {
+      background: rgba(2, 132, 199, 0.25) !important;
+      color: #38bdf8 !important;
+      border-color: rgba(56, 189, 248, 0.5) !important;
+    }
+
+    html.dark #searchInput {
+      background: rgba(15, 23, 42, 0.85) !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+
+    html.dark #searchInput::placeholder {
+      color: #64748b !important;
+    }
+
+    html.dark #searchInput + kbd {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #94a3b8 !important;
+    }
+
+    /* Sub-bar */
+    html.dark .subbar-container {
+      background: rgba(15, 23, 42, 0.88) !important;
+      border-color: rgba(51, 65, 85, 0.7) !important;
+    }
+
+    html.dark .subbar-container .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+
+    html.dark .subbar-container .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark .subbar-container kbd {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #38bdf8 !important;
+    }
+
+    html.dark .subbar-container .bg-sky-50 {
+      background: rgba(2, 132, 199, 0.15) !important;
+      color: #38bdf8 !important;
+      border-color: rgba(56, 189, 248, 0.3) !important;
+    }
+
+    html.dark .subbar-container .bg-slate-100 {
+      background: #1e293b !important;
+      color: #94a3b8 !important;
+      border-color: #334155 !important;
+    }
+
+    /* Cartridge Cards in Dark Mode */
+    html.dark .cartridge-card {
+      background: rgba(15, 23, 42, 0.88) !important;
+      border-color: rgba(51, 65, 85, 0.7) !important;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+    }
+
+    html.dark .cartridge-card:hover {
+      background: rgba(20, 30, 52, 0.95) !important;
+      border-color: rgba(56, 189, 248, 0.5) !important;
+      box-shadow: 0 20px 40px -8px rgba(2, 132, 199, 0.25), 0 4px 12px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08) !important;
+    }
+
+    html.dark .cartridge-card h2 {
+      color: #f8fafc !important;
+    }
+
+    html.dark .cartridge-card p {
+      color: #94a3b8 !important;
+    }
+
+    html.dark .cartridge-card .border-slate-100 {
+      border-color: rgba(51, 65, 85, 0.6) !important;
+    }
+
+    html.dark .hotkey-badge {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #38bdf8 !important;
+    }
+
+    /* Creative Stages in Dark Mode */
+    html.dark .creative-stage {
+      background: #090d16 !important;
+      border-color: rgba(51, 65, 85, 0.7) !important;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    html.dark .stage-hint {
+      background: rgba(15, 23, 42, 0.85) !important;
+      color: #64748b !important;
+      border-color: rgba(51, 65, 85, 0.8) !important;
+    }
+
+    /* Footer in Dark Mode */
+    html.dark footer {
+      background: rgba(11, 15, 25, 0.9) !important;
+      border-top-color: rgba(30, 41, 59, 0.8) !important;
+    }
+
+    html.dark footer .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+
+    html.dark footer .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark footer kbd {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #94a3b8 !important;
+    }
+
+    html.dark #emptySearch .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+
+    html.dark #emptySearch .text-slate-500 {
+      color: #64748b !important;
+    }
+
+    /* Bedside Lamp Dark Mode State (Instant FOUC prevention & CSS enforcement) */
+    html.dark #lampLightBeam {
+      opacity: 0 !important;
+    }
+    html.dark #lampShadeBody {
+      fill: url(#shadeGradOff) !important;
+      filter: none !important;
+    }
+    html.dark #lampBulb {
+      fill: #475569 !important;
+      filter: none !important;
+    }
+
+    /* ==========================================================================
+       BEDSIDE LAMP WIDGET & PULL CORD ANIMATIONS (STANDALONE)
+       ========================================================================== */
+    .bedside-lamp-station {
+      position: fixed;
+      left: calc(50% + 640px + 32px);
+      top: 130px;
+      width: 175px;
+      z-index: 40;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      -webkit-user-select: none;
+      filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.1));
+    }
+
+    @media (min-width: 1280px) and (max-width: 1559px) {
+      .bedside-lamp-station {
+        left: auto;
+        right: 32px;
+        top: 125px;
+        width: 165px;
+      }
+    }
+
+    @media (max-width: 1279px) {
+      .bedside-lamp-station {
+        left: auto;
+        right: 20px;
+        bottom: 24px;
+        top: auto;
+        width: 145px;
+        z-index: 50;
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.25));
+      }
+    }
+
+    /* Pull Cord Idle Gentle Sway on Hover */
+    .cord-interactive {
+      transform-origin: 114px 96px;
+      transition: transform 0.2s ease;
+    }
+    .cord-interactive:hover {
+      animation: cordHoverSway 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes cordHoverSway {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(3.5deg); }
+      100% { transform: rotate(-3.5deg); }
+    }
+
+    /* Spring Pull Animation when clicked */
+    @keyframes cordPullSpring {
+      0% { transform: translateY(0); }
+      30% { transform: translateY(24px); }
+      52% { transform: translateY(-5px); }
+      74% { transform: translateY(3px); }
+      100% { transform: translateY(0); }
+    }
+    .pull-spring-active {
+      animation: cordPullSpring 0.52s cubic-bezier(0.25, 1.4, 0.5, 1) !important;
+    }
+
+    /* Lamp Shade Spring Recoil */
+    @keyframes shadeTiltSpring {
+      0% { transform: rotate(0deg); }
+      28% { transform: rotate(2.4deg) translateY(1px); }
+      52% { transform: rotate(-1.2deg); }
+      76% { transform: rotate(0.6deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .shade-recoil-active {
+      transform-origin: 90px 46px;
+      animation: shadeTiltSpring 0.52s cubic-bezier(0.25, 1.4, 0.5, 1) !important;
+    }
+
+    /* Bulb Flicker Effect during switch */
+    @keyframes lampSwitchFlicker {
+      0% { opacity: 0.25; filter: brightness(0.6); }
+      25% { opacity: 1; filter: brightness(1.4); }
+      45% { opacity: 0.65; filter: brightness(0.85); }
+      68% { opacity: 1; filter: brightness(1.2); }
+      100% { opacity: 1; filter: brightness(1); }
+    }
+    .lamp-flicker-active {
+      animation: lampSwitchFlicker 0.28s ease-out;
+    }
+  </style>
+</head>
+<body class="selection:bg-sky-100 selection:text-sky-900">
+
+  <!-- Ambient Light Canvas -->
+  <div class="ambient-canvas"></div>
+  <div class="fixed inset-0 grid-dots opacity-40 pointer-events-none -z-10"></div>
+
+  <!-- ================= 1. COMPACT TOP NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/70 h-14">
+    <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-2xs flex items-center justify-center p-1">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <defs>
+              <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#4648d4"/>
+              </linearGradient>
+            </defs>
+            <polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="url(#navLogoGrad)" stroke-width="6" stroke-linejoin="round" fill="rgba(240, 246, 255, 0.6)"/>
+            <path d="M44 26 L27 36 L27 52 L38 58 L44 54 L33 48 L33 40 L44 34 Z" fill="url(#navLogoGrad)"/>
+            <path d="M44 74 L27 64 L27 56 L34 60 L44 66 Z" fill="url(#navLogoGrad)"/>
+            <path d="M54 26 L54 74 L62 74 L62 54 L72 74 L82 74 L70 50 L81 26 L71 26 L62 44 L62 26 Z" fill="url(#navLogoGrad)"/>
+            <circle cx="50" cy="50" r="5" fill="#0284c7"/>
+          </svg>
+        </div>
+        <div class="font-display font-bold text-[16px] text-slate-900 tracking-tight flex items-center gap-1.5">
+          SK<span>Core</span> <span class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 border border-sky-200">Tools</span>
+        </div>
+        <div class="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/80 ml-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 led-live"></span>
+          <span class="text-[11px] font-mono text-slate-600 font-medium">Unity 2021+ • Engine Active</span>
+        </div>
+      </div>
+
+      <!-- Center Category Navigation Pills -->
+      <nav class="hidden md:flex items-center gap-1.5 flex-wrap">
+        <button class="filter-tab active px-3 py-1 rounded-lg text-[12px] font-semibold text-sky-700 bg-sky-100/80 border border-sky-200 transition-all shadow-2xs" data-filter="all">
+          All [9]
+        </button>
+        <button class="filter-tab px-3 py-1 rounded-lg text-[12px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent" data-filter="physics">
+          Physics &amp; VFX [2]
+        </button>
+        <button class="filter-tab px-3 py-1 rounded-lg text-[12px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent" data-filter="gamefeel">
+          Game Feel [1]
+        </button>
+        <button class="filter-tab px-3 py-1 rounded-lg text-[12px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent" data-filter="data">
+          Color &amp; Data [2]
+        </button>
+        <button class="filter-tab px-3 py-1 rounded-lg text-[12px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent" data-filter="pipeline">
+          Pipeline &amp; Builds [2]
+        </button>
+        <button class="filter-tab px-3 py-1 rounded-lg text-[12px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent" data-filter="diagnostics">
+          Diagnostics &amp; Tasks [2]
+        </button>
+      </nav>
+
+      <!-- Quick Search Bar -->
+      <div class="relative w-56 sm:w-64">
+        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">search</span>
+        <input type="text" id="searchInput" placeholder="Find studio cartridge..." 
+               class="w-full bg-slate-100/80 hover:bg-white focus:bg-white border border-slate-200 rounded-lg pl-8 pr-9 py-1 text-[12px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/20 transition-all"/>
+        <kbd class="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-mono px-1 py-0.5 rounded bg-white text-slate-500 border border-slate-200 shadow-2xs">⌘K</kbd>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= 2. MISSION CONTROL PROJECT BAR & LIVE TELEMETRY ================= -->
+  <section class="max-w-7xl mx-auto w-full px-6 pt-4 pb-2">
+    <!-- Project Context Ribbon -->
+    <div class="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white/90 border border-slate-200/80 shadow-xs backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80 transition-colors">
+      
+      <!-- Project Meta -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="grid size-8 place-items-center rounded-xl bg-sky-500/10 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400">
+          <span class="material-symbols-outlined text-[19px]">account_tree</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display text-[13.5px] font-bold text-slate-900 dark:text-slate-100" id="hub-project-name">fe-gb-starter_unity</span>
+            <span class="rounded px-1.5 py-0.5 font-mono text-[10px] font-bold bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 dark:text-emerald-400">ACTIVE WORKSPACE</span>
+          </div>
+          <div class="flex items-center gap-2 font-mono text-[11px] text-slate-500 dark:text-zinc-400">
+            <span id="hub-unity-version">Unity 6000.0.32f1 (LTS)</span>
+            <span>•</span>
+            <span class="flex items-center gap-1 text-slate-600 dark:text-zinc-300">
+              <span class="material-symbols-outlined text-[13px] text-sky-500">commit</span>
+              <span id="hub-git-branch">main (Clean)</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-2">
+        <button onclick="window.SKCorePalette && window.SKCorePalette.open()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 bg-slate-50 hover:bg-white text-slate-700 font-semibold text-[11.5px] shadow-2xs transition-all dark:border-zinc-800 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:bg-zinc-800">
+          <span class="material-symbols-outlined text-[16px] text-sky-500">terminal</span>
+          <span>Command Palette</span>
+          <kbd class="font-mono text-[10px] px-1 py-0.2 rounded bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400">⌘K</kbd>
+        </button>
+
+        <button onclick="window.SKCoreDrawer && window.SKCoreDrawer.toggle()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-sky-500/30 bg-sky-500/10 hover:bg-sky-500/20 text-sky-700 font-semibold text-[11.5px] transition-all dark:text-sky-300">
+          <span class="material-symbols-outlined text-[16px] text-sky-500">assignment</span>
+          <span>Quests</span>
+          <span id="hub-active-quests-badge" class="rounded-full bg-sky-600 px-1.5 py-0.2 text-[10px] font-mono text-white hidden">0</span>
+          <kbd class="font-mono text-[10px] px-1 py-0.2 rounded bg-white dark:bg-zinc-900 border border-sky-200 dark:border-sky-800 text-sky-600 dark:text-sky-400">Q</kbd>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Live Telemetry KPI Cards Grid (5 Systems) -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 mt-3">
+      
+      <!-- KPI 1: ATS Asset Health -->
+      <div class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-md transition-all hover:border-sky-400/60 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">ATS PIPELINE</span>
+          <div class="grid size-6 place-items-center rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400">
+            <span class="material-symbols-outlined text-[15px]">auto_fix_high</span>
+          </div>
+        </div>
+        <div class="mt-2 text-[20px] font-display font-extrabold text-slate-900 dark:text-slate-100" id="kpi-ats-count">95 Assets</div>
+        <div class="mt-0.5 text-[11px] font-mono text-slate-500 dark:text-zinc-400" id="kpi-ats-detail">24 MB · 18 Optimized</div>
+        <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px]">
+          <span class="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+            <span class="size-1.5 rounded-full bg-emerald-500"></span> Ready
+          </span>
+          <a href="./ATS/index.html" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-400">Optimize ➔</a>
+        </div>
+      </div>
+
+      <!-- KPI 2: QuestBoard Sprint -->
+      <div class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-md transition-all hover:border-amber-400/60 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">SPRINT BACKLOG</span>
+          <div class="grid size-6 place-items-center rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400">
+            <span class="material-symbols-outlined text-[15px]">assignment</span>
+          </div>
+        </div>
+        <div class="mt-2 text-[20px] font-display font-extrabold text-slate-900 dark:text-slate-100" id="kpi-quest-progress">No Active Tasks</div>
+        <div class="mt-0.5 text-[11px] font-mono text-slate-500 dark:text-zinc-400" id="kpi-quest-detail">0 Active · 0 Bugs</div>
+        <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px]">
+          <span class="text-slate-500 dark:text-zinc-400 font-semibold" id="kpi-quest-status-text">Backlog Ready</span>
+          <a href="./questboard/dist/index.html" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-400">Board ➔</a>
+        </div>
+      </div>
+
+      <!-- KPI 3: Forge CI / Build -->
+      <div class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-md transition-all hover:border-emerald-400/60 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">FORGE BUILD</span>
+          <div class="grid size-6 place-items-center rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+            <span class="material-symbols-outlined text-[15px]">precision_manufacturing</span>
+          </div>
+        </div>
+        <div class="mt-2 text-[20px] font-display font-extrabold text-slate-900 dark:text-slate-100" id="kpi-forge-build">Build #14</div>
+        <div class="mt-0.5 text-[11px] font-mono text-slate-500 dark:text-zinc-400" id="kpi-forge-detail">WebGL / Android · 42s</div>
+        <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px]">
+          <span class="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+            <span class="size-1.5 rounded-full bg-emerald-500"></span> Passed
+          </span>
+          <a href="./Forge/index.html" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-400">Logs ➔</a>
+        </div>
+      </div>
+
+      <!-- KPI 4: OmniProfiler -->
+      <div class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-md transition-all hover:border-purple-400/60 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">OMNIPROFILER</span>
+          <div class="grid size-6 place-items-center rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
+            <span class="material-symbols-outlined text-[15px]">speed</span>
+          </div>
+        </div>
+        <div class="mt-2 text-[20px] font-display font-extrabold text-slate-900 dark:text-slate-100" id="kpi-profiler-time">16.2 ms</div>
+        <div class="mt-0.5 text-[11px] font-mono text-slate-500 dark:text-zinc-400" id="kpi-profiler-detail">60 FPS · 0 Hitches</div>
+        <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px]">
+          <span class="text-purple-600 dark:text-purple-400 font-semibold">148 MB Heap</span>
+          <a href="./profiler/dist/index.html" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-400">Inspect ➔</a>
+        </div>
+      </div>
+
+      <!-- KPI 5: Localization Studio -->
+      <div class="p-3.5 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-md transition-all hover:border-rose-400/60 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">LOCALIZATION</span>
+          <div class="grid size-6 place-items-center rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400">
+            <span class="material-symbols-outlined text-[15px]">translate</span>
+          </div>
+        </div>
+        <div class="mt-2 text-[20px] font-display font-extrabold text-slate-900 dark:text-slate-100" id="kpi-loc-keys">128 Keys</div>
+        <div class="mt-0.5 text-[11px] font-mono text-slate-500 dark:text-zinc-400" id="kpi-loc-detail">6 Locales · 100% QA</div>
+        <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px]">
+          <span class="text-rose-600 dark:text-rose-400 font-semibold">Zero-Alloc C#</span>
+          <a href="./Localization Tools/index.html" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-400">Glossary ➔</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 3. CARTRIDGE DECK (9 CARDS WITH CREATIVE INTERACTIVE STAGES) ================= -->
+  <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-4 mb-10">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="toolsGrid">
+
+      <!-- ================= CARTRIDGE 1: Localization Studio ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="data" data-keywords="localization translation qa csv csharp string json dictionary text language">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-sky-700 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9.5px]">1</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-sky-700 uppercase">DATA &amp; WORKFLOW • v2.6</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-sky-600 transition-colors">translate</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-sky-700 transition-colors">Localization Studio</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Zero-Alloc C# Key Gen &amp; CSV QA Hub</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Polyglot Glyph Nebula -->
+          <div class="creative-stage mb-4" id="stageLocalization" title="Hover to interact with floating language glyphs">
+            <canvas id="canvasLocalization"></canvas>
+            <span class="stage-hint">Polyglot Orbit</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./Localization Tools/index.html" class="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 2: Verlet Physics ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="physics" data-keywords="verlet cloth rope cable cape pelerin bayrak physics simulation mesh mobile 60fps zero-gc">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-cyan-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-cyan-700 text-white text-[9.5px]">2</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-cyan-800 uppercase">PHYSICS &amp; SIMULATION • v2.1</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-cyan-700 transition-colors">waves</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-cyan-700 transition-colors">Verlet Physics</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Cloth &amp; Cable Sim @ 60 FPS Mobile</p>
+
+          <!-- CREATIVE VISUAL STAGE: Real Interactive Verlet Physics Cloth / Rope -->
+          <div class="creative-stage mb-4" id="stageVerlet" title="Move cursor here to sway the Verlet cloth!">
+            <canvas id="canvasVerlet"></canvas>
+            <span class="stage-hint">Interactive Rope</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./Verlet Studio/index.html" class="w-full py-2.5 px-4 rounded-xl bg-cyan-700 hover:bg-cyan-600 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 3: Slash Forge ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="physics" data-keywords="slash trail melee sword weapon vfx shader ribbon urp bloom kılıç efekt">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-purple-700 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-purple-600 text-white text-[9.5px]">3</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-purple-700 uppercase">VFX &amp; SHADERS • v3.0</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-purple-600 transition-colors">flare</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-purple-600 transition-colors">Slash Forge</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">3D Melee Weapon Trail &amp; URP Ribbon</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Neon Blade Slash & Sparks -->
+          <div class="creative-stage mb-4" id="stageSlash" title="Move cursor here to unleash glowing blade slashes!">
+            <canvas id="canvasSlash"></canvas>
+            <span class="stage-hint">Blade Sparks</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./Weapon Slash Effect Generator/3D-Melee-Trail-Slash-VFX-Studio.html" class="w-full py-2.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 4: GameFeel Lab ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="gamefeel" data-keywords="gamefeel curve easing bezier spring animationcurve dotween punch shake recoil jump hermite">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-emerald-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-emerald-600 text-white text-[9.5px]">4</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-emerald-700 uppercase">GAME FEEL &amp; EASING • v2.0</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-600 transition-colors">show_chart</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-emerald-600 transition-colors">GameFeel Lab</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Curve Easing, Trauma &amp; 3D Playgrounds</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Squash & Stretch Spring Physics Orb -->
+          <div class="creative-stage mb-4" id="stageGamefeel" title="Move cursor here to bounce the elastic squash-and-stretch ball!">
+            <canvas id="canvasGamefeel"></canvas>
+            <span class="stage-hint">Squash &amp; Stretch</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./gamefeel-lab/index.html" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 5: Cinematic LUT Studio ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="data" data-keywords="lut color grading post processing uirp hdrp lift gamma gain 3-way color wheel bake 2d texture">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-amber-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-amber-600 text-white text-[9.5px]">5</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-amber-700 uppercase">COLOR &amp; POST • v2.4</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-amber-600 transition-colors">palette</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-amber-700 transition-colors">Cinematic LUT Studio</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">3-Way Wheel Grading &amp; 2D LUT Baker</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Chromatic Split-Screen Prism Lens -->
+          <div class="creative-stage mb-4" id="stageLUT" title="Slide cursor horizontally to reveal raw vs filmic teal-and-orange grade!">
+            <canvas id="canvasLUT"></canvas>
+            <span class="stage-hint">Split Grade Lens</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./lut-studio/index.html" class="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 6: ATS (Asset Transformation Service) ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="pipeline" data-keywords="ats asset transformation optimizer unity6 textures models audio meta guid safety compression format gltf draco fbx">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-violet-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-violet-600 text-white text-[9.5px]">6</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-violet-700 uppercase">ASSET OPTIMIZER • v0.2</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-violet-600 transition-colors">auto_fix_high</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-violet-700 transition-colors">ATS — Asset Optimizer</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Unity 6 Batch Texture, Model &amp; Audio Tuner</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Asset Compression Orbit -->
+          <div class="creative-stage mb-4" id="stageATS" title="Hover to inspect asset compression optimization matrix">
+            <canvas id="canvasATS"></canvas>
+            <span class="stage-hint">GUID Safe Pipeline</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./ATS/index.html" class="w-full py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 7: SKCore Forge ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="pipeline" data-keywords="forge build foundry android ios telegram telemetry commits git github scan automation compiler apk">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-cyan-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-cyan-600 text-white text-[9.5px]">7</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-cyan-700 uppercase">FOUNDRY &amp; TELEMETRY • v1.0</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-cyan-600 transition-colors">terminal</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-cyan-700 transition-colors">SKCore Forge</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Unity Build Foundry &amp; Real-Time Telemetry</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Radar & Build Telemetry Dial -->
+          <div class="creative-stage mb-4" id="stageForge" title="Hover to spin the build telemetry radar scanner">
+            <canvas id="canvasForge"></canvas>
+            <span class="stage-hint">Foundry Scanner</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./Forge/forge/static/index.html" class="w-full py-2.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 8: OmniProfiler ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="diagnostics" data-keywords="profiler omniprofiler performance fps hitch gc leak deep frame time sqlite udp agent memory">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-blue-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-blue-600 text-white text-[9.5px]">8</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-blue-700 uppercase">DIAGNOSTICS • v0.1</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-blue-600 transition-colors">monitoring</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-blue-700 transition-colors">OmniProfiler</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Zero-Overhead Deep Frame Profiler &amp; Leak Detector</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive 60FPS Frame-Time Histogram -->
+          <div class="creative-stage mb-4" id="stageProfiler" title="Hover to inspect real-time frame time budget and hitch spikes">
+            <canvas id="canvasProfiler"></canvas>
+            <span class="stage-hint">60 FPS Budget</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./profiler/dist/index.html" class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= CARTRIDGE 9: QuestBoard ================= -->
+      <div class="tool-card cartridge-card p-5 group" data-category="diagnostics" data-keywords="questboard quest task board milestone kanban sqlite indexeddb localfirst indie project">
+        
+        <!-- Hotkey Badge -->
+        <div class="hotkey-badge absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-xs flex items-center gap-1 font-mono text-[10px] text-amber-800 font-bold">
+          <span>HOTKEY</span>
+          <kbd class="px-1.5 py-0.2 rounded bg-amber-600 text-white text-[9.5px]">9</kbd>
+        </div>
+
+        <div>
+          <!-- Cartridge Head -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+            <span class="font-mono text-[10px] tracking-wider font-bold text-amber-700 uppercase">LOCAL-FIRST OPS • v0.1</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-amber-600 transition-colors">view_kanban</span>
+          </div>
+
+          <h2 class="font-display font-bold text-[18px] text-slate-900 group-hover:text-amber-700 transition-colors">QuestBoard</h2>
+          <p class="text-[12px] text-slate-500 font-mono mt-0.5 mb-3 leading-snug">Local-First SQLite Task &amp; Milestone Board</p>
+
+          <!-- CREATIVE VISUAL STAGE: Interactive Floating Quest Card Stack -->
+          <div class="creative-stage mb-4" id="stageQuestboard" title="Hover to shuffle parchment quest cards">
+            <canvas id="canvasQuestboard"></canvas>
+            <span class="stage-hint">Parchment Stack</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-2 border-t border-slate-100">
+          <a href="./questboard/dist/index.html" class="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+            <span>Launch Studio</span>
+            <span class="font-mono text-[10px] opacity-80">↵</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty Search State -->
+    <div id="emptySearch" class="hidden text-center py-16">
+      <span class="material-symbols-outlined text-[36px] text-slate-400 mb-1">search_off</span>
+      <div class="font-bold text-[14px] text-slate-700">No matching cartridge found</div>
+      <div class="text-[12px] text-slate-500 mt-0.5 font-mono">Try clearing your search query or select another filter.</div>
+    </div>
+
+  </main>
+
+  <!-- ================= BEDSIDE LAMP DARK MODE SWITCHER (STANDALONE) ================= -->
+  <aside id="bedsideLampStation" class="bedside-lamp-station" aria-label="Bedside Lamp Dark Mode Switcher">
+    <svg id="bedsideLampSvg" viewBox="0 0 180 200" class="w-full h-auto select-none overflow-visible" style="filter: drop-shadow(0 8px 20px rgba(0,0,0,0.12));">
+      <defs>
+        <!-- Shade Lit (Warm Amber/Golden Glow) -->
+        <linearGradient id="shadeGradLit" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#d97706"/>
+          <stop offset="20%" stop-color="#f59e0b"/>
+          <stop offset="50%" stop-color="#fef08a"/>
+          <stop offset="80%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
+
+        <!-- Shade Off (Cool Dim Metallic Slate) -->
+        <linearGradient id="shadeGradOff" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#334155"/>
+          <stop offset="30%" stop-color="#64748b"/>
+          <stop offset="70%" stop-color="#475569"/>
+          <stop offset="100%" stop-color="#1e293b"/>
+        </linearGradient>
+
+        <!-- Downward Ambient Light Cone Gradient -->
+        <radialGradient id="lightConeGrad" cx="50%" cy="0%" r="90%">
+          <stop offset="0%" stop-color="#fef08a" stop-opacity="0.65"/>
+          <stop offset="35%" stop-color="#f59e0b" stop-opacity="0.32"/>
+          <stop offset="70%" stop-color="#d97706" stop-opacity="0.1"/>
+          <stop offset="100%" stop-color="#0b0f19" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Brushed Metallic Stem Gradient -->
+        <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#475569"/>
+          <stop offset="35%" stop-color="#cbd5e1"/>
+          <stop offset="65%" stop-color="#f1f5f9"/>
+          <stop offset="100%" stop-color="#334155"/>
+        </linearGradient>
+
+        <!-- Brass / Gold Accents Gradient -->
+        <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#d97706"/>
+          <stop offset="45%" stop-color="#fde047"/>
+          <stop offset="75%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#92400e"/>
+        </linearGradient>
+
+        <!-- Bulb Glow Filter -->
+        <filter id="bulbGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- 1. Ambient Glow & Downward Light Beam (Visible in Light Mode when Lamp is Lit) -->
+      <g id="lampLightBeam" class="transition-opacity duration-500 pointer-events-none opacity-100">
+        <!-- Upward ambient flare -->
+        <ellipse cx="90" cy="42" rx="42" ry="14" fill="url(#lightConeGrad)" opacity="0.65" filter="blur(6px)"/>
+        <!-- Downward wide light cone shining on desk -->
+        <polygon points="54,94 126,94 168,188 12,188" fill="url(#lightConeGrad)" opacity="0.85" filter="blur(5px)"/>
+        <!-- Table light pool -->
+        <ellipse cx="90" cy="184" rx="76" ry="16" fill="url(#lightConeGrad)" opacity="0.9" filter="blur(7px)"/>
+      </g>
+
+      <!-- 2. Lamp Base on Table -->
+      <g id="lampBase">
+        <!-- Shadow cast on page surface -->
+        <ellipse cx="90" cy="186" rx="38" ry="6" fill="rgba(0,0,0,0.22)" class="dark:opacity-50"/>
+        <!-- Tiered metallic bevel foot -->
+        <path d="M58 183 C58 180 72 178 90 178 C108 178 122 180 122 183 L120 186 C120 189 106 191 90 191 C74 191 60 189 60 186 Z" fill="url(#stemGrad)"/>
+        <ellipse cx="90" cy="181" rx="28" ry="4" fill="url(#brassGrad)"/>
+        <ellipse cx="90" cy="179" rx="20" ry="3" fill="url(#stemGrad)"/>
+      </g>
+
+      <!-- 3. Lamp Vertical Stem / Rod -->
+      <g id="lampStem">
+        <rect x="87.5" y="92" width="5" height="90" rx="2" fill="url(#stemGrad)"/>
+        <!-- Center decorative brass collar -->
+        <rect x="85.5" y="136" width="9" height="4.5" rx="1.5" fill="url(#brassGrad)"/>
+        <!-- Top neck collar -->
+        <rect x="84.5" y="90" width="11" height="5" rx="1.5" fill="url(#brassGrad)"/>
+      </g>
+
+      <!-- 4. Lamp Bulb (Glowing inside and underneath shade) -->
+      <g id="lampBulbGroup">
+        <ellipse id="lampBulb" cx="90" cy="98" rx="13" ry="10" fill="#fef08a" filter="url(#bulbGlow)" stroke="#cbd5e1" stroke-width="1" class="transition-all duration-300"/>
+      </g>
+
+      <!-- 5. Lamp Shade (Modern Curved Drum Trapezoid) -->
+      <g id="lampShadeGroup" class="transition-transform duration-300 origin-top cursor-pointer" title="Click lamp or pull cord! [D]">
+        <!-- Finial Top Screw Knob -->
+        <circle cx="90" cy="38" r="4.5" fill="url(#brassGrad)"/>
+        <ellipse cx="90" cy="42" rx="7" ry="2" fill="url(#stemGrad)"/>
+
+        <!-- Shade Body Trapezoid (Lit by default in Light Mode) -->
+        <path id="lampShadeBody" d="M64 45 L116 45 L134 96 L46 96 Z" 
+              fill="url(#shadeGradLit)" 
+              stroke="rgba(148, 163, 184, 0.5)" 
+              stroke-width="1.2"
+              class="transition-all duration-300"
+              style="filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.55));" />
+
+        <!-- Top Rim Curve -->
+        <ellipse cx="90" cy="45" rx="26" ry="4.5" fill="rgba(255,255,255,0.4)" stroke="rgba(148, 163, 184, 0.4)" stroke-width="1"/>
+
+        <!-- Bottom Brass Rim Ring -->
+        <ellipse id="shadeBottomRim" cx="90" cy="96" rx="44" ry="7.5" fill="url(#brassGrad)" opacity="0.85"/>
+
+        <!-- Subtle Decorative Brass Stripe -->
+        <path d="M55 80 L125 80" stroke="url(#brassGrad)" stroke-width="1.5" opacity="0.7"/>
+      </g>
+
+      <!-- 6. THE DANGLING PULL CORD / CHAIN ("kenarından ip sarkan") -->
+      <!-- Placed on the right side under the shade rim -->
+      <g id="lampPullCord" class="cord-interactive cursor-pointer select-none group/cord" title="Pull cord to switch theme! [D]">
+        <!-- Large transparent clickable hotspot -->
+        <rect x="98" y="94" width="36" height="74" fill="transparent" class="hover:fill-amber-500/10 rounded-full transition-colors"/>
+        
+        <!-- Beaded Pull Chain -->
+        <line id="cordString" x1="114" y1="96" x2="114" y2="148" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="1.5 2.5" stroke-linecap="round" class="transition-colors group-hover/cord:stroke-amber-500"/>
+        
+        <!-- Brass Teardrop Pull Knob / Bead Toggle -->
+        <g id="cordKnob" class="transition-transform group-hover/cord:scale-110 origin-center">
+          <circle cx="114" cy="148" r="2.5" fill="url(#brassGrad)"/>
+          <path d="M111 150 C111 149 117 149 117 150 L116 158 C116 160.5 112 160.5 112 158 Z" fill="url(#brassGrad)" stroke="#92400e" stroke-width="0.5"/>
+          <circle cx="114" cy="159" r="2.8" fill="url(#brassGrad)"/>
+          <circle cx="114" cy="159" r="1" fill="#fef08a"/>
+        </g>
+
+        <!-- Pull Hint Badge (Pulsing) -->
+        <g id="pullHintBadge" class="pointer-events-none transition-opacity duration-300">
+          <rect x="122" y="142" width="48" height="18" rx="4" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="0.8"/>
+          <text x="146" y="154" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#38bdf8">PULL ⇣</text>
+        </g>
+      </g>
+    </svg>
+  </aside>
+
+  <!-- ================= 4. TELEMETRY DOCK FOOTER ================= -->
+  <footer class="mt-auto bg-white/90 backdrop-blur-md border-t border-slate-200/80 h-9 flex items-center px-6">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-[11px] font-mono text-slate-500">
+      <div class="flex items-center gap-3">
+        <span class="font-semibold text-slate-800">SKCore Tools Suite</span>
+        <span>•</span>
+        <span>Unity 2021+ Verified</span>
+        <span>•</span>
+        <span class="text-emerald-700 font-medium flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 100% Offline Standalone
+        </span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4">
+        <span>Hotkeys: <kbd class="px-1 py-0.2 rounded bg-slate-100 border border-slate-300 text-slate-700 font-bold">[1-9]</kbd></span>
+        <span>Search: <kbd class="px-1 py-0.2 rounded bg-slate-100 border border-slate-300 text-slate-700 font-bold">[/]</kbd></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= 5. CREATIVE INTERACTIVE CANVAS SCRIPTS ================= -->
+  <script>
+    (function() {
+      'use strict';
+
+      // -------------------------------------------------------------
+      // 1. LOCALIZATION: Polyglot Floating Glyph Orbit
+      // -------------------------------------------------------------
+      const cv1 = document.getElementById('canvasLocalization');
+      const st1 = document.getElementById('stageLocalization');
+      if (cv1 && st1) {
+        const ctx1 = cv1.getContext('2d');
+        const glyphs = ['A', '文', 'あ', 'Ω', 'Ж', '한', 'SK', 'ع', 'Ö', 'É'];
+        let w1, h1, angle1 = 0, mouseX1 = -100, mouseY1 = -100;
+
+        function resize1() {
+          w1 = cv1.width = st1.clientWidth * window.devicePixelRatio;
+          h1 = cv1.height = st1.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize1);
+        resize1();
+
+        st1.addEventListener('mousemove', e => {
+          const r = st1.getBoundingClientRect();
+          mouseX1 = (e.clientX - r.left) * window.devicePixelRatio;
+          mouseY1 = (e.clientY - r.top) * window.devicePixelRatio;
+        });
+        st1.addEventListener('mouseleave', () => { mouseX1 = -100; mouseY1 = -100; });
+
+        function draw1() {
+          ctx1.clearRect(0, 0, w1, h1);
+          angle1 += 0.012;
+          const cx = w1 / 2, cy = h1 / 2;
+          const rx = w1 * 0.36, ry = h1 * 0.28;
+
+          // Subtle orbital rings
+          ctx1.strokeStyle = 'rgba(2, 132, 199, 0.12)';
+          ctx1.lineWidth = 1.5;
+          ctx1.beginPath();
+          ctx1.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+          ctx1.stroke();
+
+          // Central glowing node
+          ctx1.fillStyle = '#0284c7';
+          ctx1.beginPath();
+          ctx1.arc(cx, cy, 3 * window.devicePixelRatio, 0, Math.PI * 2);
+          ctx1.fill();
+
+          for (let i = 0; i < glyphs.length; i++) {
+            const a = angle1 + (i * Math.PI * 2 / glyphs.length);
+            let gx = cx + Math.cos(a) * rx;
+            let gy = cy + Math.sin(a) * ry;
+
+            // Mouse magnet repulsion
+            const dx = gx - mouseX1;
+            const dy = gy - mouseY1;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 80 * window.devicePixelRatio && dist > 0) {
+              gx += (dx / dist) * 18 * window.devicePixelRatio;
+              gy += (dy / dist) * 18 * window.devicePixelRatio;
+            }
+
+            const depth = Math.sin(a);
+            const scale = 0.8 + depth * 0.25;
+            const alpha = 0.35 + (depth + 1) * 0.3;
+
+            ctx1.font = `600 ${Math.round(14 * scale * window.devicePixelRatio)}px 'JetBrains Mono', sans-serif`;
+            ctx1.fillStyle = `rgba(2, 132, 199, ${alpha})`;
+            ctx1.textAlign = 'center';
+            ctx1.textBaseline = 'middle';
+            ctx1.fillText(glyphs[i], gx, gy);
+          }
+
+          requestAnimationFrame(draw1);
+        }
+        draw1();
+      }
+
+      // -------------------------------------------------------------
+      // 2. VERLET: Real Interactive Rope / Cloth String
+      // -------------------------------------------------------------
+      const cv2 = document.getElementById('canvasVerlet');
+      const st2 = document.getElementById('stageVerlet');
+      if (cv2 && st2) {
+        const ctx2 = cv2.getContext('2d');
+        let w2, h2;
+        function resize2() {
+          w2 = cv2.width = st2.clientWidth * window.devicePixelRatio;
+          h2 = cv2.height = st2.clientHeight * window.devicePixelRatio;
+          initVerlet();
+        }
+
+        const NUM_PTS = 9;
+        let points = [];
+        let mouseX2 = -100, mouseY2 = -100, isHover2 = false;
+
+        function initVerlet() {
+          points = [];
+          const startX = w2 * 0.15;
+          const endX = w2 * 0.85;
+          const y = h2 * 0.35;
+          for (let i = 0; i < NUM_PTS; i++) {
+            const x = startX + (endX - startX) * (i / (NUM_PTS - 1));
+            points.push({
+              x: x, y: y,
+              oldX: x, oldY: y,
+              pinned: (i === 0 || i === NUM_PTS - 1)
+            });
+          }
+        }
+
+        window.addEventListener('resize', resize2);
+        resize2();
+
+        st2.addEventListener('mousemove', e => {
+          const r = st2.getBoundingClientRect();
+          mouseX2 = (e.clientX - r.left) * window.devicePixelRatio;
+          mouseY2 = (e.clientY - r.top) * window.devicePixelRatio;
+          isHover2 = true;
+        });
+        st2.addEventListener('mouseleave', () => { isHover2 = false; });
+
+        function updateVerlet() {
+          // Physics step
+          const gravity = 0.28 * window.devicePixelRatio;
+          for (const p of points) {
+            if (p.pinned) continue;
+            const vx = (p.x - p.oldX) * 0.98;
+            const vy = (p.y - p.oldY) * 0.98;
+            p.oldX = p.x;
+            p.oldY = p.y;
+            p.x += vx;
+            p.y += vy + gravity;
+
+            // Cursor push
+            if (isHover2) {
+              const dx = p.x - mouseX2;
+              const dy = p.y - mouseY2;
+              const d2 = dx * dx + dy * dy;
+              const r = 40 * window.devicePixelRatio;
+              if (d2 < r * r && d2 > 0) {
+                const dist = Math.sqrt(d2);
+                p.x += (dx / dist) * (r - dist) * 0.45;
+                p.y += (dy / dist) * (r - dist) * 0.45;
+              }
+            }
+          }
+
+          // Relax constraints (relaxation iterations)
+          const targetDist = (w2 * 0.7) / (NUM_PTS - 1);
+          for (let iter = 0; iter < 5; iter++) {
+            for (let i = 0; i < points.length - 1; i++) {
+              const p1 = points[i];
+              const p2 = points[i + 1];
+              const dx = p2.x - p1.x;
+              const dy = p2.y - p1.y;
+              const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+              const diff = (dist - targetDist) / dist;
+              if (!p1.pinned) { p1.x += dx * 0.5 * diff; p1.y += dy * 0.5 * diff; }
+              if (!p2.pinned) { p2.x -= dx * 0.5 * diff; p2.y -= dy * 0.5 * diff; }
+            }
+          }
+        }
+
+        function draw2() {
+          ctx2.clearRect(0, 0, w2, h2);
+          updateVerlet();
+
+          // Draw Rope Curve
+          ctx2.beginPath();
+          ctx2.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            ctx2.lineTo(points[i].x, points[i].y);
+          }
+          ctx2.strokeStyle = '#0891b2';
+          ctx2.lineWidth = 3.5 * window.devicePixelRatio;
+          ctx2.lineCap = 'round';
+          ctx2.lineJoin = 'round';
+          ctx2.stroke();
+
+          // Draw Physics Nodes
+          for (const p of points) {
+            ctx2.fillStyle = p.pinned ? '#0e7490' : '#38bdf8';
+            ctx2.beginPath();
+            ctx2.arc(p.x, p.y, (p.pinned ? 4.5 : 3) * window.devicePixelRatio, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.strokeStyle = '#ffffff';
+            ctx2.lineWidth = 1.5 * window.devicePixelRatio;
+            ctx2.stroke();
+          }
+
+          requestAnimationFrame(draw2);
+        }
+        draw2();
+      }
+
+      // -------------------------------------------------------------
+      // 3. SLASH FORGE: Dynamic Blade Slash & Glowing Sparks
+      // -------------------------------------------------------------
+      const cv3 = document.getElementById('canvasSlash');
+      const st3 = document.getElementById('stageSlash');
+      if (cv3 && st3) {
+        const ctx3 = cv3.getContext('2d');
+        let w3, h3;
+        function resize3() {
+          w3 = cv3.width = st3.clientWidth * window.devicePixelRatio;
+          h3 = cv3.height = st3.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize3);
+        resize3();
+
+        let sparks = [];
+        let slashProgress = 0;
+        let isSlashing = false;
+
+        function triggerSlash(mx, my) {
+          isSlashing = true;
+          slashProgress = 0;
+          for (let i = 0; i < 18; i++) {
+            sparks.push({
+              x: mx || w3 * 0.5,
+              y: my || h3 * 0.5,
+              vx: (Math.random() - 0.5) * 8 * window.devicePixelRatio,
+              vy: (Math.random() - 0.5) * 8 * window.devicePixelRatio,
+              life: 1.0,
+              color: i % 2 === 0 ? '#c084fc' : '#38bdf8'
+            });
+          }
+        }
+
+        st3.addEventListener('mouseenter', e => {
+          const r = st3.getBoundingClientRect();
+          triggerSlash((e.clientX - r.left) * window.devicePixelRatio, (e.clientY - r.top) * window.devicePixelRatio);
+        });
+
+        st3.addEventListener('mousemove', e => {
+          if (Math.random() < 0.25) {
+            const r = st3.getBoundingClientRect();
+            triggerSlash((e.clientX - r.left) * window.devicePixelRatio, (e.clientY - r.top) * window.devicePixelRatio);
+          }
+        });
+
+        // Auto trigger periodically if idle
+        setInterval(() => {
+          if (!isSlashing && Math.random() < 0.6) triggerSlash(w3 * 0.5, h3 * 0.5);
+        }, 2200);
+
+        function draw3() {
+          ctx3.clearRect(0, 0, w3, h3);
+
+          slashProgress = Math.min(slashProgress + 0.04, 1.2);
+
+          // Draw Glowing Slash Arc
+          const startX = w3 * 0.15, startY = h3 * 0.78;
+          const ctrlX = w3 * 0.55, ctrlY = h3 * 0.08;
+          const endX = w3 * 0.85, endY = h3 * 0.45;
+
+          const grad = ctx3.createLinearGradient(startX, startY, endX, endY);
+          grad.addColorStop(0, 'rgba(147, 51, 234, 0.1)');
+          grad.addColorStop(0.5, 'rgba(56, 189, 248, 0.95)');
+          grad.addColorStop(1, 'rgba(245, 158, 11, 0.95)');
+
+          ctx3.beginPath();
+          ctx3.moveTo(startX, startY);
+          ctx3.quadraticCurveTo(ctrlX, ctrlY, endX, endY);
+          ctx3.lineWidth = 5 * window.devicePixelRatio;
+          ctx3.strokeStyle = grad;
+          ctx3.lineCap = 'round';
+          ctx3.stroke();
+
+          // Core bright white inner streak
+          ctx3.beginPath();
+          ctx3.moveTo(startX, startY);
+          ctx3.quadraticCurveTo(ctrlX, ctrlY, endX, endY);
+          ctx3.lineWidth = 1.8 * window.devicePixelRatio;
+          ctx3.strokeStyle = '#ffffff';
+          ctx3.stroke();
+
+          // Render & update sparks
+          for (let i = sparks.length - 1; i >= 0; i--) {
+            const s = sparks[i];
+            s.x += s.vx;
+            s.y += s.vy;
+            s.life -= 0.035;
+            if (s.life <= 0) {
+              sparks.splice(i, 1);
+              continue;
+            }
+            ctx3.fillStyle = s.color;
+            ctx3.globalAlpha = s.life;
+            ctx3.beginPath();
+            ctx3.arc(s.x, s.y, 2 * window.devicePixelRatio * s.life, 0, Math.PI * 2);
+            ctx3.fill();
+            ctx3.globalAlpha = 1;
+          }
+
+          requestAnimationFrame(draw3);
+        }
+        draw3();
+      }
+
+      // -------------------------------------------------------------
+      // 4. GAMEFEEL: Interactive Squash & Stretch Spring Physics Orb
+      // -------------------------------------------------------------
+      const cv4 = document.getElementById('canvasGamefeel');
+      const st4 = document.getElementById('stageGamefeel');
+      if (cv4 && st4) {
+        const ctx4 = cv4.getContext('2d');
+        let w4, h4;
+        function resize4() {
+          w4 = cv4.width = st4.clientWidth * window.devicePixelRatio;
+          h4 = cv4.height = st4.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize4);
+        resize4();
+
+        let t4 = 0;
+        let scaleX = 1, scaleY = 1;
+        let ballY = 0, velY = 0;
+        let isBouncing = true;
+
+        st4.addEventListener('mouseenter', () => {
+          velY = -8 * window.devicePixelRatio;
+          isBouncing = true;
+        });
+
+        st4.addEventListener('click', () => {
+          velY = -12 * window.devicePixelRatio;
+        });
+
+        function draw4() {
+          ctx4.clearRect(0, 0, w4, h4);
+          t4 += 0.035;
+
+          const groundY = h4 * 0.72;
+          const cx = w4 * 0.5;
+
+          // Spring damp simulation
+          velY += 0.45 * window.devicePixelRatio; // gravity
+          ballY += velY;
+
+          if (ballY >= 0) {
+            ballY = 0;
+            velY = -velY * 0.72; // bounce coefficient
+            // Squash upon impact
+            scaleX = 1.35;
+            scaleY = 0.65;
+          }
+
+          // Return to normal scale (elastic spring recovery)
+          scaleX += (1 - scaleX) * 0.15;
+          scaleY += (1 - scaleY) * 0.15;
+
+          // Ground shadow
+          const shadowWidth = (28 * (1 - ballY / (h4 * 0.6)) * scaleX) * window.devicePixelRatio;
+          ctx4.fillStyle = 'rgba(16, 185, 129, 0.12)';
+          ctx4.beginPath();
+          ctx4.ellipse(cx, groundY + 4 * window.devicePixelRatio, Math.max(shadowWidth, 6), 4 * window.devicePixelRatio, 0, 0, Math.PI * 2);
+          ctx4.fill();
+
+          // Draw Bouncing Juicy Ball
+          const py = groundY - 14 * window.devicePixelRatio + ballY;
+          ctx4.save();
+          ctx4.translate(cx, py);
+          ctx4.scale(scaleX, scaleY);
+
+          // Ball body
+          const ballGrad = ctx4.createLinearGradient(-12, -12, 12, 12);
+          ballGrad.addColorStop(0, '#34d399');
+          ballGrad.addColorStop(1, '#059669');
+          ctx4.fillStyle = ballGrad;
+          ctx4.beginPath();
+          ctx4.arc(0, 0, 14 * window.devicePixelRatio, 0, Math.PI * 2);
+          ctx4.fill();
+
+          // Highlight
+          ctx4.fillStyle = 'rgba(255, 255, 255, 0.5)';
+          ctx4.beginPath();
+          ctx4.arc(-4 * window.devicePixelRatio, -5 * window.devicePixelRatio, 4 * window.devicePixelRatio, 0, Math.PI * 2);
+          ctx4.fill();
+
+          ctx4.restore();
+
+          // Subtle background easing curve trace
+          ctx4.strokeStyle = 'rgba(5, 150, 105, 0.15)';
+          ctx4.lineWidth = 1.5 * window.devicePixelRatio;
+          ctx4.beginPath();
+          ctx4.moveTo(w4 * 0.15, h4 * 0.72);
+          ctx4.bezierCurveTo(w4 * 0.35, h4 * 0.15, w4 * 0.65, h4 * 0.95, w4 * 0.85, h4 * 0.35);
+          ctx4.stroke();
+
+          requestAnimationFrame(draw4);
+        }
+        draw4();
+      }
+
+      // -------------------------------------------------------------
+      // 5. LUT STUDIO: Interactive Chromatic Split-Screen Prism
+      // -------------------------------------------------------------
+      const cv5 = document.getElementById('canvasLUT');
+      const st5 = document.getElementById('stageLUT');
+      if (cv5 && st5) {
+        const ctx5 = cv5.getContext('2d');
+        let w5, h5;
+        let splitPos = 0.5; // 0..1
+        let targetSplit = 0.5;
+
+        function resize5() {
+          w5 = cv5.width = st5.clientWidth * window.devicePixelRatio;
+          h5 = cv5.height = st5.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize5);
+        resize5();
+
+        st5.addEventListener('mousemove', e => {
+          const r = st5.getBoundingClientRect();
+          targetSplit = Math.max(0.05, Math.min(0.95, (e.clientX - r.left) / r.width));
+        });
+        st5.addEventListener('mouseleave', () => { targetSplit = 0.5; });
+
+        function draw5() {
+          ctx5.clearRect(0, 0, w5, h5);
+          splitPos += (targetSplit - splitPos) * 0.12;
+
+          const splitX = w5 * splitPos;
+
+          // Left side: Neutral Raw Rec.709
+          ctx5.save();
+          ctx5.beginPath();
+          ctx5.rect(0, 0, splitX, h5);
+          ctx5.clip();
+
+          const isDarkStage = document.documentElement.classList.contains('dark');
+          const rawGrad = ctx5.createLinearGradient(0, 0, w5, h5);
+          if (isDarkStage) {
+            rawGrad.addColorStop(0, '#1e293b');
+            rawGrad.addColorStop(0.5, '#152033');
+            rawGrad.addColorStop(1, '#0f172a');
+          } else {
+            rawGrad.addColorStop(0, '#f1f5f9');
+            rawGrad.addColorStop(0.5, '#e2e8f0');
+            rawGrad.addColorStop(1, '#cbd5e1');
+          }
+          ctx5.fillStyle = rawGrad;
+          ctx5.fillRect(0, 0, w5, h5);
+
+          // Raw label
+          ctx5.font = `600 ${Math.round(11 * window.devicePixelRatio)}px 'JetBrains Mono', sans-serif`;
+          ctx5.fillStyle = isDarkStage ? '#94a3b8' : '#64748b';
+          ctx5.textAlign = 'left';
+          ctx5.fillText('RAW REC.709', 14 * window.devicePixelRatio, 24 * window.devicePixelRatio);
+          ctx5.restore();
+
+          // Right side: Cinematic ACES Teal & Orange Grade
+          ctx5.save();
+          ctx5.beginPath();
+          ctx5.rect(splitX, 0, w5 - splitX, h5);
+          ctx5.clip();
+
+          const lutGrad = ctx5.createLinearGradient(0, 0, w5, h5);
+          lutGrad.addColorStop(0, '#fef3c7');
+          lutGrad.addColorStop(0.5, '#bae6fd');
+          lutGrad.addColorStop(1, '#67e8f9');
+          ctx5.fillStyle = lutGrad;
+          ctx5.fillRect(0, 0, w5, h5);
+
+          // Graded label
+          ctx5.font = `700 ${Math.round(11 * window.devicePixelRatio)}px 'JetBrains Mono', sans-serif`;
+          ctx5.fillStyle = '#d97706';
+          ctx5.textAlign = 'right';
+          ctx5.fillText('ACES TEAL & ORANGE', (w5 - 14 * window.devicePixelRatio), 24 * window.devicePixelRatio);
+          ctx5.restore();
+
+          // Split line divider
+          ctx5.strokeStyle = '#ffffff';
+          ctx5.lineWidth = 2.5 * window.devicePixelRatio;
+          ctx5.beginPath();
+          ctx5.moveTo(splitX, 0);
+          ctx5.lineTo(splitX, h5);
+          ctx5.stroke();
+
+          // Split handle bead
+          ctx5.fillStyle = '#d97706';
+          ctx5.beginPath();
+          ctx5.arc(splitX, h5 * 0.5, 5 * window.devicePixelRatio, 0, Math.PI * 2);
+          ctx5.fill();
+          ctx5.strokeStyle = '#ffffff';
+          ctx5.lineWidth = 2 * window.devicePixelRatio;
+          ctx5.stroke();
+
+          requestAnimationFrame(draw5);
+        }
+        draw5();
+      }
+
+      // -------------------------------------------------------------
+      // 6. ATS: Interactive Asset Transformation Orbit
+      // -------------------------------------------------------------
+      const cv6 = document.getElementById('canvasATS');
+      const st6 = document.getElementById('stageATS');
+      if (cv6 && st6) {
+        const ctx6 = cv6.getContext('2d');
+        let w6, h6;
+        function resize6() {
+          w6 = cv6.width = st6.clientWidth * window.devicePixelRatio;
+          h6 = cv6.height = st6.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize6);
+        resize6();
+
+        let t6 = 0;
+        let isHover6 = false;
+        st6.addEventListener('mouseenter', () => { isHover6 = true; });
+        st6.addEventListener('mouseleave', () => { isHover6 = false; });
+
+        function draw6() {
+          ctx6.clearRect(0, 0, w6, h6);
+          t6 += isHover6 ? 0.045 : 0.02;
+
+          const cx = w6 * 0.5;
+          const cy = h6 * 0.5;
+          const dpr = window.devicePixelRatio;
+
+          // Glowing central core (GUID lock anchor)
+          const coreGrad = ctx6.createRadialGradient(cx, cy, 2 * dpr, cx, cy, 26 * dpr);
+          coreGrad.addColorStop(0, 'rgba(139, 92, 246, 0.45)');
+          coreGrad.addColorStop(1, 'rgba(139, 92, 246, 0)');
+          ctx6.fillStyle = coreGrad;
+          ctx6.beginPath();
+          ctx6.arc(cx, cy, 26 * dpr, 0, Math.PI * 2);
+          ctx6.fill();
+
+          // Central lock node
+          ctx6.fillStyle = '#8b5cf6';
+          ctx6.beginPath();
+          ctx6.arc(cx, cy, 4 * dpr, 0, Math.PI * 2);
+          ctx6.fill();
+
+          // Orbiting Asset Nodes: [0] Texture, [1] Model, [2] Audio
+          const nodes = [
+            { label: 'TEX', color: '#c084fc', r: 38 * dpr, speed: 1, phase: 0 },
+            { label: 'GEO', color: '#818cf8', r: 38 * dpr, speed: 1, phase: (Math.PI * 2) / 3 },
+            { label: 'SND', color: '#38bdf8', r: 38 * dpr, speed: 1, phase: (Math.PI * 4) / 3 }
+          ];
+
+          // Orbital track ring
+          ctx6.strokeStyle = 'rgba(139, 92, 246, 0.15)';
+          ctx6.lineWidth = 1.2 * dpr;
+          ctx6.beginPath();
+          ctx6.ellipse(cx, cy, 42 * dpr, 28 * dpr, 0, 0, Math.PI * 2);
+          ctx6.stroke();
+
+          nodes.forEach(n => {
+            const angle = t6 * n.speed + n.phase;
+            const nx = cx + Math.cos(angle) * 42 * dpr;
+            const ny = cy + Math.sin(angle) * 28 * dpr;
+
+            // Connection ray to center
+            ctx6.strokeStyle = 'rgba(139, 92, 246, 0.25)';
+            ctx6.lineWidth = 1 * dpr;
+            ctx6.beginPath();
+            ctx6.moveTo(cx, cy);
+            ctx6.lineTo(nx, ny);
+            ctx6.stroke();
+
+            // Node pill
+            ctx6.fillStyle = n.color;
+            ctx6.beginPath();
+            ctx6.arc(nx, ny, 7 * dpr, 0, Math.PI * 2);
+            ctx6.fill();
+
+            ctx6.font = `700 ${Math.round(8 * dpr)}px 'JetBrains Mono', monospace`;
+            ctx6.fillStyle = '#ffffff';
+            ctx6.textAlign = 'center';
+            ctx6.textBaseline = 'middle';
+            ctx6.fillText(n.label, nx, ny);
+          });
+
+          requestAnimationFrame(draw6);
+        }
+        draw6();
+      }
+
+      // -------------------------------------------------------------
+      // 7. FORGE: Interactive Radar & Build Telemetry Dial
+      // -------------------------------------------------------------
+      const cv7 = document.getElementById('canvasForge');
+      const st7 = document.getElementById('stageForge');
+      if (cv7 && st7) {
+        const ctx7 = cv7.getContext('2d');
+        let w7, h7;
+        function resize7() {
+          w7 = cv7.width = st7.clientWidth * window.devicePixelRatio;
+          h7 = cv7.height = st7.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize7);
+        resize7();
+
+        let t7 = 0;
+        let isHover7 = false;
+        st7.addEventListener('mouseenter', () => { isHover7 = true; });
+        st7.addEventListener('mouseleave', () => { isHover7 = false; });
+
+        function draw7() {
+          ctx7.clearRect(0, 0, w7, h7);
+          t7 += isHover7 ? 0.05 : 0.022;
+
+          const cx = w7 * 0.5;
+          const cy = h7 * 0.5;
+          const dpr = window.devicePixelRatio;
+          const rad = Math.min(w7, h7) * 0.36;
+
+          // Outer circular gauge
+          ctx7.strokeStyle = 'rgba(0, 242, 254, 0.12)';
+          ctx7.lineWidth = 2 * dpr;
+          ctx7.beginPath();
+          ctx7.arc(cx, cy, rad, 0, Math.PI * 2);
+          ctx7.stroke();
+
+          // Progress segment arc
+          ctx7.strokeStyle = '#00f2fe';
+          ctx7.lineWidth = 2.5 * dpr;
+          ctx7.beginPath();
+          ctx7.arc(cx, cy, rad, -Math.PI * 0.5, -Math.PI * 0.5 + ((t7 * 0.8) % (Math.PI * 2)));
+          ctx7.stroke();
+
+          // Inner grid crosshairs
+          ctx7.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+          ctx7.lineWidth = 1 * dpr;
+          ctx7.beginPath();
+          ctx7.moveTo(cx - rad * 1.1, cy);
+          ctx7.lineTo(cx + rad * 1.1, cy);
+          ctx7.moveTo(cx, cy - rad * 1.1);
+          ctx7.lineTo(cx, cy + rad * 1.1);
+          ctx7.stroke();
+
+          // Rotating radar scanner beam
+          const sweepAngle = t7 * 1.4;
+          const sweepGrad = ctx7.createRadialGradient(cx, cy, 2 * dpr, cx, cy, rad);
+          sweepGrad.addColorStop(0, 'rgba(0, 242, 254, 0.35)');
+          sweepGrad.addColorStop(1, 'rgba(0, 242, 254, 0.0)');
+          ctx7.fillStyle = sweepGrad;
+          ctx7.beginPath();
+          ctx7.moveTo(cx, cy);
+          ctx7.arc(cx, cy, rad, sweepAngle, sweepAngle + 0.4);
+          ctx7.closePath();
+          ctx7.fill();
+
+          // Center telemetry blip
+          ctx7.fillStyle = '#00e5a3';
+          ctx7.beginPath();
+          ctx7.arc(cx, cy, 3 * dpr, 0, Math.PI * 2);
+          ctx7.fill();
+
+          requestAnimationFrame(draw7);
+        }
+        draw7();
+      }
+
+      // -------------------------------------------------------------
+      // 8. OMNIPROFILER: Interactive 60FPS Frame-Time Histogram
+      // -------------------------------------------------------------
+      const cv8 = document.getElementById('canvasProfiler');
+      const st8 = document.getElementById('stageProfiler');
+      if (cv8 && st8) {
+        const ctx8 = cv8.getContext('2d');
+        let w8, h8;
+        function resize8() {
+          w8 = cv8.width = st8.clientWidth * window.devicePixelRatio;
+          h8 = cv8.height = st8.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize8);
+        resize8();
+
+        const BARS = 28;
+        let heights = Array(BARS).fill(16.6);
+        let spikeTimer = 0;
+        let isHover8 = false;
+        st8.addEventListener('mouseenter', () => { isHover8 = true; });
+        st8.addEventListener('mouseleave', () => { isHover8 = false; });
+
+        function draw8() {
+          ctx8.clearRect(0, 0, w8, h8);
+          const dpr = window.devicePixelRatio;
+
+          spikeTimer++;
+          if (spikeTimer > (isHover8 ? 8 : 22)) {
+            spikeTimer = 0;
+            heights.shift();
+            const isSpike = Math.random() < (isHover8 ? 0.4 : 0.15);
+            heights.push(isSpike ? 26 + Math.random() * 20 : 13 + Math.random() * 5);
+          }
+
+          const barW = (w8 / BARS) * 0.72;
+          const gap = (w8 / BARS) * 0.28;
+          const baseY = h8 * 0.82;
+          const budgetY = baseY - (16.6 / 50) * (h8 * 0.65);
+
+          // 16.6ms 60 FPS Target Budget Line
+          ctx8.strokeStyle = 'rgba(59, 130, 246, 0.4)';
+          ctx8.lineWidth = 1 * dpr;
+          ctx8.setLineDash([3 * dpr, 3 * dpr]);
+          ctx8.beginPath();
+          ctx8.moveTo(0, budgetY);
+          ctx8.lineTo(w8, budgetY);
+          ctx8.stroke();
+          ctx8.setLineDash([]);
+
+          ctx8.font = `600 ${Math.round(8 * dpr)}px 'JetBrains Mono', monospace`;
+          ctx8.fillStyle = 'rgba(59, 130, 246, 0.6)';
+          ctx8.fillText('16.6ms (60FPS)', 6 * dpr, budgetY - 3 * dpr);
+
+          // Draw histogram bars
+          for (let i = 0; i < BARS; i++) {
+            const val = heights[i];
+            const barH = (val / 50) * (h8 * 0.65);
+            const x = i * (barW + gap) + gap;
+            const y = baseY - barH;
+
+            if (val > 25) {
+              ctx8.fillStyle = '#ef4444'; // Hitch spike
+            } else if (val > 18) {
+              ctx8.fillStyle = '#f59e0b'; // Minor budget warning
+            } else {
+              ctx8.fillStyle = '#3b82f6'; // Clean frame
+            }
+
+            ctx8.fillRect(x, y, barW, barH);
+          }
+
+          requestAnimationFrame(draw8);
+        }
+        draw8();
+      }
+
+      // -------------------------------------------------------------
+      // 9. QUESTBOARD: Interactive Floating Quest Card Stack
+      // -------------------------------------------------------------
+      const cv9 = document.getElementById('canvasQuestboard');
+      const st9 = document.getElementById('stageQuestboard');
+      if (cv9 && st9) {
+        const ctx9 = cv9.getContext('2d');
+        let w9, h9;
+        function resize9() {
+          w9 = cv9.width = st9.clientWidth * window.devicePixelRatio;
+          h9 = cv9.height = st9.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resize9);
+        resize9();
+
+        let t9 = 0;
+        let isHover9 = false;
+        st9.addEventListener('mouseenter', () => { isHover9 = true; });
+        st9.addEventListener('mouseleave', () => { isHover9 = false; });
+
+        function draw9() {
+          ctx9.clearRect(0, 0, w9, h9);
+          t9 += isHover9 ? 0.05 : 0.02;
+
+          const cy = h9 * 0.5;
+          const dpr = window.devicePixelRatio;
+
+          // 3 Kanban columns preview cards
+          const cards = [
+            { title: 'TODO', colX: w9 * 0.24, color: '#f59e0b' },
+            { title: 'PROGRESS', colX: w9 * 0.5, color: '#e0b072' },
+            { title: 'DONE', colX: w9 * 0.76, color: '#10b981' }
+          ];
+
+          cards.forEach((col, idx) => {
+            const cardW = 34 * dpr;
+            const cardH = 46 * dpr;
+            const floatY = cy + Math.sin(t9 + idx * 1.3) * (4 * dpr);
+
+            // Card shadow
+            ctx9.fillStyle = 'rgba(0, 0, 0, 0.08)';
+            ctx9.beginPath();
+            ctx9.roundRect(col.colX - cardW * 0.5 + 2 * dpr, floatY - cardH * 0.5 + 4 * dpr, cardW, cardH, 4 * dpr);
+            ctx9.fill();
+
+            // Parchment Card body
+            const isDark = document.documentElement.classList.contains('dark');
+            ctx9.fillStyle = isDark ? '#1c1f28' : '#ffffff';
+            ctx9.strokeStyle = isDark ? 'rgba(224, 176, 114, 0.25)' : 'rgba(224, 176, 114, 0.4)';
+            ctx9.lineWidth = 1.2 * dpr;
+            ctx9.beginPath();
+            ctx9.roundRect(col.colX - cardW * 0.5, floatY - cardH * 0.5, cardW, cardH, 4 * dpr);
+            ctx9.fill();
+            ctx9.stroke();
+
+            // Card status pill
+            ctx9.fillStyle = col.color;
+            ctx9.beginPath();
+            ctx9.arc(col.colX - cardW * 0.5 + 8 * dpr, floatY - cardH * 0.5 + 9 * dpr, 2.5 * dpr, 0, Math.PI * 2);
+            ctx9.fill();
+
+            // Card lines
+            ctx9.fillStyle = isDark ? 'rgba(243, 239, 230, 0.2)' : 'rgba(100, 116, 139, 0.25)';
+            ctx9.fillRect(col.colX - cardW * 0.5 + 6 * dpr, floatY - cardH * 0.5 + 18 * dpr, cardW - 12 * dpr, 2.5 * dpr);
+            ctx9.fillRect(col.colX - cardW * 0.5 + 6 * dpr, floatY - cardH * 0.5 + 25 * dpr, cardW - 16 * dpr, 2.5 * dpr);
+          });
+
+          requestAnimationFrame(draw9);
+        }
+        draw9();
+      }
+
+      // -------------------------------------------------------------
+      // 10. SEARCH & FILTER CONTROLLER
+      // -------------------------------------------------------------
+      const searchInput = document.getElementById('searchInput');
+      const filterTabs = document.querySelectorAll('.filter-tab');
+      const toolCards = document.querySelectorAll('.tool-card');
+      const emptySearch = document.getElementById('emptySearch');
+
+      let activeCategory = 'all';
+      let searchKeyword = '';
+
+      function applyFilter() {
+        let visibleCount = 0;
+
+        toolCards.forEach(card => {
+          const category = card.dataset.category;
+          const searchData = (card.dataset.keywords + ' ' + card.innerText).toLowerCase();
+
+          const matchesCategory = (activeCategory === 'all') || (category === activeCategory);
+          const matchesSearch = !searchKeyword || searchData.includes(searchKeyword);
+
+          if (matchesCategory && matchesSearch) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (emptySearch) {
+          emptySearch.style.display = (visibleCount === 0) ? 'block' : 'none';
+        }
+      }
+
+      filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          filterTabs.forEach(t => {
+            t.classList.remove('active', 'text-sky-700', 'bg-sky-100/80', 'border-sky-200', 'shadow-2xs');
+            t.classList.add('text-slate-600', 'border-transparent');
+          });
+
+          tab.classList.add('active', 'text-sky-700', 'bg-sky-100/80', 'border-sky-200', 'shadow-2xs');
+          tab.classList.remove('text-slate-600', 'border-transparent');
+
+          activeCategory = tab.dataset.filter;
+          applyFilter();
+        });
+      });
+
+      searchInput.addEventListener('input', (e) => {
+        searchKeyword = e.target.value.trim().toLowerCase();
+        applyFilter();
+      });
+
+      // Keyboard shortcuts [1-9]
+      window.addEventListener('keydown', (e) => {
+        if (document.activeElement === searchInput) {
+          if (e.key === 'Escape') searchInput.blur();
+          return;
+        }
+
+        if (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) {
+          e.preventDefault();
+          searchInput.focus();
+          return;
+        }
+
+        const toolUrls = [
+          './Localization Tools/index.html',
+          './Verlet Studio/index.html',
+          './Weapon Slash Effect Generator/3D-Melee-Trail-Slash-VFX-Studio.html',
+          './gamefeel-lab/index.html',
+          './lut-studio/index.html',
+          './ATS/index.html',
+          './Forge/forge/static/index.html',
+          './profiler/dist/index.html',
+          './questboard/dist/index.html'
+        ];
+
+        const num = parseInt(e.key, 10);
+        if (num >= 1 && num <= 9) {
+          window.location.href = toolUrls[num - 1];
+        }
+
+        // 'D' Hotkey: Toggle Lamp / Dark Mode
+        if (e.key === 'd' || e.key === 'D') {
+          triggerLampPull();
+        }
+      });
+
+      // -------------------------------------------------------------
+      // 7. BEDSIDE LAMP DARK MODE SWITCHER CONTROLLER
+      // -------------------------------------------------------------
+      const lampPullCord = document.getElementById('lampPullCord');
+      const lampShadeGroup = document.getElementById('lampShadeGroup');
+      const lampShadeBody = document.getElementById('lampShadeBody');
+      const lampBulb = document.getElementById('lampBulb');
+      const lampBulbGroup = document.getElementById('lampBulbGroup');
+      const lampLightBeam = document.getElementById('lampLightBeam');
+
+      // Realistic physical pull-switch click sound generator (100% offline Web Audio API)
+      function playSwitchClick() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const now = ctx.currentTime;
+
+          // Latch release click (high crisp mechanical pop)
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'triangle';
+          osc1.frequency.setValueAtTime(1900, now);
+          osc1.frequency.exponentialRampToValueAtTime(320, now + 0.024);
+          gain1.gain.setValueAtTime(0.08, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.024);
+          osc1.connect(gain1);
+          gain1.connect(ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.024);
+
+          // Contact spring snap (occurs ~42ms later)
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(1150, now + 0.042);
+          osc2.frequency.exponentialRampToValueAtTime(160, now + 0.072);
+          gain2.gain.setValueAtTime(0.06, now + 0.042);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.072);
+          osc2.connect(gain2);
+          gain2.connect(ctx.destination);
+          osc2.start(now + 0.042);
+          osc2.stop(now + 0.072);
+        } catch (e) {
+          // AudioContext gracefully ignored if blocked by autoplay policy
+        }
+      }
+
+      function updateLampVisuals(isDark) {
+        if (!lampShadeBody) return;
+
+        if (!isDark) {
+          // LIGHT MODE: The lamp is LIT / YANACAK! (Daylight, warm golden glow shining on desk)
+          document.documentElement.classList.remove('dark');
+          if (lampLightBeam) {
+            lampLightBeam.classList.remove('opacity-0');
+            lampLightBeam.classList.add('opacity-100');
+          }
+          lampShadeBody.setAttribute('fill', 'url(#shadeGradLit)');
+          lampShadeBody.style.filter = 'drop-shadow(0 0 20px rgba(251, 191, 36, 0.6))';
+          if (lampBulb) {
+            lampBulb.setAttribute('fill', '#fef08a');
+            lampBulb.setAttribute('filter', 'url(#bulbGlow)');
+          }
+        } else {
+          // DARK MODE: The lamp is OFF / SÖNECEK (Night ambient, dark calm room for eye relief)
+          document.documentElement.classList.add('dark');
+          if (lampLightBeam) {
+            lampLightBeam.classList.remove('opacity-100');
+            lampLightBeam.classList.add('opacity-0');
+          }
+          lampShadeBody.setAttribute('fill', 'url(#shadeGradOff)');
+          lampShadeBody.style.filter = 'none';
+          if (lampBulb) {
+            lampBulb.setAttribute('fill', '#475569');
+            lampBulb.removeAttribute('filter');
+          }
+        }
+      }
+
+      let isPulling = false;
+      function triggerLampPull() {
+        if (isPulling) return;
+        isPulling = true;
+
+        playSwitchClick();
+
+        // 1. Play Physical Cord Spring Pull Animation
+        if (lampPullCord) {
+          lampPullCord.classList.remove('pull-spring-active');
+          void lampPullCord.offsetWidth; // force reflow
+          lampPullCord.classList.add('pull-spring-active');
+        }
+
+        // 2. Play Shade Recoil Animation
+        if (lampShadeGroup) {
+          lampShadeGroup.classList.remove('shade-recoil-active');
+          void lampShadeGroup.offsetWidth;
+          lampShadeGroup.classList.add('shade-recoil-active');
+        }
+
+        // 3. Play Light Bulb Switch Flicker Animation
+        if (lampBulbGroup) {
+          lampBulbGroup.classList.remove('lamp-flicker-active');
+          void lampBulbGroup.offsetWidth;
+          lampBulbGroup.classList.add('lamp-flicker-active');
+        }
+
+        // 4. Toggle Theme State (Switching Light <-> Dark)
+        const currentlyDark = document.documentElement.classList.contains('dark');
+        const willBeDark = !currentlyDark;
+        updateLampVisuals(willBeDark);
+
+        try {
+          localStorage.setItem('skcore_theme', willBeDark ? 'dark' : 'light');
+        } catch (e) {}
+
+        // Reset animation flags after animation completes
+        setTimeout(() => {
+          if (lampPullCord) lampPullCord.classList.remove('pull-spring-active');
+          if (lampShadeGroup) lampShadeGroup.classList.remove('shade-recoil-active');
+          if (lampBulbGroup) lampBulbGroup.classList.remove('lamp-flicker-active');
+          isPulling = false;
+        }, 530);
+      }
+
+      window.triggerLampPull = triggerLampPull;
+
+      // Wire interactive events
+      if (lampPullCord) {
+        lampPullCord.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerLampPull();
+        });
+      }
+
+      if (lampShadeGroup) {
+        lampShadeGroup.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerLampPull();
+        });
+      }
+
+      // Initial visual synchronization on load
+      const initialIsDark = document.documentElement.classList.contains('dark');
+      updateLampVisuals(initialIsDark);
+
+      // Live Theme Sync across Hub and Tools
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'skcore_theme') {
+          updateLampVisuals(e.newValue === 'dark');
+        }
+      });
+
+    })();
+  </script>
+
+  <!-- SKCore Mission Control Modules -->
+  <script src="./js/hub-bus.js"></script>
+  <script src="./js/command-palette.js"></script>
+  <script src="./js/universal-drawer.js"></script>
+
+  <!-- Hub Dashboard Live Telemetry Sync -->
+  <script>
+    (function() {
+      function syncHubDashboard() {
+        if (!window.SKCoreBus) return;
+        const proj = window.SKCoreBus.getActiveProject();
+        const telem = window.SKCoreBus.getTelemetry();
+
+        const pName = document.getElementById('hub-project-name');
+        const pUni = document.getElementById('hub-unity-version');
+        const pBranch = document.getElementById('hub-git-branch');
+        if (pName) pName.textContent = proj.name;
+        if (pUni) pUni.textContent = proj.unityVersion;
+        if (pBranch) pBranch.textContent = proj.branch;
+
+        // ATS
+        const atsCount = document.getElementById('kpi-ats-count');
+        const atsDetail = document.getElementById('kpi-ats-detail');
+        if (atsCount) atsCount.textContent = `${telem.ats.totalAssets} Assets`;
+        if (atsDetail) atsDetail.textContent = `${window.SKCoreBus.formatBytes(telem.ats.totalBytes)} · ${telem.ats.optimizedCount} Optimized`;
+
+        // Quest
+        const qProg = document.getElementById('kpi-quest-progress');
+        const qDetail = document.getElementById('kpi-quest-detail');
+        const qBadge = document.getElementById('hub-active-quests-badge');
+        const qStatusText = document.getElementById('kpi-quest-status-text');
+        if (qProg) {
+          qProg.textContent = telem.quest.total > 0 ? `${telem.quest.sprintProgress}% Done` : 'No Active Tasks';
+        }
+        if (qDetail) {
+          qDetail.textContent = telem.quest.total > 0
+            ? `${telem.quest.inProgress} Active · ${telem.quest.criticalBugs} Bug${telem.quest.criticalBugs !== 1 ? 's' : ''}`
+            : '0 Active · 0 Bugs';
+        }
+        if (qStatusText) {
+          qStatusText.textContent = telem.quest.inProgress > 0 ? 'Sprint Active' : 'Backlog Ready';
+          qStatusText.className = telem.quest.inProgress > 0 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-500 dark:text-zinc-400 font-semibold';
+        }
+        if (qBadge) {
+          qBadge.textContent = telem.quest.inProgress || 0;
+          if (telem.quest.inProgress > 0) {
+            qBadge.classList.remove('hidden');
+          } else {
+            qBadge.classList.add('hidden');
+          }
+        }
+
+        // Forge
+        const fBuild = document.getElementById('kpi-forge-build');
+        const fDetail = document.getElementById('kpi-forge-detail');
+        if (fBuild) fBuild.textContent = `Build #${telem.forge.lastBuildNumber}`;
+        if (fDetail) fDetail.textContent = `${telem.forge.target} · ${telem.forge.duration}`;
+
+        // Profiler
+        const pTime = document.getElementById('kpi-profiler-time');
+        const pDetail = document.getElementById('kpi-profiler-detail');
+        if (pTime) pTime.textContent = `${telem.profiler.avgFrameTime} ms`;
+        if (pDetail) pDetail.textContent = `${telem.profiler.targetFps} FPS · ${telem.profiler.hitches} Hitches`;
+
+        // Localization
+        const locKeys = document.getElementById('kpi-loc-keys');
+        const locDetail = document.getElementById('kpi-loc-detail');
+        if (locKeys) locKeys.textContent = `${telem.localization.totalKeys} Keys`;
+        if (locDetail) locDetail.textContent = `${telem.localization.languages.length} Locales · 100% QA`;
+      }
+
+      // Initial Sync
+      syncHubDashboard();
+
+      // Listen for Live Updates
+      if (window.SKCoreBus) {
+        window.SKCoreBus.on('TELEMETRY_UPDATED', syncHubDashboard);
+        window.SKCoreBus.on('PROJECT_CHANGED', syncHubDashboard);
+        window.SKCoreBus.on('TASK_ADDED', syncHubDashboard);
+        window.SKCoreBus.on('TASK_UPDATED', syncHubDashboard);
+      }
+
+      // Fetch live project telemetry from server if connected via HTTP
+      if (window.location.protocol.startsWith('http')) {
+        fetch('/hub/status')
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.ats && window.SKCoreBus) {
+              window.SKCoreBus.updateTelemetry('ats', {
+                totalAssets: data.ats.totalAssets,
+                totalBytes: data.ats.totalBytes,
+                textures: data.ats.textures,
+                models: data.ats.models,
+                audio: data.ats.audio
+              });
+              if (data.project) {
+                window.SKCoreBus.setActiveProject(data.project);
+              }
+            }
+          })
+          .catch(() => {});
+      }
+
+      // Hook Search Bar to Command Palette
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('focus', (e) => {
+          e.target.blur();
+          if (window.SKCorePalette) window.SKCorePalette.open();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

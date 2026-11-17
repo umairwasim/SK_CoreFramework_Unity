@@ -1,0 +1,23 @@
+{
+    "id": "edm4u",
+    "version": "1.2.189",
+    "installedAt": "2026-09-17 13:59:41",
+    "installedPaths": [
+        "14 uid=295031",
+        "Assets/ExternalDependencyManager/Editor/Google.VersionHandler.pdb",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.PackageManagerResolver.dll",
+        "Assets/ExternalDependencyManager/Editor/CHANGELOG.md",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.PackageManagerResolver.pdb",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.JarResolver.dll",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.VersionHandlerImpl.pdb",
+        "Assets/ExternalDependencyManager/Editor/external-dependency-manager_version-1.2.189_manifest.txt",
+        "Assets/ExternalDependencyManager/Editor/README.md",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.IOSResolver.dll",
+        "Assets/ExternalDependencyManager/Editor/LICENSE",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.JarResolver.pdb",
+        "Assets/PlayServicesResolver/Editor/play-services-resolver_v1.2.137.0.txt",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.IOSResolver.pdb",
+        "Assets/ExternalDependencyManager/Editor/Google.VersionHandler.dll",
+        "Assets/ExternalDependencyManager/Editor/1.2.189/Google.VersionHandlerImpl.dll"
+    ]
+}

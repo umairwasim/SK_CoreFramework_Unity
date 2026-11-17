@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c0d11" />
+    <meta
+      name="description"
+      content="QuestBoard — Local-first indie game development task and milestone board."
+    />
+    <title>QuestBoard — Indie Game Task &amp; Milestone Board • SKCore Tools</title>
+    <!-- FOUC Prevention Script -->
+    <script>
+      (function() {
+        try {
+          if (!window.location.pathname.replace(/\\/g, '/').includes('/dist/')) {
+            window.location.replace('./dist/index.html');
+            return;
+          }
+          const saved = localStorage.getItem('skcore_theme');
+          const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Live Theme Synchronization Listener -->
+    <script>
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'skcore_theme') {
+          if (e.newValue === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+      });
+    </script>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>

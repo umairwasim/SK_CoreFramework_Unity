@@ -1,0 +1,192 @@
+<div id="app">
+  <!-- ======================= TOP BAR ======================= -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <!-- SKCore Suite Logo Link -->
+      <a href="../index.html" class="nav-logo-btn" title="Return to SKCore Tools Suite">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0284c7"/>
+              <stop offset="100%" stop-color="#4648d4"/>
+            </linearGradient>
+          </defs>
+          <polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="url(#navLogoGrad)" stroke-width="6" stroke-linejoin="round" fill="rgba(240, 246, 255, 0.6)"/>
+          <path d="M44 26 L27 36 L27 52 L38 58 L44 54 L33 48 L33 40 L44 34 Z" fill="url(#navLogoGrad)"/>
+          <path d="M44 74 L27 64 L27 56 L34 60 L44 66 Z" fill="url(#navLogoGrad)"/>
+          <path d="M54 26 L54 74 L62 74 L62 54 L72 74 L82 74 L70 50 L81 26 L71 26 L62 44 L62 26 Z" fill="url(#navLogoGrad)"/>
+          <circle cx="50" cy="50" r="5" fill="#0284c7"/>
+        </svg>
+      </a>
+
+      <!-- Brand & Version Badges (matches Verlet Physics Studio / Suite) -->
+      <div class="nav-brand">
+        <span class="nav-title">Slash Forge Studio</span>
+        <span class="badge-version">v1.1 • Zero-GC</span>
+        <div class="badge-feature">
+          <span class="led-dot"></span>
+          <span>URP Procedural Ribbon VFX</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div id="stats">
+        <div class="stat"><span class="k">FPS</span><span class="v" id="stFps">—</span></div>
+        <div class="stat"><span class="k">FRAME</span><span class="v" id="stMs">—</span></div>
+        <div class="stat"><span class="k">TRIS</span><span class="v" id="stTris">—</span></div>
+        <div class="stat"><span class="k">RIBBON</span><span class="v" id="stRibbon">—</span></div>
+        <div class="stat"><span class="k">CALLS</span><span class="v" id="stCalls">—</span></div>
+      </div>
+
+      <div id="presetChip">Anime Katana Slash</div>
+
+      <!-- Return to SKCore Tools Hub (Grid Icon) -->
+      <a href="../index.html" class="btn-deck-grid" title="Return to SKCore Tools Suite">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- ======================= MAIN ======================= -->
+  <div id="main">
+    <!-- -------- 3D VIEWPORT -------- -->
+    <div id="viewport">
+      <div id="glError"><div>⚠ WebGL initialization failed.<br>Hardware acceleration might be disabled in your browser.</div></div>
+      <div class="ov" id="atkChip"><span class="dot"></span><span id="atkName">Horizontal Slash</span><small id="atkState">READY</small></div>
+      <div class="ov" id="hintBox">
+        <kbd>Left Click</kbd> Orbit &nbsp; <kbd>Scroll</kbd> Zoom &nbsp; <kbd>Right Click</kbd> Pan
+      </div>
+      <div class="ov" id="keyHint">
+        <kbd>SPACE</kbd> Swing &nbsp; <kbd>1–4</kbd> Attack &nbsp; <kbd>L</kbd> Loop
+      </div>
+      <div class="ov" id="toast"></div>
+    </div>
+
+    <!-- -------- CONTROL PANEL -------- -->
+    <aside id="panel">
+
+      <!-- ==== 1) ATTACK ENGINE ==== -->
+      <details class="sec" open>
+        <summary><span class="ico">⚔</span> Attack Engine <span class="chev">▼</span></summary>
+        <div class="secBody">
+          <div class="atkGrid">
+            <button class="btn atk active" data-attack="horizontal"><span class="sym">⇠≡⇢</span>Horizontal Slash<small>Left-to-Right Cleave</small></button>
+            <button class="btn atk" data-attack="chop"><span class="sym">⇓</span>Overhead Chop<small>Downward Slam</small></button>
+            <button class="btn atk" data-attack="whirl"><span class="sym">⟳</span>360° Whirlwind<small>Full Circular Sweep</small></button>
+            <button class="btn atk" data-attack="upper"><span class="sym">⇗</span>Diagonal Uppercut<small>Rising Cross Cut</small></button>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <button class="btn primary" id="btnSwing">⚔ &nbsp;SWING ATTACK (SPACE)</button>
+          </div>
+          <div class="row" id="rowSpeed"></div>
+          <div class="switchRow">
+            <span class="lbl">Continuous Loop <small>Repeat attack swing automatically</small></span>
+            <input type="checkbox" class="switch" id="chkLoop" checked>
+          </div>
+        </div>
+      </details>
+
+      <!-- ==== 2) RIBBON TRAIL VFX ==== -->
+      <details class="sec" open>
+        <summary><span class="ico">✦</span> Ribbon Trail VFX <span class="chev">▼</span></summary>
+        <div class="secBody">
+          <div class="row">
+            <label class="head">Blending Mode</label>
+            <div class="seg" id="segBlend">
+              <button data-blend="add" class="active">✨ Additive Glow</button>
+              <button data-blend="alpha">🌫 Alpha Blend</button>
+            </div>
+          </div>
+          <div id="trailSliders"></div>
+
+          <div class="gradWrap">
+            <label class="head" style="display:flex;font-size:11.5px;color:#334155;margin-bottom:8px;font-weight:600">Color &amp; Alpha Gradient</label>
+            <canvas id="gradBar" width="512" height="18"></canvas>
+            <div id="colorRows"></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ==== 3) VFX PRESETS ==== -->
+      <details class="sec" open>
+        <summary><span class="ico">✨</span> VFX Presets <span class="chev">▼</span></summary>
+        <div class="secBody">
+          <div id="presets"></div>
+          <p class="note">Selecting a preset applies all trail VFX parameters and previews the recommended attack. Manual slider edits switch mode to Custom.</p>
+        </div>
+      </details>
+
+      <!-- ==== 4) SCENE & VIEWPORT ==== -->
+      <details class="sec">
+        <summary><span class="ico">🌌</span> Scene &amp; Viewport <span class="chev">▼</span></summary>
+        <div class="secBody">
+          <div class="row">
+            <label class="head">Viewport Backdrop</label>
+            <div class="seg" id="segBackdrop">
+              <button data-bg="void" class="active">Dark Void</button>
+              <button data-bg="slate">Studio Slate</button>
+              <button data-bg="navy">Deep Navy</button>
+            </div>
+          </div>
+          <div class="switchRow">
+            <span class="lbl">Unreal Bloom Pass</span>
+            <input type="checkbox" class="switch" id="chkBloom" checked>
+          </div>
+          <div class="row" id="rowBloom"></div>
+          <div class="switchRow">
+            <span class="lbl">Blade Tip Sparks <small>Dynamic particle burst from sword tip</small></span>
+            <input type="checkbox" class="switch" id="chkSparks" checked>
+          </div>
+          <div class="switchRow">
+            <span class="lbl">Pivot Markers <small>Tip (red) &amp; Base (blue) points</small></span>
+            <input type="checkbox" class="switch" id="chkMarkers" checked>
+          </div>
+          <div class="switchRow">
+            <span class="lbl">Blade Point Light <small>Dynamic light following sword blade</small></span>
+            <input type="checkbox" class="switch" id="chkGlow" checked>
+          </div>
+          <div class="switchRow">
+            <span class="lbl">Floor Grid &amp; Stage</span>
+            <input type="checkbox" class="switch" id="chkGrid" checked>
+          </div>
+        </div>
+      </details>
+
+      <!-- ==== 5) UNITY EXPORT HUB ==== -->
+      <details class="sec" open>
+        <summary><span class="ico">🧩</span> Unity Export Hub <span class="chev">▼</span></summary>
+        <div class="secBody">
+          <div class="tabs">
+            <button data-tab="a" class="active"><b>A</b>TrailRenderer C#</button>
+            <button data-tab="b"><b>B</b>MeleeWeaponTrail.cs</button>
+            <button data-tab="c"><b>C</b>URP Shader</button>
+            <button data-tab="d"><b>D</b>Sparks Setup</button>
+          </div>
+          <div id="exportMeta">—</div>
+          <div class="codeWrap">
+            <pre id="codeOut"></pre>
+            <button id="btnCopy">⧉ &nbsp;COPY CODE TO CLIPBOARD</button>
+          </div>
+          <button class="btn secondary" id="btnExportObj">💾 &nbsp;Download Ribbon Mesh (.OBJ)</button>
+          <p class="exportNote">
+            <b>A:</b> Configures Unity's built-in TrailRenderer component via AnimationCurve + Gradient (attach to Tip transform).<br>
+            <b>B:</b> Procedural ribbon mesh generated between Tip and Base transforms every frame. <b>Zero managed GC allocations</b> at runtime.<br>
+            <b>C:</b> URP HLSL Unlit transparent shader with dynamic UV scrolling, vertex coloring, and edge falloff.<br>
+            <b>D:</b> Unity ParticleSystem configuration for matching blade tip spark bursts.
+          </p>
+        </div>
+      </details>
+
+      <div style="padding:14px 18px 20px;font-size:10px;color:#64748b;line-height:1.6;letter-spacing:.3px">
+        SLASH FORGE v1.1 — Three.js r147 • OrbitControls • UnrealBloomPass<br>
+        Embedded standalone offline studio. Zero external network dependencies.
+      </div>
+    </aside>
+  </div>
+</div>

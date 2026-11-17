@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50/50">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SKCore Localization Studio & QA Hub • Developer Cartridge</title>
+  <meta name="description" content="Professional, light-glassmorphic Unity localization authoring studio, QA audit hub, and strongly-typed C# key generator.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%234648d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%23f0f6ff' stroke='%23cce5ff'/%3E%3Cpolygon points='16,5 26,11 26,21 16,27 6,21 6,11' fill='none' stroke='url(%23g)' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%230284c7'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Inter, JetBrains Mono, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0284c7',
+            'primary-dark': '#0369a1',
+            'primary-light': '#e0f2fe',
+            secondary: '#4648d4',
+            'surface-bg': '#f8faff'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Instant Theme Initializer (Prevents FOUC) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('skcore_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    /* ==========================================================================
+       SKCORE LIGHT GLASSMORPHISM & DARK MODE STYLING
+       ========================================================================== */
+    :root {
+      --bg: #f8faff;
+      --card-radius: 16px;
+    }
+
+    html.dark {
+      color-scheme: dark;
+      background-color: #0b0f19 !important;
+    }
+
+    html.dark body {
+      background-color: #0b0f19 !important;
+      color: #f1f5f9 !important;
+    }
+
+    html.dark .ambient-canvas {
+      background: radial-gradient(circle at 50% -5%, #0f1f3d 0%, #0b0f19 70%) !important;
+    }
+
+    html.dark .ambient-canvas::before {
+      background: radial-gradient(ellipse, rgba(30, 58, 138, 0.35), rgba(14, 165, 233, 0.12), transparent 70%) !important;
+    }
+
+    html.dark .grid-dots {
+      background-image: radial-gradient(rgba(56, 189, 248, 0.16) 1.2px, transparent 1.2px) !important;
+    }
+
+    html.dark header {
+      background: rgba(11, 15, 25, 0.95) !important;
+      border-bottom-color: rgba(51, 65, 85, 0.8) !important;
+    }
+
+    html.dark footer {
+      background: rgba(11, 15, 25, 0.95) !important;
+      border-top-color: rgba(51, 65, 85, 0.8) !important;
+      color: #94a3b8 !important;
+    }
+
+    /* Glass Panels & Containers */
+    html.dark .glass-panel {
+      background: rgba(15, 23, 42, 0.94) !important;
+      border-color: rgba(51, 65, 85, 0.75) !important;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* White & Slate Backgrounds (including Tailwind opacity variants) */
+    html.dark .bg-white,
+    html.dark [class*="bg-white"] {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+
+    html.dark .bg-slate-50,
+    html.dark [class*="bg-slate-50"] {
+      background-color: #151d2e !important;
+    }
+
+    html.dark .bg-slate-100,
+    html.dark [class*="bg-slate-100"] {
+      background-color: #1e293b !important;
+    }
+
+    html.dark .bg-sky-50,
+    html.dark [class*="bg-sky-50"] {
+      background-color: rgba(14, 165, 233, 0.12) !important;
+    }
+
+    html.dark .bg-emerald-50,
+    html.dark [class*="bg-emerald-50"] {
+      background-color: rgba(16, 185, 129, 0.12) !important;
+    }
+
+    html.dark .bg-amber-50,
+    html.dark [class*="bg-amber-50"] {
+      background-color: rgba(245, 158, 11, 0.12) !important;
+    }
+
+    html.dark .bg-rose-50,
+    html.dark [class*="bg-rose-50"] {
+      background-color: rgba(239, 68, 68, 0.15) !important;
+    }
+
+    /* Text Colors */
+    html.dark .text-slate-900,
+    html.dark .text-slate-800,
+    html.dark .text-slate-700,
+    html.dark .text-sky-950 {
+      color: #f8fafc !important;
+    }
+
+    html.dark .text-slate-600,
+    html.dark .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark .text-slate-400 {
+      color: #64748b !important;
+    }
+
+    html.dark .text-sky-800 {
+      color: #38bdf8 !important;
+    }
+
+    html.dark .text-emerald-800,
+    html.dark .text-emerald-700 {
+      color: #34d399 !important;
+    }
+
+    /* Borders & Dividers */
+    html.dark [class*="border-slate-200"],
+    html.dark [class*="border-slate-100"] {
+      border-color: rgba(51, 65, 85, 0.7) !important;
+    }
+
+    html.dark [class*="divide-slate-100"] > :not([hidden]) ~ :not([hidden]),
+    html.dark [class*="divide-slate-200"] > :not([hidden]) ~ :not([hidden]) {
+      border-color: rgba(51, 65, 85, 0.6) !important;
+    }
+
+    /* Inputs, Selects, Textareas */
+    html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    html.dark select,
+    html.dark textarea {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+
+    html.dark input:focus,
+    html.dark textarea:focus {
+      background: #1e293b !important;
+      border-color: #38bdf8 !important;
+    }
+
+    /* Table & Grid Cells */
+    html.dark #tableHead {
+      background-color: #111827 !important;
+      color: #cbd5e1 !important;
+    }
+
+    html.dark #tableHead th {
+      border-color: #1f2937 !important;
+      background-color: #111827 !important;
+    }
+
+    html.dark #tableBody {
+      background-color: #0f172a !important;
+    }
+
+    html.dark #tableBody tr {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+    }
+
+    html.dark #tableBody tr:hover {
+      background-color: #1e293b !important;
+    }
+
+    html.dark #tableBody td {
+      border-color: rgba(51, 65, 85, 0.5) !important;
+    }
+
+    html.dark .grid-cell:focus-within {
+      outline: 2px solid #38bdf8 !important;
+      outline-offset: -1px;
+      background-color: rgba(14, 165, 233, 0.15) !important;
+    }
+
+    /* Nav Buttons & Deck Grid */
+    html.dark .btn-deck-grid,
+    html.dark a[title*="SKCore Tools"] {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #94a3b8 !important;
+    }
+
+    html.dark .btn-deck-grid:hover,
+    html.dark a[title*="SKCore Tools"]:hover {
+      background: #334155 !important;
+      color: #f8fafc !important;
+      border-color: #475569 !important;
+    }
+
+    /* Drag & Drop Overlay Modal Box */
+    html.dark #dragDropOverlay > div {
+      background: #0f172a !important;
+      border-color: #0284c7 !important;
+      color: #f8fafc !important;
+    }
+
+    /* Modals & Dialogs */
+    html.dark [id$="Modal"] .glass-panel {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+
+    html.dark pre,
+    html.dark code {
+      color: #38bdf8 !important;
+    }
+
+    /* Scrollbars */
+    html.dark ::-webkit-scrollbar-track { background: #0b0f19 !important; }
+    html.dark ::-webkit-scrollbar-thumb { background: #334155 !important; }
+    html.dark ::-webkit-scrollbar-thumb:hover { background: #475569 !important; }
+
+    body {
+      background-color: var(--bg);
+      color: #0f172a;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient Canvas */
+    .ambient-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      pointer-events: none;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% -5%, #ebf5ff 0%, #f8faff 65%);
+    }
+
+    .ambient-canvas::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(186, 230, 253, 0.4), rgba(224, 231, 255, 0.25), transparent 70%);
+      border-radius: 50%;
+      filter: blur(75px);
+    }
+
+    .grid-dots {
+      background-image: radial-gradient(rgba(2, 132, 199, 0.12) 1.2px, transparent 1.2px);
+      background-size: 28px 28px;
+    }
+
+    /* Glass Cards & Panels */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 0 #ffffff;
+    }
+
+    /* Material Symbols */
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Live Telemetry Pulse */
+    @keyframes ledPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.9); }
+    }
+    .led-live {
+      animation: ledPulse 2s infinite ease-in-out;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Cell Focus in Spreadsheet */
+    .grid-cell:focus-within {
+      outline: 2px solid #0284c7;
+      outline-offset: -1px;
+      background-color: #f0f9ff !important;
+    }
+
+    /* Drag & Drop Visual Zone */
+    #dragDropOverlay {
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    #dragDropOverlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .btn-deck-grid {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      text-decoration: none;
+      transition: all 0.15s;
+      flex: 0 0 32px;
+    }
+    .btn-deck-grid:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #cbd5e1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="selection:bg-sky-100 selection:text-sky-900">
+
+  <!-- Ambient Light Background -->
+  <div class="ambient-canvas"></div>
+  <div class="fixed inset-0 grid-dots opacity-40 pointer-events-none -z-10"></div>
+
+  <!-- FULLSCREEN DRAG & DROP OVERLAY -->
+  <div id="dragDropOverlay" class="fixed inset-0 z-50 opacity-0 pointer-events-none bg-sky-900/40 backdrop-blur-md flex items-center justify-center transition-all duration-200">
+    <div class="p-8 rounded-2xl bg-white border-2 border-dashed border-sky-500 shadow-2xl text-center max-w-md mx-4">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600">
+        <span class="material-symbols-outlined text-[32px]">upload_file</span>
+      </div>
+      <h3 class="font-display font-bold text-lg text-slate-900">Drop Localization File</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-3">Drop <code class="text-sky-600 font-mono font-bold">.csv</code>, <code class="text-sky-600 font-mono font-bold">.tsv</code>, or <code class="text-sky-600 font-mono font-bold">.json</code> file to import into the active table.</p>
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-[11px] font-mono text-slate-600 border border-slate-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span>Auto-detects Comma, Semicolon (;) &amp; Tab</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN FILE INPUT FOR MANUAL SELECTION -->
+  <input type="file" id="fileUploadInput" accept=".csv,.tsv,.json,.txt" class="hidden" onchange="handleFileSelected(event)"/>
+
+  <!-- ================= 1. COMPACT TOP NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 h-14 select-none">
+    <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between gap-4">
+      
+      <!-- Brand & Hub Name -->
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-2xs flex items-center justify-center p-1 hover:border-sky-400 transition" title="Back to SKCore Tools Suite">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <defs>
+              <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#4648d4"/>
+              </linearGradient>
+            </defs>
+            <polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="url(#navLogoGrad)" stroke-width="6" stroke-linejoin="round" fill="rgba(240, 246, 255, 0.6)"/>
+            <path d="M44 26 L27 36 L27 52 L38 58 L44 54 L33 48 L33 40 L44 34 Z" fill="url(#navLogoGrad)"/>
+            <path d="M44 74 L27 64 L27 56 L34 60 L44 66 Z" fill="url(#navLogoGrad)"/>
+            <path d="M54 26 L54 74 L62 74 L62 54 L72 74 L82 74 L70 50 L81 26 L71 26 L62 44 L62 26 Z" fill="url(#navLogoGrad)"/>
+            <circle cx="50" cy="50" r="5" fill="#0284c7"/>
+          </svg>
+        </a>
+
+        <div class="flex items-center gap-2">
+          <span class="font-display font-bold text-[15px] text-slate-900 tracking-tight">Localization Studio</span>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 border border-sky-200 font-semibold">QA Hub v2.8</span>
+        </div>
+
+        <div class="hidden xl:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/80 ml-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 led-live"></span>
+          <span class="text-[11px] font-mono text-slate-600 font-medium">Standalone Authoring Studio</span>
+        </div>
+      </div>
+
+      <!-- Center / Right Status & Actions -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- Live QA Status Pill -->
+        <div id="qaSummaryBadge" class="hidden sm:flex items-center gap-2 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200 text-xs shadow-2xs">
+          <span class="relative flex h-2 w-2">
+            <span id="qaStatusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="qaStatusDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="text-slate-500 font-medium">QA Status:</span>
+          <span id="qaErrorCount" class="font-bold text-emerald-600">0 Errors</span>
+          <span class="text-slate-300">|</span>
+          <span id="qaWarningCount" class="font-bold text-slate-600">0 Missing</span>
+        </div>
+
+        <!-- Add Key Button -->
+        <button onclick="openModal('addKeyModal')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold shadow-xs transition active:scale-[0.98]">
+          <span class="material-symbols-outlined text-[16px]">add</span>
+          <span>New Key</span>
+        </button>
+
+        <!-- Smart Auto-Fill (AI Translate Simulation) -->
+        <button onclick="autoTranslateMissingPrompt()" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-xs transition active:scale-[0.98]" title="Auto-fill empty translations using smart dictionaries & pattern matching">
+          <span class="material-symbols-outlined text-[16px]">auto_fix_high</span>
+          <span>Auto-Fill Missing</span>
+        </button>
+
+        <!-- Unity Export & Code Hub -->
+        <button onclick="openModal('exportModal')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs transition active:scale-[0.98]">
+          <span class="material-symbols-outlined text-[16px]">ios_share</span>
+          <span>Export &amp; Code</span>
+        </button>
+
+        <!-- Return to SKCore Tools Hub -->
+        <a href="../index.html" class="btn-deck-grid" title="Return to SKCore Tools Suite">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+        </a>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= 2. SECONDARY BAR: TABLE TABS & CONTROLS ================= -->
+  <div class="bg-white/80 border-b border-slate-200/80 px-6 py-2 select-none backdrop-blur-md">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Table Tabs -->
+      <div class="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0" id="tableTabsContainer">
+        <!-- Injected dynamically by JS -->
+      </div>
+
+      <!-- Table & Language Tools -->
+      <div class="flex items-center gap-2 text-xs">
+        <!-- Add Table -->
+        <button onclick="openModal('addTableModal')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition font-medium">
+          <span class="material-symbols-outlined text-[15px] text-emerald-600">add</span>
+          <span>New Table</span>
+        </button>
+
+        <!-- Rename Table -->
+        <button onclick="openModal('renameTableModal')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition font-medium" title="Rename active table">
+          <span class="material-symbols-outlined text-[15px] text-sky-600">edit_note</span>
+          <span>Rename</span>
+        </button>
+
+        <!-- Delete Table -->
+        <button onclick="deleteActiveTablePrompt()" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-600 hover:text-rose-700 border border-slate-200 hover:border-rose-200 transition font-medium" title="Delete active table">
+          <span class="material-symbols-outlined text-[15px] text-rose-500">delete</span>
+          <span>Delete</span>
+        </button>
+
+        <div class="h-4 w-[1px] bg-slate-200 mx-0.5"></div>
+
+        <!-- Manage Languages -->
+        <button onclick="openModal('manageLangModal')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition font-medium">
+          <span class="material-symbols-outlined text-[15px] text-indigo-600">language</span>
+          <span>Languages</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 3. LANGUAGE COMPLETION PROGRESS STRIP ================= -->
+  <div class="bg-slate-100/70 border-b border-slate-200/70 px-6 py-2 select-none text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between overflow-x-auto gap-4">
+      <div class="flex items-center gap-2 text-slate-500 font-medium shrink-0">
+        <span class="material-symbols-outlined text-[16px] text-sky-600">analytics</span>
+        <span>Language Completion:</span>
+      </div>
+      <div class="flex items-center gap-3 flex-1 overflow-x-auto py-0.5" id="languageProgressContainer">
+        <!-- Progress bars injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. TOOLBAR & SEARCH / FILTERS ================= -->
+  <div class="max-w-7xl mx-auto w-full px-6 pt-4 pb-2">
+    <div class="glass-panel rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+      
+      <!-- Left: Search & Filter Tabs -->
+      <div class="flex flex-wrap items-center gap-2.5 flex-1">
+        
+        <!-- Search Input -->
+        <div class="relative min-w-[240px] sm:w-72">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">search</span>
+          <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search key, context, or translations..." 
+                 class="w-full bg-slate-50/80 hover:bg-white focus:bg-white text-slate-900 pl-8 pr-8 py-1.5 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none transition text-xs"/>
+          <kbd class="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-mono px-1 py-0.5 rounded bg-white text-slate-400 border border-slate-200">⌘K</kbd>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="flex items-center bg-slate-100/90 rounded-xl p-0.5 border border-slate-200">
+          <button id="filterAllBtn" onclick="setFilter('all')" class="px-2.5 py-1 rounded-lg bg-sky-600 text-white font-semibold transition shadow-2xs">All (<span id="countAll">0</span>)</button>
+          <button id="filterMissingBtn" onclick="setFilter('missing')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition font-medium">Missing (<span id="countMissing">0</span>)</button>
+          <button id="filterIssuesBtn" onclick="setFilter('issues')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition font-medium">QA Issues (<span id="countIssues">0</span>)</button>
+        </div>
+
+        <!-- Sorter Dropdown -->
+        <div class="flex items-center gap-1.5 bg-slate-100/90 px-2 py-1 rounded-xl border border-slate-200 text-slate-600 font-medium">
+          <span class="material-symbols-outlined text-[15px] text-slate-400">sort</span>
+          <span>Sort:</span>
+          <select id="sortSelect" onchange="handleSortChange(this.value)" class="bg-transparent border-0 text-slate-800 text-xs font-semibold p-0 pr-4 focus:ring-0 cursor-pointer">
+            <option value="default">Default Order</option>
+            <option value="az">Key (A → Z)</option>
+            <option value="za">Key (Z → A)</option>
+            <option value="issues">Issues First</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Right: Integration Shortcuts (Drag Drop, Google Sheets, Reset) -->
+      <div class="flex items-center gap-2">
+        
+        <!-- Google Sheets 1-Click Copy -->
+        <button onclick="copyForGoogleSheets()" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition font-medium" title="Copy active table as TSV directly compatible with Google Sheets & Excel">
+          <span class="material-symbols-outlined text-[15px] text-emerald-600">table_chart</span>
+          <span>Copy for Google Sheets</span>
+        </button>
+
+        <!-- Google Sheets Paste Modal -->
+        <button onclick="openModal('sheetsPasteModal')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition font-medium" title="Paste rows copied directly from Google Sheets">
+          <span class="material-symbols-outlined text-[15px] text-slate-500">content_paste</span>
+          <span>Paste from Sheets</span>
+        </button>
+
+        <!-- Direct Upload Button -->
+        <button onclick="triggerFileUpload()" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition font-medium" title="Upload a CSV or JSON file from your machine">
+          <span class="material-symbols-outlined text-[15px] text-sky-600">upload_file</span>
+          <span>Import File</span>
+        </button>
+
+        <div class="h-4 w-[1px] bg-slate-200"></div>
+
+        <!-- Reset Demo Data -->
+        <button onclick="resetToDefaultDataPrompt()" class="text-slate-400 hover:text-rose-500 p-1 rounded-lg hover:bg-rose-50 transition" title="Reset to default demo data">
+          <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 5. SPREADSHEET GRID EDITOR ================= -->
+  <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-3 mb-10 overflow-auto">
+    <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm">
+      <div class="overflow-x-auto max-h-[64vh]">
+        <table class="min-w-full border-collapse text-left text-xs font-mono select-text" id="localizationTable">
+          <thead class="bg-slate-100/90 sticky top-0 z-10 border-b border-slate-200 shadow-2xs text-slate-600 select-none uppercase font-sans tracking-wider text-[11px]" id="tableHead">
+            <!-- Injected dynamically by JS -->
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white/70" id="tableBody">
+            <!-- Injected dynamically by JS -->
+          </tbody>
+        </table>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden py-16 text-center text-slate-400 font-sans">
+          <span class="material-symbols-outlined text-[40px] text-slate-300 mb-2">search_off</span>
+          <p class="text-sm font-semibold text-slate-700">No localization records match criteria</p>
+          <p class="text-xs text-slate-400 mt-0.5">Try clearing filters or click "+ New Key" to create a row.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= 6. BOTTOM TELEMETRY FOOTER ================= -->
+  <footer class="mt-auto bg-white/90 backdrop-blur-md border-t border-slate-200/80 h-9 flex items-center px-6 select-none text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-[11px] font-mono">
+      <div class="flex items-center gap-3">
+        <span class="flex items-center gap-1.5 font-semibold text-slate-800">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Source Language: <strong id="sourceLangFooterLabel" class="text-sky-700 font-bold">English (EN)</strong></span>
+        </span>
+        <span>•</span>
+        <span>Records: <strong id="visibleCountText" class="text-slate-800">0</strong> / <span id="totalCountText">0</span></span>
+        <span>•</span>
+        <span class="text-slate-400 hidden sm:inline">Inline editing active. Changes auto-saved to localStorage.</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">RFC 4180 &amp; Unity 2021+ Verified</span>
+        <button onclick="openModal('exportModal')" class="text-sky-600 hover:text-sky-800 font-semibold transition">Export Unity Code &gt;</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODALS
+       ========================================================================== -->
+
+  <!-- 1. EXPORT & INTEGRATION HUB MODAL -->
+  <div id="exportModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">ios_share</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-sm">Unity Integration, Export &amp; Code Hub</h3>
+            <p class="text-xs text-slate-500">Official Unity Localization CSV, Strongly-Typed C# Keys &amp; Google Sheets TSV</p>
+          </div>
+        </div>
+        <button onclick="closeModal('exportModal')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Export Tab Navigation -->
+      <div class="px-6 pt-3 border-b border-slate-200 bg-slate-50/70 flex gap-4 text-xs font-medium">
+        <button onclick="switchExportTab('csv')" id="tabBtnCsv" class="pb-2.5 border-b-2 border-sky-600 text-sky-700 font-bold flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">description</span>
+          <span>Unity Official CSV (RFC 4180)</span>
+        </button>
+        <button onclick="switchExportTab('csharpKey')" id="tabBtnCSharpKey" class="pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">code</span>
+          <span>Strongly-Typed C# (LocalizationKeys.cs)</span>
+        </button>
+        <button onclick="switchExportTab('sheets')" id="tabBtnSheets" class="pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">table_chart</span>
+          <span>Google Sheets TSV</span>
+        </button>
+        <button onclick="switchExportTab('json')" id="tabBtnJson" class="pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">data_object</span>
+          <span>JSON Database Backup</span>
+        </button>
+      </div>
+
+      <!-- Tab Contents -->
+      <div class="p-6 flex-1 overflow-y-auto space-y-4 text-xs">
+
+        <!-- PANEL 1: Unity Official CSV -->
+        <div id="exportPanelCsv" class="space-y-3">
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="font-semibold text-slate-900">Official Unity Localization Package CSV Format</p>
+              <p class="text-[11.5px] text-slate-500 mt-0.5">Compatible with <code class="text-sky-700 font-semibold">Window &gt; Asset Management &gt; Localization Tables &gt; Import CSV</code>. Uses blank <code class="text-slate-700 font-mono">Id</code> so Unity auto-generates 64-bit KeyIds safely.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <select id="csvTableSelect" onchange="generateCSVOutput()" class="bg-white text-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-sky-500 focus:border-sky-500 shadow-2xs">
+                <!-- Injected dynamically -->
+              </select>
+              <button onclick="downloadCSV()" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                <span>Download .CSV</span>
+              </button>
+              <button onclick="copyToClipboard('csvCodeArea')" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition font-medium shadow-2xs">Copy</button>
+              <button onclick="importCSVFromArea()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs" title="Import CSV content from the box below into active table">
+                <span class="material-symbols-outlined text-[16px]">publish</span>
+                <span>Import from Box</span>
+              </button>
+            </div>
+          </div>
+          <textarea id="csvCodeArea" class="w-full h-72 bg-slate-900 text-emerald-400 font-mono p-3 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-sky-500"></textarea>
+          <p class="text-[11px] text-slate-400">Tip: Paste any CSV from Unity or Excel into this box and click <b>'Import from Box'</b>. Automatically detects comma (,) and semicolon (;) separators.</p>
+        </div>
+
+        <!-- PANEL 2: Strongly-Typed C# Keys -->
+        <div id="exportPanelCSharpKey" class="space-y-3 hidden">
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-slate-900">Strongly-Typed C# Key Generator (LocalizationKeys.cs)</p>
+              <p class="text-[11.5px] text-slate-500 mt-0.5">Eliminates magic strings and runtime typos with full IDE IntelliSense. Includes source preview docstrings.</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button onclick="downloadCSharpKeys()" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                <span>Download LocalizationKeys.cs</span>
+              </button>
+              <button onclick="copyToClipboard('csharpKeyCodeArea')" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition font-medium shadow-2xs">Copy</button>
+            </div>
+          </div>
+          <textarea id="csharpKeyCodeArea" readonly class="w-full h-72 bg-slate-900 text-sky-300 font-mono p-3 rounded-xl border border-slate-700 text-xs focus:outline-none select-all"></textarea>
+        </div>
+
+        <!-- PANEL 3: Google Sheets TSV -->
+        <div id="exportPanelSheets" class="space-y-3 hidden">
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="font-semibold text-slate-900">Google Sheets &amp; Excel TSV (Tab-Separated)</p>
+              <p class="text-[11.5px] text-slate-500 mt-0.5">Copy table with tabs to paste straight into Google Sheets, or paste cells copied from Google Sheets to import.</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button onclick="copyForGoogleSheets()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span>Copy for Google Sheets</span>
+              </button>
+              <button onclick="importTSVFromArea()" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">input</span>
+                <span>Import TSV into Active Table</span>
+              </button>
+            </div>
+          </div>
+          <textarea id="sheetsCodeArea" placeholder="Paste tab-delimited cells from Google Sheets here..." class="w-full h-72 bg-slate-900 text-amber-300 font-mono p-3 rounded-xl border border-slate-700 text-xs focus:outline-none"></textarea>
+        </div>
+
+        <!-- PANEL 4: JSON Backup -->
+        <div id="exportPanelJson" class="space-y-3 hidden">
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="font-semibold text-slate-900">Full Project JSON Database Backup</p>
+              <p class="text-[11.5px] text-slate-500 mt-0.5">Backup all tables, keys, and languages in raw JSON format, or restore by pasting valid JSON.</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button onclick="downloadJSONFile()" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                <span>Download .JSON</span>
+              </button>
+              <button onclick="copyToClipboard('jsonCodeArea')" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition font-medium shadow-2xs">Copy</button>
+              <button onclick="importJSONFromArea()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-semibold transition shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">publish</span>
+                <span>Restore JSON</span>
+              </button>
+            </div>
+          </div>
+          <textarea id="jsonCodeArea" class="w-full h-72 bg-slate-900 text-purple-300 font-mono p-3 rounded-xl border border-slate-700 text-xs focus:outline-none"></textarea>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
+        <button onclick="closeModal('exportModal')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold px-4 py-2 rounded-xl transition">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. ADD KEY MODAL -->
+  <div id="addKeyModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="font-display font-bold text-slate-900 text-sm">Add New Localization Key</h3>
+        <button onclick="closeModal('addKeyModal')" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <form id="addKeyForm" onsubmit="handleAddNewKey(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-700 font-medium mb-1">Target Table</label>
+          <select id="modalKeyTableSelect" class="w-full bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none"></select>
+        </div>
+        <div>
+          <label class="block text-slate-700 font-medium mb-1 flex items-center justify-between">
+            <span>Key Identifier (e.g. ui_btn_continue)</span>
+            <span id="modalKeyDuplicateWarning" class="hidden text-rose-600 font-bold font-mono text-[10.5px]">⚠️ Key already exists in table!</span>
+          </label>
+          <input type="text" id="modalKeyName" required oninput="checkModalKeyDuplicate()" placeholder="ui_btn_continue" class="w-full bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none font-mono">
+        </div>
+        <div>
+          <label class="block text-slate-700 font-medium mb-1" id="modalKeySourceLabel">Source Text</label>
+          <textarea id="modalKeySourceText" required placeholder="Continue to Chapter {0}..." rows="3" class="w-full bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none font-sans"></textarea>
+        </div>
+        <div>
+          <label class="block text-slate-700 font-medium mb-1">Context / Translator Note</label>
+          <input type="text" id="modalKeyContext" placeholder="Main menu primary continue button" class="w-full bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none">
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('addKeyModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl font-medium transition">Cancel</button>
+          <button type="submit" id="modalKeySubmitBtn" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded-xl font-semibold shadow-xs transition">Add Key</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. ADD TABLE MODAL -->
+  <div id="addTableModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="font-display font-bold text-slate-900 text-sm">Create New Localization Table</h3>
+        <button onclick="closeModal('addTableModal')" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <form id="addTableForm" onsubmit="handleAddTable(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-medium mb-1">Table Name (Unity Table Collection)</label>
+          <input type="text" id="modalTableName" required placeholder="Abilities_Skills or Quests_Side" class="w-full bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none font-mono">
+          <p class="text-[11px] text-slate-400 mt-1">Examples: UI_Shop, Dialogues_Ch2, Weapons</p>
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('addTableModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl font-medium transition">Cancel</button>
+          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded-xl font-semibold shadow-xs transition">Create Table</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. RENAME TABLE MODAL -->
+  <div id="renameTableModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="font-display font-bold text-slate-900 text-sm">Rename Table</h3>
+        <button onclick="closeModal('renameTableModal')" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <form id="renameTableForm" onsubmit="handleRenameTable(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-medium mb-1">Current Name</label>
+          <input type="text" id="renameOldNameInput" disabled class="w-full bg-slate-100 text-slate-500 p-2 rounded-xl border border-slate-200 font-mono">
+        </div>
+        <div>
+          <label class="block text-slate-700 font-medium mb-1">New Table Name</label>
+          <input type="text" id="renameNewNameInput" required placeholder="New_Table_Name" class="w-full bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none font-mono">
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('renameTableModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl font-medium transition">Cancel</button>
+          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded-xl font-semibold shadow-xs transition">Save Rename</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. MANAGE LANGUAGES MODAL -->
+  <div id="manageLangModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="font-display font-bold text-slate-900 text-sm">Manage Target Languages &amp; Source</h3>
+        <button onclick="closeModal('manageLangModal')" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      
+      <!-- Languages List -->
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center justify-between text-slate-500 font-medium">
+          <span>Active Languages</span>
+          <span class="text-[11px] text-slate-400">Select radio to set Source Language</span>
+        </div>
+        <div id="languagesList" class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+          <!-- Injected dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- Add New Language -->
+      <div class="border-t border-slate-200 pt-3 space-y-2 text-xs">
+        <span class="text-slate-700 font-medium">Add New Language:</span>
+        <div class="grid grid-cols-3 gap-2">
+          <input type="text" id="newLangCode" placeholder="Code (FR)" class="bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none uppercase font-mono">
+          <input type="text" id="newLangName" placeholder="Language Name (French)" class="col-span-2 bg-slate-50 text-slate-900 p-2 rounded-xl border border-slate-200 focus:border-sky-500 focus:outline-none">
+        </div>
+        <button onclick="handleAddLanguage()" class="w-full bg-sky-600 hover:bg-sky-500 text-white py-2 rounded-xl font-semibold shadow-xs transition mt-1">Add Language</button>
+      </div>
+
+      <div class="pt-2 flex justify-end border-t border-slate-200">
+        <button type="button" onclick="closeModal('manageLangModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-1.5 rounded-xl text-xs font-semibold transition">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. GOOGLE SHEETS PASTE MODAL -->
+  <div id="sheetsPasteModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px] text-emerald-600">table_chart</span>
+          <h3 class="font-display font-bold text-slate-900 text-sm">Paste Cells from Google Sheets or Excel</h3>
+        </div>
+        <button onclick="closeModal('sheetsPasteModal')" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <p class="text-slate-500">In Google Sheets or Excel, select your rows (including the header row if present, or just keys and translations), press <kbd class="px-1 py-0.5 rounded bg-slate-100 border border-slate-300 font-mono text-[10px]">Ctrl+C</kbd>, and paste them below:</p>
+        <textarea id="sheetsPasteArea" placeholder="Key	Comments	EN	TR	DE...&#10;ui_btn_play	Start button	Play Game	Oyuna Başla	Spiel Starten" rows="8" class="w-full bg-slate-900 text-emerald-400 font-mono p-3 rounded-xl border border-slate-700 text-xs focus:outline-none"></textarea>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200">
+          <span class="text-slate-400 text-[11px]">Rows will be added or updated into active table: <strong id="pasteTargetTableLabel" class="text-slate-700 font-mono">UI_Strings</strong></span>
+          <div class="flex gap-2">
+            <button onclick="closeModal('sheetsPasteModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl font-medium transition">Cancel</button>
+            <button onclick="importFromPasteModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-xl font-semibold shadow-xs transition">Import Pasted Rows</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-12 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-2 bg-white border border-slate-200 px-4 py-2.5 rounded-xl shadow-xl text-xs text-slate-800">
+    <span id="toastIcon"></span>
+    <span id="toastMsg" class="font-medium">Action completed successfully.</span>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT LOGIC ENGINE
+       ========================================================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // ==========================================
+      // DATA MODELS & DEFAULT STATE
+      // ==========================================
+      const DEFAULT_LANGUAGES = [
+        { code: 'EN', name: 'English', isSource: true },
+        { code: 'TR', name: 'Türkçe', isSource: false },
+        { code: 'DE', name: 'Deutsch', isSource: false },
+        { code: 'JA', name: '日本語', isSource: false }
+      ];
+
+      const DEFAULT_DATA = {
+        activeTable: 'UI_Strings',
+        languages: JSON.parse(JSON.stringify(DEFAULT_LANGUAGES)),
+        tables: {
+          'UI_Strings': [
+            {
+              id: 'row_1',
+              key: 'ui_btn_play',
+              context: 'Main menu primary start action',
+              values: {
+                'EN': 'Play Game',
+                'TR': 'Oyuna Başla',
+                'DE': 'Spiel Starten',
+                'JA': 'ゲーム開始'
+              }
+            },
+            {
+              id: 'row_2',
+              key: 'ui_lbl_welcome_player',
+              context: 'Top bar greeting banner with player display name',
+              values: {
+                'EN': 'Welcome back, <b>{playerName}</b>!',
+                'TR': 'Tekrar hoş geldin, <b>{playerName}</b>!',
+                'DE': 'Willkommen zurück, Krieger!', // Intentional QA error: missing {playerName}
+                'JA': 'おかえりなさい、<b>{playerName}</b>さん！'
+              }
+            },
+            {
+              id: 'row_3',
+              key: 'ui_btn_settings_graphics',
+              context: 'Options menu graphics tab header',
+              values: {
+                'EN': 'Graphics',
+                'TR': 'Grafikler',
+                'DE': 'Grafikeinstellungen',
+                'JA': 'グラフィック設定'
+              }
+            },
+            {
+              id: 'row_4',
+              key: 'ui_lbl_audio_volume_pct',
+              context: 'Volume slider percentage indicator',
+              values: {
+                'EN': 'Volume: {0:N0}%',
+                'TR': 'Ses Seviyesi: %{0:N0}',
+                'DE': 'Lautstärke: {0:N0}%',
+                'JA': '' // Intentional QA missing
+              }
+            },
+            {
+              id: 'row_5',
+              key: 'ui_btn_quit',
+              context: 'Confirmation prompt quit button',
+              values: {
+                'EN': 'Quit',
+                'TR': 'Çıkış',
+                'DE': 'Beenden',
+                'JA': '終了'
+              }
+            }
+          ],
+          'Dialogues_Ch1': [
+            {
+              id: 'row_d1',
+              key: 'dlg_guide_intro',
+              context: 'Mentor npc first meeting at gate',
+              values: {
+                'EN': 'Greetings traveler! Our village has {0} gates, but only {1} is open tonight.',
+                'TR': 'Selamlar yolcu! Köyümüzün {0} kapısı var, ancak bu gece yalnızca {1} açık.',
+                'DE': 'Seid gegrüßt Wanderer! Unser Dorf hat {0} Tore, aber heute Nacht ist nur {1} geöffnet.',
+                'JA': '旅人よ、ようこそ！村には{0}の門があるが、今夜開いているのは{1}だけだ。'
+              }
+            },
+            {
+              id: 'row_d2',
+              key: 'dlg_elder_warning',
+              context: 'Village elder warning regarding health potion count',
+              values: {
+                'EN': 'Beware! You only carry <color=#ff0000>{count}</color> potions left.',
+                'TR': 'Dikkat et! Çantanda yalnızca <color=#ff0000>{cnt}</color> iksir kaldı.', // Intentional QA error: {cnt} vs {count}
+                'DE': 'Vorsicht! Du trägst nur noch <color=#ff0000>{count}</color> Tränke.',
+                'JA': '気をつけろ！リュックにはポーションがあと<color=#ff0000>{count}</color>個しかない。'
+              }
+            },
+            {
+              id: 'row_d3',
+              key: 'dlg_chest_locked',
+              context: 'Interactive locked chest interaction',
+              values: {
+                'EN': 'This ancient chest requires a {keyType} key.',
+                'TR': 'Bu antik sandık bir {keyType} anahtarı gerektirir.',
+                'DE': '', // Intentional QA missing
+                'JA': ''  // Intentional QA missing
+              }
+            }
+          ],
+          'Items_Weapons': [
+            {
+              id: 'row_w1',
+              key: 'item_sword_rusty_name',
+              context: 'Starting starter melee weapon name',
+              values: {
+                'EN': 'Rusty Iron Sword',
+                'TR': 'Paslı Demir Kılıç',
+                'DE': 'Rostiges Eisenschwert',
+                'JA': '錆びた鉄の剣'
+              }
+            },
+            {
+              id: 'row_w2',
+              key: 'item_sword_rusty_desc',
+              context: 'Weapon damage stat description',
+              values: {
+                'EN': 'Deals {minDmg} - {maxDmg} physical damage.',
+                'TR': 'Düşmanlara {minDmg} - {maxDmg} fiziksel hasar verir.',
+                'DE': 'Verursacht {minDmg} - {maxDmg} Schaden.',
+                'JA': '敵に{minDmg}〜{maxDmg}の物理ダメージを与える。'
+              }
+            }
+          ]
+        }
+      };
+
+      // App State
+      let appData = null;
+      let currentFilter = 'all'; // 'all', 'missing', 'issues'
+      let currentSearch = '';
+      let currentSort = 'default'; // 'default', 'az', 'za', 'issues'
+      let currentExportTabName = 'csv';
+
+      // ==========================================
+      // INITIALIZATION & PERSISTENCE
+      // ==========================================
+      function initData() {
+        const saved = localStorage.getItem('skcore_localization_studio_data_v4');
+        if (saved) {
+          try {
+            appData = JSON.parse(saved);
+          } catch (e) {
+            console.error("Local data corrupted, resetting to defaults", e);
+            appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+          }
+        } else {
+          // Backward compatibility check with v3
+          const legacy = localStorage.getItem('unity_localization_studio_data_v3');
+          if (legacy) {
+            try {
+              appData = JSON.parse(legacy);
+            } catch (e) {
+              appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            }
+          } else {
+            appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+          }
+        }
+
+        // Ensure active source language
+        if (!appData.languages.some(l => l.isSource)) {
+          if (appData.languages.length > 0) appData.languages[0].isSource = true;
+          else appData.languages.push({ code: 'EN', name: 'English', isSource: true });
+        }
+
+        const tableKeys = Object.keys(appData.tables);
+        if (tableKeys.length === 0) {
+          appData.tables['UI_Strings'] = [];
+          appData.activeTable = 'UI_Strings';
+        } else if (!appData.tables[appData.activeTable]) {
+          appData.activeTable = tableKeys[0];
+        }
+
+        saveData();
+      }
+
+      function saveData() {
+        localStorage.setItem('skcore_localization_studio_data_v4', JSON.stringify(appData));
+        updateGlobalQA();
+      }
+
+      function getSourceLang() {
+        return appData.languages.find(l => l.isSource) || appData.languages[0] || { code: 'EN', name: 'English' };
+      }
+
+      function resetToDefaultDataPrompt() {
+        if (confirm("Reset all tables to default SKCore demo localization data? Any custom rows will be overwritten.")) {
+          appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+          saveData();
+          renderAll();
+          showToast("Demo data successfully restored!", "success");
+        }
+      }
+
+      // ==========================================
+      // QA AUDIT ENGINE & VARIABLE / TMP PARSING
+      // ==========================================
+
+      // Extract interpolation variables like {0}, {1}, {playerName}, {0:N0}, {minDmg}
+      function extractVariables(text) {
+        if (!text || typeof text !== 'string') return [];
+        // Matches {varName}, {0}, {0:format}, {count:D3}
+        const matches = text.match(/\{[a-zA-Z0-9_-]+(?::[a-zA-Z0-9_\-\.\%]+)?\}/g);
+        return matches ? Array.from(new Set(matches)) : [];
+      }
+
+      // TextMesh Pro / RichText unclosed tag validation
+      function checkUnclosedTags(text) {
+        if (!text || typeof text !== 'string') return [];
+        const issues = [];
+        const tags = ['b', 'i', 's', 'u', 'color', 'size', 'alpha', 'link', 'mark'];
+        
+        tags.forEach(t => {
+          const openCount = (text.match(new RegExp(`<${t}(?:=[^>]+)?>`, 'gi')) || []).length;
+          const closeCount = (text.match(new RegExp(`</${t}>`, 'gi')) || []).length;
+          if (openCount !== closeCount) {
+            issues.push(`Unclosed <${t}> tag (${openCount} open vs ${closeCount} close)`);
+          }
+        });
+        return issues;
+      }
+
+      // Audit single cell translation against the source text
+      function auditCell(row, langCode, duplicateKeysSet) {
+        const sourceLang = getSourceLang();
+        const targetText = (row.values[langCode] || '').trim();
+        const sourceText = (row.values[sourceLang.code] || '').trim();
+
+        const issues = [];
+
+        // 1. Duplicate Key check
+        if (duplicateKeysSet && duplicateKeysSet.has(row.key.trim().toLowerCase())) {
+          issues.push('Duplicate Key in table');
+        }
+
+        // 2. Missing Translation Check (Non-source languages)
+        if (langCode !== sourceLang.code && (!targetText || targetText.length === 0)) {
+          return {
+            status: 'missing',
+            issues: ['Missing Translation'],
+            charCount: 0
+          };
+        }
+
+        // 3. Interpolation Variables Check
+        if (langCode !== sourceLang.code && sourceText) {
+          const sourceVars = extractVariables(sourceText);
+          const targetVars = extractVariables(targetText);
+
+          const missingVars = sourceVars.filter(v => !targetVars.includes(v));
+          const extraVars = targetVars.filter(v => !sourceVars.includes(v));
+
+          if (missingVars.length > 0) {
+            issues.push(`Missing Variable: ${missingVars.join(', ')}`);
+          }
+          if (extraVars.length > 0) {
+            issues.push(`Extra/Broken Variable: ${extraVars.join(', ')}`);
+          }
+        }
+
+        // 4. TextMesh Pro / RichText Unclosed Tag Check
+        const tagIssues = checkUnclosedTags(targetText);
+        tagIssues.forEach(t => issues.push(t));
+
+        return {
+          status: issues.length > 0 ? 'error' : 'ok',
+          issues: issues,
+          charCount: targetText.length
+        };
+      }
+
+      // Find all duplicate keys within a table
+      function getDuplicateKeysSet(rows) {
+        const seen = new Set();
+        const duplicates = new Set();
+        rows.forEach(r => {
+          const k = (r.key || '').trim().toLowerCase();
+          if (!k) return;
+          if (seen.has(k)) duplicates.add(k);
+          else seen.add(k);
+        });
+        return duplicates;
+      }
+
+      // Check if entire row has any QA issue
+      function checkRowStatus(row, duplicateKeysSet) {
+        let hasError = false;
+        let hasMissing = false;
+
+        if (duplicateKeysSet && duplicateKeysSet.has(row.key.trim().toLowerCase())) {
+          hasError = true;
+        }
+
+        appData.languages.forEach(lang => {
+          const audit = auditCell(row, lang.code, duplicateKeysSet);
+          if (audit.status === 'missing') hasMissing = true;
+          if (audit.status === 'error') hasError = true;
+        });
+
+        return { hasError, hasMissing };
+      }
+
+      // Global QA & Language Progress Calculator
+      function updateGlobalQA() {
+        let globalErrors = 0;
+        let globalMissing = 0;
+        const sourceLang = getSourceLang();
+
+        const langStats = {};
+        appData.languages.forEach(l => {
+          langStats[l.code] = { total: 0, translated: 0 };
+        });
+
+        Object.keys(appData.tables).forEach(tName => {
+          const rows = appData.tables[tName];
+          const dups = getDuplicateKeysSet(rows);
+
+          rows.forEach(r => {
+            if (dups.has(r.key.trim().toLowerCase())) {
+              globalErrors++;
+            }
+            appData.languages.forEach(l => {
+              langStats[l.code].total++;
+              const audit = auditCell(r, l.code, dups);
+              if (audit.status === 'missing') {
+                globalMissing++;
+              } else {
+                langStats[l.code].translated++;
+              }
+              if (audit.status === 'error') {
+                globalErrors++;
+              }
+            });
+          });
+        });
+
+        // Update Header Badges
+        const qaErrorBadge = document.getElementById('qaErrorCount');
+        const qaWarningBadge = document.getElementById('qaWarningCount');
+        const qaDot = document.getElementById('qaStatusDot');
+        const qaPing = document.getElementById('qaStatusPing');
+
+        if (qaErrorBadge) qaErrorBadge.textContent = `${globalErrors} Errors`;
+        if (qaWarningBadge) qaWarningBadge.textContent = `${globalMissing} Missing`;
+
+        if (globalErrors > 0) {
+          qaDot.className = "relative inline-flex rounded-full h-2 w-2 bg-rose-500";
+          qaPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75";
+          qaErrorBadge.className = "font-bold text-rose-600";
+        } else if (globalMissing > 0) {
+          qaDot.className = "relative inline-flex rounded-full h-2 w-2 bg-amber-500";
+          qaPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75";
+          qaErrorBadge.className = "font-bold text-slate-600";
+        } else {
+          qaDot.className = "relative inline-flex rounded-full h-2 w-2 bg-emerald-500";
+          qaPing.className = "hidden";
+          qaErrorBadge.className = "font-bold text-emerald-600";
+        }
+
+        // Render Language Progress Bars
+        const progContainer = document.getElementById('languageProgressContainer');
+        if (progContainer) {
+          progContainer.innerHTML = appData.languages.map(l => {
+            const stats = langStats[l.code] || { total: 0, translated: 0 };
+            const pct = stats.total > 0 ? Math.round((stats.translated / stats.total) * 100) : 100;
+            let colorClass = "bg-emerald-500";
+            if (pct < 70) colorClass = "bg-amber-500";
+            if (pct < 40) colorClass = "bg-rose-500";
+
+            return `
+              <div class="flex items-center gap-2 shrink-0 bg-white/90 px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs">
+                <span class="font-bold font-mono text-[11px] ${l.isSource ? 'text-sky-700 font-extrabold' : 'text-slate-700'}">${l.code}</span>
+                <div class="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="${colorClass} h-1.5 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500 min-w-[28px] text-right font-semibold">${pct}%</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Update Footer Label
+        const footerSource = document.getElementById('sourceLangFooterLabel');
+        if (footerSource) {
+          footerSource.textContent = `${sourceLang.name} (${sourceLang.code})`;
+        }
+      }
+
+      // ==========================================
+      // RENDERING & UI CONTROLLER
+      // ==========================================
+      function renderAll() {
+        renderTableTabs();
+        renderGrid();
+        updateGlobalQA();
+      }
+
+      window.renderAll = renderAll;
+
+      function renderTableTabs() {
+        const container = document.getElementById('tableTabsContainer');
+        const tableNames = Object.keys(appData.tables);
+
+        container.innerHTML = tableNames.map(name => {
+          const isActive = name === appData.activeTable;
+          const rowCount = appData.tables[name].length;
+          return `
+            <div class="flex items-center rounded-xl border ${isActive ? 'bg-sky-50/90 border-sky-300 text-sky-800 shadow-xs font-semibold' : 'border-slate-200/80 bg-white/70 text-slate-600 hover:text-slate-900 hover:bg-white'} transition">
+              <button onclick="switchTable('${name}')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs">
+                <span class="material-symbols-outlined text-[15px] ${isActive ? 'text-sky-600' : 'text-slate-400'}">grid_on</span>
+                <span>${name}</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-sky-200/70 text-sky-900' : 'bg-slate-100 text-slate-500'} font-mono">${rowCount}</span>
+              </button>
+              ${tableNames.length > 1 ? `
+                <button onclick="deleteSpecificTable('${name}', event)" class="pr-2 pl-0.5 py-1 text-slate-400 hover:text-rose-600 transition" title="Delete table '${name}'">
+                  <span class="material-symbols-outlined text-[14px]">close</span>
+                </button>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+
+        const pasteLabel = document.getElementById('pasteTargetTableLabel');
+        if (pasteLabel) pasteLabel.textContent = appData.activeTable;
+      }
+
+      function switchTable(name) {
+        if (appData.tables[name]) {
+          appData.activeTable = name;
+          saveData();
+          renderTableTabs();
+          renderGrid();
+        }
+      }
+      window.switchTable = switchTable;
+
+      // Table Deletion
+      function deleteActiveTablePrompt() {
+        deleteSpecificTable(appData.activeTable);
+      }
+      window.deleteActiveTablePrompt = deleteActiveTablePrompt;
+
+      function deleteSpecificTable(tableName, e) {
+        if (e) e.stopPropagation();
+
+        const tableNames = Object.keys(appData.tables);
+        if (tableNames.length <= 1) {
+          alert("At least one table must remain in the project.");
+          return;
+        }
+
+        const rowCount = (appData.tables[tableName] || []).length;
+        if (confirm(`Delete table '${tableName}' and its ${rowCount} localization keys?`)) {
+          delete appData.tables[tableName];
+          if (appData.activeTable === tableName) {
+            appData.activeTable = Object.keys(appData.tables)[0];
+          }
+          saveData();
+          renderAll();
+          showToast(`Table '${tableName}' was removed.`, "info");
+        }
+      }
+      window.deleteSpecificTable = deleteSpecificTable;
+
+      // Table Renaming
+      function handleRenameTable(e) {
+        e.preventDefault();
+        const oldName = appData.activeTable;
+        const newName = sanitizeIdentifier(document.getElementById('renameNewNameInput').value.trim());
+
+        if (!newName) return;
+        if (newName === oldName) {
+          closeModal('renameTableModal');
+          return;
+        }
+        if (appData.tables[newName]) {
+          alert(`A table named '${newName}' already exists!`);
+          return;
+        }
+
+        appData.tables[newName] = appData.tables[oldName];
+        delete appData.tables[oldName];
+        appData.activeTable = newName;
+
+        saveData();
+        renderAll();
+        closeModal('renameTableModal');
+        showToast(`Table renamed to '${newName}'!`, "success");
+      }
+      window.handleRenameTable = handleRenameTable;
+
+      // Search & Filter Logic
+      function handleSearch(val) {
+        currentSearch = (val || '').toLowerCase().trim();
+        renderGrid();
+      }
+      window.handleSearch = handleSearch;
+
+      function setFilter(type) {
+        currentFilter = type;
+        const activeClass = 'px-2.5 py-1 rounded-lg bg-sky-600 text-white font-semibold transition shadow-2xs';
+        const inactiveClass = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition font-medium';
+
+        document.getElementById('filterAllBtn').className = (type === 'all') ? activeClass : inactiveClass;
+        document.getElementById('filterMissingBtn').className = (type === 'missing') ? activeClass : inactiveClass;
+        document.getElementById('filterIssuesBtn').className = (type === 'issues') ? activeClass : inactiveClass;
+        renderGrid();
+      }
+      window.setFilter = setFilter;
+
+      function handleSortChange(val) {
+        currentSort = val;
+        renderGrid();
+      }
+      window.handleSortChange = handleSortChange;
+
+      // Render Table Grid
+      function renderGrid() {
+        const rows = appData.tables[appData.activeTable] || [];
+        const duplicateKeysSet = getDuplicateKeysSet(rows);
+        const sourceLang = getSourceLang();
+
+        let missingCount = 0;
+        let issuesCount = 0;
+
+        // Clone and sort rows
+        let processedRows = [...rows];
+        if (currentSort === 'az') {
+          processedRows.sort((a, b) => a.key.localeCompare(b.key));
+        } else if (currentSort === 'za') {
+          processedRows.sort((a, b) => b.key.localeCompare(a.key));
+        } else if (currentSort === 'issues') {
+          processedRows.sort((a, b) => {
+            const aStatus = checkRowStatus(a, duplicateKeysSet);
+            const bStatus = checkRowStatus(b, duplicateKeysSet);
+            const aScore = (aStatus.hasError ? 2 : 0) + (aStatus.hasMissing ? 1 : 0);
+            const bScore = (bStatus.hasError ? 2 : 0) + (bStatus.hasMissing ? 1 : 0);
+            return bScore - aScore;
+          });
+        }
+
+        const filteredRows = processedRows.filter(row => {
+          const status = checkRowStatus(row, duplicateKeysSet);
+          if (status.hasMissing) missingCount++;
+          if (status.hasError) issuesCount++;
+
+          if (currentFilter === 'missing' && !status.hasMissing) return false;
+          if (currentFilter === 'issues' && !status.hasError) return false;
+
+          if (currentSearch) {
+            const matchKey = row.key.toLowerCase().includes(currentSearch);
+            const matchCtx = (row.context || '').toLowerCase().includes(currentSearch);
+            const matchVal = Object.values(row.values).some(v => (v || '').toLowerCase().includes(currentSearch));
+            if (!matchKey && !matchCtx && !matchVal) return false;
+          }
+
+          return true;
+        });
+
+        // Update counts
+        document.getElementById('countAll').textContent = rows.length;
+        document.getElementById('countMissing').textContent = missingCount;
+        document.getElementById('countIssues').textContent = issuesCount;
+        document.getElementById('visibleCountText').textContent = filteredRows.length;
+        document.getElementById('totalCountText').textContent = rows.length;
+
+        const emptyEl = document.getElementById('emptyState');
+        if (filteredRows.length === 0) {
+          emptyEl.classList.remove('hidden');
+        } else {
+          emptyEl.classList.add('hidden');
+        }
+
+        // Render Table Header
+        const thead = document.getElementById('tableHead');
+        thead.innerHTML = `
+          <tr>
+            <th class="w-10 px-3 py-2.5 text-center text-slate-400">#</th>
+            <th class="w-56 px-3 py-2.5 border-l border-slate-200 font-semibold">Key Identifier</th>
+            <th class="w-48 px-3 py-2.5 border-l border-slate-200 font-semibold">Context / Note</th>
+            ${appData.languages.map(lang => `
+              <th class="min-w-[220px] px-3 py-2.5 border-l border-slate-200 font-semibold ${lang.isSource ? 'text-sky-800 bg-sky-50/70' : 'text-slate-700'}">
+                <div class="flex items-center justify-between">
+                  <span>${lang.name} (${lang.code})</span>
+                  ${lang.isSource ? '<span class="text-[9px] bg-sky-200/70 text-sky-800 border border-sky-300 px-1 py-0.2 rounded font-mono font-bold">SOURCE</span>' : ''}
+                </div>
+              </th>
+            `).join('')}
+            <th class="w-24 px-3 py-2.5 border-l border-slate-200 text-center font-semibold">Actions</th>
+          </tr>
+        `;
+
+        // Render Table Body
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = filteredRows.map((row, idx) => {
+          const rowStatus = checkRowStatus(row, duplicateKeysSet);
+          const isDuplicate = duplicateKeysSet.has(row.key.trim().toLowerCase());
+          let rowClass = "hover:bg-slate-50/80 transition-colors";
+          if (isDuplicate) rowClass += " bg-rose-50/50";
+          else if (rowStatus.hasError) rowClass += " bg-amber-50/30";
+
+          return `
+            <tr class="${rowClass} group">
+              <!-- Index -->
+              <td class="px-3 py-2.5 text-center text-slate-400 font-mono text-[11px] select-none">${idx + 1}</td>
+
+              <!-- Key -->
+              <td class="px-3 py-2 border-l border-slate-100 align-top grid-cell">
+                <div class="flex flex-col">
+                  <input type="text" value="${escapeHtml(row.key)}" onblur="updateRowKey('${row.id}', this.value)" 
+                         class="w-full bg-transparent text-sky-950 font-bold focus:bg-white p-1 rounded-lg focus:outline-none transition border ${isDuplicate ? 'border-rose-400 bg-rose-50 text-rose-800' : 'border-transparent focus:border-sky-500'} text-xs font-mono">
+                  ${isDuplicate ? `<span class="text-[9.5px] font-mono font-bold text-rose-600 mt-0.5">⚠️ Duplicate key!</span>` : ''}
+                </div>
+              </td>
+
+              <!-- Context -->
+              <td class="px-3 py-2 border-l border-slate-100 align-top grid-cell">
+                <input type="text" value="${escapeHtml(row.context || '')}" onblur="updateRowContext('${row.id}', this.value)" placeholder="Add translator context..." 
+                       class="w-full bg-transparent text-slate-600 italic focus:text-slate-900 focus:bg-white p-1 rounded-lg focus:outline-none transition border border-transparent focus:border-sky-500 text-[11px] font-sans">
+              </td>
+
+              <!-- Language Value Cells -->
+              ${appData.languages.map(lang => {
+                const audit = auditCell(row, lang.code, duplicateKeysSet);
+                const cellValue = row.values[lang.code] || '';
+                
+                let cellBg = "";
+                if (audit.status === 'missing') cellBg = "bg-amber-50/40";
+                else if (audit.status === 'error' && !isDuplicate) cellBg = "bg-rose-50/30";
+                else if (lang.isSource) cellBg = "bg-sky-50/20";
+
+                return `
+                  <td class="px-3 py-2 border-l border-slate-100 align-top ${cellBg} grid-cell relative">
+                    <div class="flex flex-col space-y-1">
+                      <textarea rows="2" 
+                        onblur="updateRowValue('${row.id}', '${lang.code}', this.value)" 
+                        class="w-full bg-transparent text-slate-800 p-1.5 rounded-lg focus:bg-white focus:outline-none transition resize-y border border-transparent focus:border-sky-500 font-sans text-xs"
+                        placeholder="${lang.isSource ? 'Source text...' : (lang.code + ' translation...')}"
+                      >${escapeHtml(cellValue)}</textarea>
+
+                      <div class="flex items-center justify-between text-[10px] font-mono pt-0.5 select-none">
+                        <span class="text-slate-400 text-[9px]">${audit.charCount} chars</span>
+                        <div class="flex items-center gap-1 flex-wrap justify-end">
+                          ${audit.status === 'missing' ? `
+                            <span class="inline-flex items-center px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-200 text-[9px] font-medium">
+                              Missing
+                            </span>
+                          ` : ''}
+
+                          ${audit.issues.filter(i => !i.includes('Missing Translation') && !i.includes('Duplicate Key')).map(issue => `
+                            <span class="inline-flex items-center px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 border border-rose-200 text-[9px] font-sans font-medium" title="${issue}">
+                              ${issue}
+                            </span>
+                          `).join('')}
+
+                          ${audit.status === 'ok' && !isDuplicate ? `
+                            <span class="text-emerald-600 font-bold text-[10px]" title="Valid">&#10003;</span>
+                          ` : ''}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+
+              <!-- Row Actions: Clone & Delete -->
+              <td class="px-2 py-2 border-l border-slate-100 align-middle text-center select-none">
+                <div class="flex items-center justify-center gap-1">
+                  <button onclick="duplicateRow('${row.id}')" class="text-slate-400 hover:text-sky-600 p-1 rounded-lg hover:bg-sky-50 transition" title="Duplicate row">
+                    <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                  </button>
+                  <button onclick="deleteRow('${row.id}')" class="text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition" title="Delete key">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // ==========================================
+      // INLINE EDITING & ROW ACTIONS
+      // ==========================================
+      function updateRowKey(rowId, newKey) {
+        const rows = appData.tables[appData.activeTable];
+        const r = rows.find(x => x.id === rowId);
+        if (r && newKey.trim()) {
+          r.key = newKey.trim();
+          saveData();
+          renderGrid();
+        }
+      }
+      window.updateRowKey = updateRowKey;
+
+      function updateRowContext(rowId, newCtx) {
+        const rows = appData.tables[appData.activeTable];
+        const r = rows.find(x => x.id === rowId);
+        if (r) {
+          r.context = newCtx;
+          saveData();
+        }
+      }
+      window.updateRowContext = updateRowContext;
+
+      function updateRowValue(rowId, langCode, newValue) {
+        const rows = appData.tables[appData.activeTable];
+        const r = rows.find(x => x.id === rowId);
+        if (r) {
+          r.values[langCode] = newValue;
+          saveData();
+          renderGrid();
+        }
+      }
+      window.updateRowValue = updateRowValue;
+
+      function duplicateRow(rowId) {
+        const rows = appData.tables[appData.activeTable];
+        const r = rows.find(x => x.id === rowId);
+        if (r) {
+          let newKey = `${r.key}_copy`;
+          let counter = 2;
+          while (rows.some(x => x.key === newKey)) {
+            newKey = `${r.key}_copy${counter++}`;
+          }
+
+          const cloned = {
+            id: 'row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            key: newKey,
+            context: r.context,
+            values: JSON.parse(JSON.stringify(r.values))
+          };
+
+          const idx = rows.findIndex(x => x.id === rowId);
+          rows.splice(idx + 1, 0, cloned);
+
+          saveData();
+          renderGrid();
+          showToast(`Cloned into '${newKey}'!`, "success");
+        }
+      }
+      window.duplicateRow = duplicateRow;
+
+      function deleteRow(rowId) {
+        const rows = appData.tables[appData.activeTable];
+        const idx = rows.findIndex(x => x.id === rowId);
+        if (idx !== -1) {
+          if (confirm(`Delete key '${rows[idx].key}'?`)) {
+            rows.splice(idx, 1);
+            saveData();
+            renderGrid();
+            showToast("Key deleted.", "info");
+          }
+        }
+      }
+      window.deleteRow = deleteRow;
+
+      // ==========================================
+      // AUTO-TRANSLATE (SMART PATTERN FILL)
+      // ==========================================
+      const DICTIONARY_MAP = {
+        'Play Game': { 'TR': 'Oyuna Başla', 'DE': 'Spiel Starten', 'JA': 'ゲーム開始' },
+        'Quit': { 'TR': 'Çıkış', 'DE': 'Beenden', 'JA': '終了' },
+        'Settings': { 'TR': 'Ayarlar', 'DE': 'Einstellungen', 'JA': '設定' },
+        'Graphics': { 'TR': 'Grafikler', 'DE': 'Grafik', 'JA': 'グラフィック' },
+        'Audio': { 'TR': 'Ses', 'DE': 'Audio', 'JA': 'オーディオ' },
+        'Volume': { 'TR': 'Ses Düzeyi', 'DE': 'Lautstärke', 'JA': '音量' },
+        'Resume': { 'TR': 'Devam Et', 'DE': 'Fortsetzen', 'JA': '再開' },
+        'Back': { 'TR': 'Geri', 'DE': 'Zurück', 'JA': '戻る' },
+        'Continue': { 'TR': 'Devam', 'DE': 'Weiter', 'JA': '続ける' },
+        'Cancel': { 'TR': 'İptal', 'DE': 'Abbrechen', 'JA': 'キャンセル' },
+        'Confirm': { 'TR': 'Onayla', 'DE': 'Bestätigen', 'JA': '確認' }
+      };
+
+      function autoTranslateMissingPrompt() {
+        const activeRows = appData.tables[appData.activeTable];
+        const sourceLang = getSourceLang();
+        let filledCount = 0;
+
+        activeRows.forEach(row => {
+          const sourceText = row.values[sourceLang.code] || '';
+          if (!sourceText) return;
+
+          appData.languages.forEach(lang => {
+            if (lang.code !== sourceLang.code) {
+              const currentVal = (row.values[lang.code] || '').trim();
+              if (!currentVal) {
+                // Check dictionary
+                if (DICTIONARY_MAP[sourceText] && DICTIONARY_MAP[sourceText][lang.code]) {
+                  row.values[lang.code] = DICTIONARY_MAP[sourceText][lang.code];
+                  filledCount++;
+                } else if (sourceText.includes('Volume:')) {
+                  if (lang.code === 'JA') row.values[lang.code] = '音量: {0:N0}%';
+                  else if (lang.code === 'TR') row.values[lang.code] = 'Ses Seviyesi: %{0:N0}';
+                  else if (lang.code === 'DE') row.values[lang.code] = 'Lautstärke: {0:N0}%';
+                  filledCount++;
+                } else {
+                  row.values[lang.code] = `[${lang.code}] ${sourceText}`;
+                  filledCount++;
+                }
+              }
+            }
+          });
+        });
+
+        if (filledCount > 0) {
+          saveData();
+          renderGrid();
+          showToast(`Filled ${filledCount} missing translations!`, "success");
+        } else {
+          showToast("No empty translations to fill in this table.", "info");
+        }
+      }
+      window.autoTranslateMissingPrompt = autoTranslateMissingPrompt;
+
+      // ==========================================
+      // EXPORT & INTEGRATION ENGINE
+      // ==========================================
+      function switchExportTab(tab) {
+        currentExportTabName = tab;
+        ['csv', 'csharpKey', 'sheets', 'json'].forEach(t => {
+          const panel = document.getElementById(`exportPanel${capitalize(t)}`);
+          const btn = document.getElementById(`tabBtn${capitalize(t)}`);
+          if (panel) panel.classList.add('hidden');
+          if (btn) {
+            btn.className = 'pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5';
+          }
+        });
+
+        const activePanel = document.getElementById(`exportPanel${capitalize(tab)}`);
+        const activeBtn = document.getElementById(`tabBtn${capitalize(tab)}`);
+        if (activePanel) activePanel.classList.remove('hidden');
+        if (activeBtn) {
+          activeBtn.className = 'pb-2.5 border-b-2 border-sky-600 text-sky-700 font-bold flex items-center gap-1.5';
+        }
+
+        refreshExportPanels();
+      }
+      window.switchExportTab = switchExportTab;
+
+      // Unity CSV Generator (Fix: empty Id so Unity assigns 64-bit integer automatically)
+      function generateCSVOutput() {
+        const sel = document.getElementById('csvTableSelect');
+        const selectedTable = sel ? sel.value : appData.activeTable;
+        const langCodes = appData.languages.map(l => l.code);
+
+        let tablesToExport = [];
+        if (selectedTable === '__ALL__') {
+          tablesToExport = Object.keys(appData.tables);
+        } else if (appData.tables[selectedTable]) {
+          tablesToExport = [selectedTable];
+        } else {
+          tablesToExport = [appData.activeTable];
+        }
+
+        let csvLines = [];
+        // Header: Key,Id,Comments,<Languages...>
+        const headerCols = ['Key', 'Id', 'Comments', ...langCodes];
+        csvLines.push(headerCols.map(escapeCSVField).join(','));
+
+        tablesToExport.forEach(tName => {
+          const rows = appData.tables[tName] || [];
+          rows.forEach(r => {
+            const line = [
+              escapeCSVField(r.key),
+              escapeCSVField(''), // IMPORTANT FIX: blank Id so Unity Localization Package assigns KeyId without System.Int64 FormatException
+              escapeCSVField(r.context || ''),
+              ...langCodes.map(code => escapeCSVField(r.values[code] || ''))
+            ];
+            csvLines.push(line.join(','));
+          });
+        });
+
+        const csvArea = document.getElementById('csvCodeArea');
+        if (csvArea) csvArea.value = csvLines.join('\r\n');
+      }
+      window.generateCSVOutput = generateCSVOutput;
+
+      function refreshExportPanels() {
+        // 1. Populate CSV select
+        const sel = document.getElementById('csvTableSelect');
+        if (sel) {
+          const cur = sel.value || appData.activeTable;
+          sel.innerHTML = `
+            <option value="${appData.activeTable}">Active Table (${appData.activeTable})</option>
+            <option value="__ALL__">All Tables Combined</option>
+            ${Object.keys(appData.tables).filter(t => t !== appData.activeTable).map(t => `<option value="${t}">Table: ${t}</option>`).join('')}
+          `;
+          if (cur && (appData.tables[cur] || cur === '__ALL__')) sel.value = cur;
+        }
+        generateCSVOutput();
+
+        // 2. Generate Strongly-Typed C# Keys
+        const sourceLang = getSourceLang();
+        let csCode = `// ------------------------------------------------------------------------------
+//  <auto-generated>
+//      Generated by SKCore Localization Studio & QA Hub.
+//      Provides strongly-typed key identifiers to prevent string typos in Unity code.
+//  </auto-generated>
+// ------------------------------------------------------------------------------
+
+namespace Game.Localization
+{
+    public static class LocalizationKeys
+    {
+`;
+        Object.keys(appData.tables).forEach(tableName => {
+          const cleanTableName = sanitizeIdentifier(tableName);
+          csCode += `        public static class ${cleanTableName}\n        {\n`;
+          csCode += `            public const string TableName = "${tableName}";\n\n`;
+
+          const usedPropNames = new Set();
+          appData.tables[tableName].forEach(r => {
+            let propName = toPascalCase(r.key);
+            const baseName = propName;
+            let counter = 2;
+            while (usedPropNames.has(propName)) {
+              propName = `${baseName}_${counter++}`;
+            }
+            usedPropNames.add(propName);
+
+            csCode += `            /// <summary>\n`;
+            csCode += `            /// [${sourceLang.code}]: ${escapeXml(r.values[sourceLang.code] || '')}\n`;
+            if (r.context) csCode += `            /// Context: ${escapeXml(r.context)}\n`;
+            csCode += `            /// </summary>\n`;
+            csCode += `            public const string ${propName} = "${escapeCSharpString(r.key)}";\n\n`;
+          });
+          csCode += `        }\n\n`;
+        });
+        csCode += `    }\n}\n`;
+
+        const csArea = document.getElementById('csharpKeyCodeArea');
+        if (csArea) csArea.value = csCode;
+
+        // 3. TSV for Google Sheets
+        generateTSVOutput();
+
+        // 4. JSON
+        const jsonArea = document.getElementById('jsonCodeArea');
+        if (jsonArea) jsonArea.value = JSON.stringify(appData, null, 2);
+      }
+
+      function generateTSVOutput() {
+        const langCodes = appData.languages.map(l => l.code);
+        const rows = appData.tables[appData.activeTable] || [];
+        const lines = [];
+
+        // Header
+        lines.push(['Key', 'Comments', ...langCodes].join('\t'));
+        rows.forEach(r => {
+          const cols = [
+            r.key || '',
+            r.context || '',
+            ...langCodes.map(c => (r.values[c] || '').replace(/[\r\n]+/g, ' '))
+          ];
+          lines.push(cols.join('\t'));
+        });
+
+        const sheetsArea = document.getElementById('sheetsCodeArea');
+        if (sheetsArea) sheetsArea.value = lines.join('\n');
+      }
+
+      function copyForGoogleSheets() {
+        generateTSVOutput();
+        const content = document.getElementById('sheetsCodeArea').value;
+        copyTextDirect(content, "Table copied in Google Sheets format! Press Ctrl+V in your spreadsheet.");
+      }
+      window.copyForGoogleSheets = copyForGoogleSheets;
+
+      // Smart Delimiter Parser (Auto-detects Comma, Semicolon ;, Tab \t)
+      function parseDelimitedText(text) {
+        if (!text || !text.trim()) return [];
+
+        const firstLine = text.split(/\r\n|\r|\n/)[0] || '';
+        let delimiter = ',';
+        const commas = (firstLine.match(/,/g) || []).length;
+        const semis = (firstLine.match(/;/g) || []).length;
+        const tabs = (firstLine.match(/\t/g) || []).length;
+
+        if (tabs >= commas && tabs >= semis && tabs > 0) delimiter = '\t';
+        else if (semis > commas) delimiter = ';';
+        else delimiter = ',';
+
+        const lines = [];
+        let row = [""];
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+          const c = text[i];
+          const next = text[i + 1];
+
+          if (c === '"' && inQuotes && next === '"') {
+            row[row.length - 1] += '"';
+            i++;
+          } else if (c === '"') {
+            inQuotes = !inQuotes;
+          } else if (c === delimiter && !inQuotes) {
+            row.push("");
+          } else if ((c === '\r' || c === '\n') && !inQuotes) {
+            if (c === '\r' && next === '\n') i++;
+            lines.push(row);
+            row = [""];
+          } else {
+            row[row.length - 1] += c;
+          }
+        }
+        if (row.length > 1 || row[0] !== "") lines.push(row);
+        return lines;
+      }
+
+      function importCSVFromArea() {
+        const text = document.getElementById('csvCodeArea').value.trim();
+        processImportDelimitedText(text, "CSV");
+      }
+      window.importCSVFromArea = importCSVFromArea;
+
+      function importTSVFromArea() {
+        const text = document.getElementById('sheetsCodeArea').value.trim();
+        processImportDelimitedText(text, "TSV");
+      }
+      window.importTSVFromArea = importTSVFromArea;
+
+      function importFromPasteModal() {
+        const text = document.getElementById('sheetsPasteArea').value.trim();
+        if (processImportDelimitedText(text, "Sheets/Excel")) {
+          closeModal('sheetsPasteModal');
+          document.getElementById('sheetsPasteArea').value = '';
+        }
+      }
+      window.importFromPasteModal = importFromPasteModal;
+
+      function processImportDelimitedText(text, sourceLabel = "Data") {
+        if (!text) {
+          alert("Please provide content to import.");
+          return false;
+        }
+
+        try {
+          const parsed = parseDelimitedText(text);
+          if (parsed.length < 2) {
+            alert("File must contain at least 1 header line and 1 data row.");
+            return false;
+          }
+
+          const header = parsed[0].map(h => (h || '').trim());
+          const keyIdx = header.findIndex(h => /^key$/i.test(h));
+          const idIdx = header.findIndex(h => /^id$/i.test(h));
+          const commentsIdx = header.findIndex(h => /^(comments|context|note)$/i.test(h));
+
+          if (keyIdx === -1) {
+            alert("Header row must contain a 'Key' column!");
+            return false;
+          }
+
+          // Map language columns
+          const langIndices = {};
+          header.forEach((col, idx) => {
+            if (idx !== keyIdx && idx !== idIdx && idx !== commentsIdx && col) {
+              langIndices[col] = idx;
+              // Ensure language exists in project
+              if (!appData.languages.some(l => l.code.toUpperCase() === col.toUpperCase())) {
+                appData.languages.push({ code: col.toUpperCase(), name: col, isSource: false });
+              }
+            }
+          });
+
+          const targetTable = appData.activeTable;
+          let importedCount = 0;
+
+          for (let i = 1; i < parsed.length; i++) {
+            const rowData = parsed[i];
+            const key = (rowData[keyIdx] || '').trim();
+            if (!key) continue;
+
+            const context = commentsIdx !== -1 ? rowData[commentsIdx] : '';
+            const values = {};
+
+            appData.languages.forEach(l => {
+              const matchedHeaderKey = Object.keys(langIndices).find(k => k.toUpperCase() === l.code.toUpperCase());
+              const colIdx = matchedHeaderKey !== undefined ? langIndices[matchedHeaderKey] : undefined;
+              values[l.code] = (colIdx !== undefined && rowData[colIdx] !== undefined) ? rowData[colIdx] : '';
+            });
+
+            // Upsert into active table
+            const existing = appData.tables[targetTable].find(r => r.key === key);
+            if (existing) {
+              if (context) existing.context = context;
+              Object.assign(existing.values, values);
+            } else {
+              appData.tables[targetTable].push({
+                id: 'row_' + Date.now() + '_' + i,
+                key: key,
+                context: context,
+                values: values
+              });
+            }
+            importedCount++;
+          }
+
+          saveData();
+          renderAll();
+          showToast(`Successfully imported ${importedCount} keys from ${sourceLabel} into '${targetTable}'!`, "success");
+          return true;
+        } catch (err) {
+          alert("Import error: " + err.message);
+          return false;
+        }
+      }
+
+      function importJSONFromArea() {
+        try {
+          const val = document.getElementById('jsonCodeArea').value;
+          const parsed = JSON.parse(val);
+          if (parsed.tables && parsed.languages) {
+            appData = parsed;
+            saveData();
+            renderAll();
+            closeModal('exportModal');
+            showToast("Project database restored from JSON!", "success");
+          } else {
+            alert("Invalid JSON format. 'tables' and 'languages' objects are required.");
+          }
+        } catch (e) {
+          alert("JSON parse error: " + e.message);
+        }
+      }
+      window.importJSONFromArea = importJSONFromArea;
+
+      // ==========================================
+      // DRAG & DROP & FILE UPLOAD HANDLING
+      // ==========================================
+      const overlay = document.getElementById('dragDropOverlay');
+
+      window.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (overlay) overlay.classList.add('active');
+      });
+
+      window.addEventListener('dragleave', (e) => {
+        if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
+          if (overlay) overlay.classList.remove('active');
+        }
+      });
+
+      window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (overlay) overlay.classList.remove('active');
+
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          const file = e.dataTransfer.files[0];
+          readFileAndImport(file);
+        }
+      });
+
+      function triggerFileUpload() {
+        document.getElementById('fileUploadInput').click();
+      }
+      window.triggerFileUpload = triggerFileUpload;
+
+      function handleFileSelected(e) {
+        if (e.target.files && e.target.files.length > 0) {
+          readFileAndImport(e.target.files[0]);
+          e.target.value = '';
+        }
+      }
+      window.handleFileSelected = handleFileSelected;
+
+      function readFileAndImport(file) {
+        const reader = new FileReader();
+        const isJson = file.name.toLowerCase().endsWith('.json');
+
+        reader.onload = function(evt) {
+          const content = evt.target.result;
+          if (isJson) {
+            try {
+              const parsed = JSON.parse(content);
+              if (parsed.tables && parsed.languages) {
+                appData = parsed;
+                saveData();
+                renderAll();
+                showToast(`Loaded '${file.name}' JSON database!`, "success");
+              } else {
+                alert("Invalid JSON database structure.");
+              }
+            } catch (err) {
+              alert("Error parsing JSON: " + err.message);
+            }
+          } else {
+            processImportDelimitedText(content, file.name);
+          }
+        };
+        reader.readAsText(file, "UTF-8");
+      }
+
+      // ==========================================
+      // MODAL FORMS & KEY / TABLE CREATION
+      // ==========================================
+      function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+          modal.classList.remove('hidden');
+
+          if (id === 'exportModal') {
+            switchExportTab(currentExportTabName || 'csv');
+          } else if (id === 'addKeyModal') {
+            const sel = document.getElementById('modalKeyTableSelect');
+            sel.innerHTML = Object.keys(appData.tables).map(t => `<option value="${t}" ${t === appData.activeTable ? 'selected' : ''}>${t}</option>`).join('');
+            document.getElementById('modalKeyName').value = '';
+            document.getElementById('modalKeySourceText').value = '';
+            document.getElementById('modalKeyContext').value = '';
+            document.getElementById('modalKeyDuplicateWarning').classList.add('hidden');
+            const sourceLang = getSourceLang();
+            document.getElementById('modalKeySourceLabel').textContent = `Source Text (${sourceLang.name} - ${sourceLang.code})`;
+          } else if (id === 'renameTableModal') {
+            document.getElementById('renameOldNameInput').value = appData.activeTable;
+            document.getElementById('renameNewNameInput').value = appData.activeTable;
+          } else if (id === 'manageLangModal') {
+            renderLanguagesList();
+          } else if (id === 'sheetsPasteModal') {
+            document.getElementById('pasteTargetTableLabel').textContent = appData.activeTable;
+          }
+        }
+      }
+      window.openModal = openModal;
+
+      function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('hidden');
+      }
+      window.closeModal = closeModal;
+
+      function checkModalKeyDuplicate() {
+        const targetTable = document.getElementById('modalKeyTableSelect').value;
+        const keyName = document.getElementById('modalKeyName').value.trim().toLowerCase();
+        const warn = document.getElementById('modalKeyDuplicateWarning');
+        const rows = appData.tables[targetTable] || [];
+
+        if (rows.some(r => r.key.trim().toLowerCase() === keyName)) {
+          warn.classList.remove('hidden');
+        } else {
+          warn.classList.add('hidden');
+        }
+      }
+      window.checkModalKeyDuplicate = checkModalKeyDuplicate;
+
+      function handleAddNewKey(e) {
+        e.preventDefault();
+        const targetTable = document.getElementById('modalKeyTableSelect').value;
+        const keyName = document.getElementById('modalKeyName').value.trim();
+        const sourceText = document.getElementById('modalKeySourceText').value;
+        const context = document.getElementById('modalKeyContext').value.trim();
+
+        if (!keyName) return;
+
+        // Duplicate Check
+        const rows = appData.tables[targetTable] || [];
+        if (rows.some(r => r.key.toLowerCase() === keyName.toLowerCase())) {
+          if (!confirm(`Key '${keyName}' already exists in '${targetTable}'. Add duplicate anyway?`)) {
+            return;
+          }
+        }
+
+        const sourceLang = getSourceLang();
+        const newRow = {
+          id: 'row_' + Date.now(),
+          key: keyName,
+          context: context,
+          values: {}
+        };
+
+        appData.languages.forEach(l => {
+          newRow.values[l.code] = (l.code === sourceLang.code) ? sourceText : '';
+        });
+
+        if (!appData.tables[targetTable]) appData.tables[targetTable] = [];
+        appData.tables[targetTable].unshift(newRow);
+        appData.activeTable = targetTable;
+
+        saveData();
+        renderAll();
+        closeModal('addKeyModal');
+        showToast(`Added '${keyName}' to '${targetTable}'!`, "success");
+      }
+      window.handleAddNewKey = handleAddNewKey;
+
+      function handleAddTable(e) {
+        e.preventDefault();
+        const rawName = document.getElementById('modalTableName').value.trim();
+        const cleanName = sanitizeIdentifier(rawName);
+
+        if (!cleanName) return;
+        if (appData.tables[cleanName]) {
+          alert("A table with this name already exists!");
+          return;
+        }
+
+        appData.tables[cleanName] = [];
+        appData.activeTable = cleanName;
+
+        saveData();
+        renderAll();
+        closeModal('addTableModal');
+        showToast(`Table '${cleanName}' created!`, "success");
+      }
+      window.handleAddTable = handleAddTable;
+
+      // Languages Manager
+      function renderLanguagesList() {
+        const container = document.getElementById('languagesList');
+        const sourceLang = getSourceLang();
+
+        container.innerHTML = appData.languages.map(l => {
+          return `
+            <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
+              <div class="flex items-center gap-2.5">
+                <input type="radio" name="sourceLangRadio" ${l.isSource ? 'checked' : ''} onchange="setAsSourceLanguage('${l.code}')" class="text-sky-600 focus:ring-sky-500 cursor-pointer" title="Set as Source Language">
+                <span class="font-mono font-bold text-sky-800">${l.code}</span>
+                <span class="text-slate-700 font-medium">${l.name}</span>
+                ${l.isSource ? '<span class="text-[9.5px] bg-sky-100 text-sky-800 border border-sky-300 px-1.5 py-0.2 rounded font-mono font-bold">SOURCE</span>' : ''}
+              </div>
+              <div>
+                ${!l.isSource ? `
+                  <button onclick="removeLanguage('${l.code}')" class="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-rose-50 transition" title="Delete language">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                ` : '<span class="text-[10px] text-slate-400 italic">Source</span>'}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function setAsSourceLanguage(code) {
+        appData.languages.forEach(l => {
+          l.isSource = (l.code === code);
+        });
+        saveData();
+        renderLanguagesList();
+        renderAll();
+        showToast(`Source language set to '${code}'!`, "success");
+      }
+      window.setAsSourceLanguage = setAsSourceLanguage;
+
+      function handleAddLanguage() {
+        const code = document.getElementById('newLangCode').value.trim().toUpperCase();
+        const name = document.getElementById('newLangName').value.trim();
+
+        if (!code || !name) {
+          alert("Please specify both a language code (e.g. FR) and full name (e.g. French).");
+          return;
+        }
+
+        if (appData.languages.some(l => l.code === code)) {
+          alert(`Language code '${code}' already exists!`);
+          return;
+        }
+
+        appData.languages.push({ code, name, isSource: false });
+
+        document.getElementById('newLangCode').value = '';
+        document.getElementById('newLangName').value = '';
+
+        saveData();
+        renderLanguagesList();
+        renderAll();
+        showToast(`Language ${name} (${code}) added!`, "success");
+      }
+      window.handleAddLanguage = handleAddLanguage;
+
+      function removeLanguage(code) {
+        if (confirm(`Remove language '${code}' and delete its translations from all tables?`)) {
+          appData.languages = appData.languages.filter(l => l.code !== code);
+          Object.keys(appData.tables).forEach(t => {
+            appData.tables[t].forEach(r => {
+              delete r.values[code];
+            });
+          });
+
+          saveData();
+          renderLanguagesList();
+          renderAll();
+          showToast(`Language '${code}' was removed.`, "info");
+        }
+      }
+      window.removeLanguage = removeLanguage;
+
+      // ==========================================
+      // DOWNLOAD & CLIPBOARD UTILITIES
+      // ==========================================
+      function downloadCSV() {
+        generateCSVOutput();
+        const content = document.getElementById('csvCodeArea').value;
+        const sel = document.getElementById('csvTableSelect');
+        const selectedTable = sel ? sel.value : appData.activeTable;
+        const fileName = selectedTable === '__ALL__' ? 'All_Localization_Tables.csv' : `${selectedTable}_Localization.csv`;
+        downloadFile(fileName, content, 'text/csv;charset=utf-8;');
+        showToast(`Downloaded ${fileName}!`, "success");
+      }
+      window.downloadCSV = downloadCSV;
+
+      function downloadCSharpKeys() {
+        const content = document.getElementById('csharpKeyCodeArea').value;
+        downloadFile('LocalizationKeys.cs', content, 'text/plain;charset=utf-8;');
+        showToast('Downloaded LocalizationKeys.cs!', 'success');
+      }
+      window.downloadCSharpKeys = downloadCSharpKeys;
+
+      function downloadJSONFile() {
+        const content = JSON.stringify(appData, null, 2);
+        downloadFile('localization_database.json', content, 'application/json;charset=utf-8;');
+        showToast('Downloaded localization_database.json!', 'success');
+      }
+      window.downloadJSONFile = downloadJSONFile;
+
+      function downloadFile(filename, text, mime = 'text/plain;charset=utf-8;') {
+        try {
+          const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8 BOM for Excel and Unity compatibility
+          const blob = new Blob([bom, text], { type: mime });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 150);
+        } catch (err) {
+          alert("Download failed: " + err.message);
+        }
+      }
+
+      function copyToClipboard(elementId) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        copyTextDirect(el.value, "Copied to clipboard!");
+      }
+      window.copyToClipboard = copyToClipboard;
+
+      function copyTextDirect(text, toastMessage = "Copied to clipboard!") {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(toastMessage, "success");
+          }).catch(() => {
+            fallbackCopy(text);
+          });
+        } else {
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast("Copied to clipboard!", "success");
+      }
+
+      function escapeCSVField(str) {
+        if (str === null || str === undefined) return '""';
+        const s = String(str);
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function escapeXml(str) {
+        return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function escapeCSharpString(str) {
+        return (str || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      }
+
+      function sanitizeIdentifier(name) {
+        let s = (name || '').replace(/[^a-zA-Z0-9_]/g, '_');
+        if (/^[0-9]/.test(s)) s = '_' + s;
+        return s || 'Table';
+      }
+
+      function toPascalCase(str) {
+        let cleaned = (str || '')
+          .replace(/[^a-zA-Z0-9]/g, ' ')
+          .split(' ')
+          .filter(w => w.length > 0)
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+          .join('');
+        if (/^[0-9]/.test(cleaned)) cleaned = '_' + cleaned;
+        return cleaned || 'Key';
+      }
+
+      function capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMsg');
+        const toastIcon = document.getElementById('toastIcon');
+
+        toastMsg.textContent = msg;
+
+        if (type === 'success') {
+          toastIcon.innerHTML = `<span class="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>`;
+        } else if (type === 'error') {
+          toastIcon.innerHTML = `<span class="material-symbols-outlined text-[18px] text-rose-600">error</span>`;
+        } else {
+          toastIcon.innerHTML = `<span class="material-symbols-outlined text-[18px] text-sky-600">info</span>`;
+        }
+
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+          toast.classList.remove('translate-y-0', 'opacity-100');
+        }, 3000);
+      }
+
+      // Keyboard shortcuts
+      window.addEventListener('keydown', (e) => {
+        const searchInput = document.getElementById('searchInput');
+        if (document.activeElement === searchInput) {
+          if (e.key === 'Escape') searchInput.blur();
+          return;
+        }
+
+        if (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) {
+          e.preventDefault();
+          if (searchInput) searchInput.focus();
+        }
+      });
+
+      // Initialize on load
+      window.addEventListener('DOMContentLoaded', () => {
+        initData();
+        renderAll();
+      });
+
+      // Live Theme Sync across Hub and Tools
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'skcore_theme') {
+          if (e.newValue === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>

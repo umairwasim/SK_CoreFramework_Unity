@@ -1,0 +1,68 @@
+appId: com.skcore.forge
+productName: FORGE
+copyright: Copyright © 2024 SKCore
+
+# Where to find app files (relative to electron/)
+directories:
+  output: build
+  buildResources: assets
+
+# Files to bundle into the Electron app
+files:
+  - main.js
+  - preload.js
+  - package.json
+  # Include the entire forge/ directory (Python + static)
+  - from: ../forge
+    to: forge
+    filter:
+      - "**/*"
+      - "!data/logs/**"
+      - "!data/artifacts/**"
+      - "!data/worktrees/**"
+      - "!data/clones/**"
+      - "!__pycache__/**"
+      - "!**/*.pyc"
+
+# ── macOS ──────────────────────────────────────────────────────────────────────
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  darkModeSupport: true
+
+dmg:
+  title: "FORGE ${version}"
+  window:
+    width: 540
+    height: 380
+
+# ── Windows ────────────────────────────────────────────────────────────────────
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+
+# ── Linux ──────────────────────────────────────────────────────────────────────
+linux:
+  category: Development
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+
+# ── Publishing ─────────────────────────────────────────────────────────────────
+# publish: []   # add GitHub releases config here when ready
